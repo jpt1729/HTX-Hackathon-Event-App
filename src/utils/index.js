@@ -11,7 +11,7 @@ const formatTime = ( dateObject ) => {
         month: '2-digit',
         day: '2-digit'
     });
-    return `${formattedTime}, ${formattedDate}`
+    return `${formattedTime} - ${formattedDate}`
 }
 
 export {

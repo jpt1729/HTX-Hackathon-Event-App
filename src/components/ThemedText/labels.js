@@ -1,11 +1,11 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * This component renders themed text to keep app text styles consistent.
  *
  * @param {Object} props The props for the component.
- * @param {('paragraph'|'heading'|'subheading'|'subtext')} props.type The type of text to render.
+ * @param {('paragraph'|'heading'|'subheading'|'subtext'|'radio')} props.type The type of text to render.
  * Possible values are:
  * - "paragraph": Renders a paragraph element.
  * - "heading": Renders a heading level 1 element.
@@ -15,57 +15,75 @@ import PropTypes from 'prop-types';
  * @param {React.ReactNode} props.children The content to be rendered inside the text element.
  * @returns {React.ReactNode} A React element that renders themed text.
  */
-export default function ThemedText({
+export default function ThemedLabels({
   type = "paragraph",
-  className = '',
+  className = "",
   children,
   ...props
 }) {
   switch (type) {
     case "paragraph":
       return (
-        <p className={`text-base leading-7 text-black ${className}`} {...props}>
+        <label
+          className={`text-base leading-7 text-black ${className}`}
+          {...props}
+        >
           {children}
-        </p>
+        </label>
       );
     case "heading":
       return (
-        <h1 className={`text-4xl font-bold text-black ${className}`} {...props}>
+        <label
+          className={`text-4xl font-bold text-black ${className}`}
+          {...props}
+        >
           {children}
-        </h1>
+        </label>
       );
     case "subheading":
       return (
-        <h2 className={`text-2xl font-bold text-black ${className}`} {...props}>
+        <label
+          className={`text-2xl font-bold text-black ${className}`}
+          {...props}
+        >
           {children}
-        </h2>
+        </label>
       );
     case "subtext":
       return (
-        <span className={`text-gray text-base ${className}`} {...props}>
+        <label className={`text-gray text-base ${className}`} {...props}>
           {children}
-        </span>
+        </label>
+      );
+    case "radio":
+      return (
+        <label
+          className={`rounded-full px-4 border border-gray active:border-red-accent focus:border-red-accent hover:border-red-accent aria-selected:border-red-accent selection:border-red-accent outline-none transition-colors ${className}`}
+          
+          {...props}
+        >
+          {children}
+        </label>
       );
     default:
       return null;
   }
 }
 
-ThemedText.propTypes = {
+ThemedLabels.propTypes = {
   /**
    * The type of text to render.
    * One of 'paragraph', 'heading', 'subheading', or 'subtext'.
    */
-  type: PropTypes.oneOf(['paragraph', 'heading', 'subheading', 'subtext']),
-  
+  type: PropTypes.oneOf(["paragraph", "heading", "subheading", "subtext", 'radio']),
+
   /**
    * Additional class names for custom styling.
    */
   className: PropTypes.string,
-  
+
   /**
    * The content to be rendered inside the text element.
    */
   children: PropTypes.node.isRequired,
 };
-

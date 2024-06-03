@@ -1,9 +1,9 @@
-import EventCard from "@/components/Card/event";
-import URLComponent from "@/components/pages/layout/URLComponent.js";
+import EventCard from "@/components/Card/Event";
+import URLComponent from "@/components/pages/layout/urlComponent";
 import ThemedText from '@/components/ThemedText'
 const eventCards = [
   {
-    id: "a8L101jkia",
+    id: "houston-hackathon",
     creator: "John",
     title: "Average Event Title In my Opinion",
     description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
@@ -22,7 +22,7 @@ const eventCards = [
     },
   },
   {
-    id: "a8L101jkia",
+    id: "houston-hackathon",
     creator: "John",
     title: "Average Event Title In my Opinion",
     description: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do

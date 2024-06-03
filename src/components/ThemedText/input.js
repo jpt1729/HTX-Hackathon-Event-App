@@ -1,5 +1,5 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React from "react";
+import PropTypes from "prop-types";
 
 /**
  * This component renders themed text to keep app text styles consistent.
@@ -15,57 +15,64 @@ import PropTypes from 'prop-types';
  * @param {React.ReactNode} props.children The content to be rendered inside the text element.
  * @returns {React.ReactNode} A React element that renders themed text.
  */
-export default function ThemedText({
-  type = "paragraph",
-  className = '',
+export default function ThemedInput({
+  type = "text",
+  className = "",
   children,
   ...props
 }) {
   switch (type) {
-    case "paragraph":
+    case "text":
       return (
-        <p className={`text-base leading-7 text-black ${className}`} {...props}>
+        <input
+          type="text"
+          className={`flex-grow border py-1 rounded-full px-4 border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors ${className}`}
+          {...props}
+        >
           {children}
-        </p>
+        </input>
       );
-    case "heading":
+    case "submit":
       return (
-        <h1 className={`text-4xl font-bold text-black ${className}`} {...props}>
-          {children}
-        </h1>
+        <input
+          type="submit"
+          className={`font-bold text-red-accent hover:underline ${className}`}
+          {...props}
+        />
       );
-    case "subheading":
+    case "radio":
       return (
-        <h2 className={`text-2xl font-bold text-black ${className}`} {...props}>
-          {children}
-        </h2>
+          <input
+            type="radio"
+            className={`hidden ${className}`}
+            {...props}
+          />
       );
     case "subtext":
       return (
-        <span className={`text-gray text-base ${className}`} {...props}>
+        <label className={`text-gray text-base ${className}`} {...props}>
           {children}
-        </span>
+        </label>
       );
     default:
       return null;
   }
 }
 
-ThemedText.propTypes = {
+ThemedInput.propTypes = {
   /**
    * The type of text to render.
    * One of 'paragraph', 'heading', 'subheading', or 'subtext'.
    */
-  type: PropTypes.oneOf(['paragraph', 'heading', 'subheading', 'subtext']),
-  
+  type: PropTypes.oneOf(["text", "submit", "radio", "subtext"]),
+
   /**
    * Additional class names for custom styling.
    */
   className: PropTypes.string,
-  
+
   /**
    * The content to be rendered inside the text element.
    */
   children: PropTypes.node.isRequired,
 };
-
