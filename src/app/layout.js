@@ -12,7 +12,12 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={inter.className}>{children}</body>
+      <body className={`${inter.className} p-5 flex gap-5`}>
+        <div className="w-[454px] h-full">
+          {/*Place holder for navbar*/}
+        </div>
+        {children}
+      </body>
     </html>
   );
 }
