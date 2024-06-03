@@ -1,0 +1,12 @@
+.Location:hover > svg {
+    @apply stroke-red-accent transition-colors
+}
+.Location:hover > p {
+    @apply text-red-accent transition-colors underline
+}
+.EventCard:hover > div > h2{
+    @apply text-red-accent transition-colors
+}
+.EventCard:hover > div:first-child{
+    @apply bg-red-accent transition-colors
+}

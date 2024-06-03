@@ -1,5 +1,4 @@
 import { Inter } from "next/font/google";
-import Head from "next/head";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -13,7 +12,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${inter.className} p-5 flex gap-5`}>
-        <div className="w-[454px] h-full">
+        <div className="min-w-[254px] h-[500px] bg-black">
           {/*Place holder for navbar*/}
         </div>
         {children}
