@@ -10,3 +10,23 @@
 .EventCard:hover > div:first-child{
     @apply bg-red-accent transition-colors
 }
+.EventGrid{
+    grid-template-columns: repeat(6, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-template-areas: 
+    'md md md md md md'
+    'md md md md md md'
+    'act act act rad rad rad'
+    'act act act rad rad rad'
+    'act act act rad rad rad';
+}
+
+.md {
+    grid-area: md;
+}
+.act {
+    grid-area: act;
+}
+.rad {
+    grid-area: rad;
+}

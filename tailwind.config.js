@@ -10,6 +10,7 @@ module.exports = {
       colors: {
         'gray':'#D9D9D9',
         'red-accent':'#FF5D73',
+        'warning':'#CC3300'
       }
     },
   },

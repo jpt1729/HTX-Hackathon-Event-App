@@ -1,7 +1,17 @@
 "use client";
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
+import PropTypes from 'prop-types'
 
+/**
+ * This component renders a Q&A Prompt
+ *
+ * @param {Object} props - Component properties
+ * @param {string} [props.id] id of the question
+ * @param {string} [props.title] title of the question
+ * @param {string} [props.question] question of the question
+ * @returns {React.ReactNode} A React element that renders a Q&A prompt
+ */
 export default function QA({ id, title, question }) {
   const onSubmit = (e) => {
     e.preventDefault();
@@ -27,3 +37,8 @@ export default function QA({ id, title, question }) {
     </form>
   );
 }
+QA.propTypes = {
+  id: PropTypes.string,
+  title: PropTypes.string,
+  question: PropTypes.string
+};

@@ -7,15 +7,14 @@ import styles from './input.module.css'
  * This component renders themed text to keep app text styles consistent.
  *
  * @param {Object} props The props for the component.
- * @param {('paragraph'|'heading'|'subheading'|'subtext')} props.type The type of text to render.
+ * @param {('text'|'submit'|'radio')} props.type The type of text to render.
  * Possible values are:
- * - "paragraph": Renders a paragraph element.
- * - "heading": Renders a heading level 1 element.
- * - "subheading": Renders a heading level 2 element.
- * - "subtext": Renders a span element with subtext styling.
+ * - "text": Renders a text input element.
+ * - "submit": Renders a submit input element.
+ * - "radio": Renders a radio input element. This should be paired with the radio ThemedLabel
  * @param {string} [props.className] Additional class names for custom styling.
  * @param {React.ReactNode} props.children The content to be rendered inside the text element.
- * @returns {React.ReactNode} A React element that renders themed text.
+ * @returns {React.ReactNode} A React element that renders themed input.
  */
 export default function ThemedInput({
   type = "text",
@@ -51,12 +50,6 @@ export default function ThemedInput({
             {...props}
           />
       );
-    case "subtext":
-      return (
-        <label className={`text-gray text-base ${className}`} {...props}>
-          {children}
-        </label>
-      );
     default:
       return null;
   }
@@ -67,7 +60,7 @@ ThemedInput.propTypes = {
    * The type of text to render.
    * One of 'paragraph', 'heading', 'subheading', or 'subtext'.
    */
-  type: PropTypes.oneOf(["text", "submit", "radio", "subtext"]),
+  type: PropTypes.oneOf(["text", "submit", "radio"]),
 
   /**
    * Additional class names for custom styling.

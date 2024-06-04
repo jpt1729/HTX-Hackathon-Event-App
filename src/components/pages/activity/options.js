@@ -1,6 +1,15 @@
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
-export default function Options({ title, options }) {
+/**
+ * This component renders an options Prompt
+ *
+ * @param {Object} props - Component properties
+ * @param {string} [props.id] id of the options
+ * @param {string} [props.title] title of the options
+ * @param {string[]} [props.options] question of the options
+ * @returns {React.ReactNode} A React element that renders an options prompt
+ */
+export default function Options({ id, title, options }) {
   return (
     <>
       <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
@@ -33,3 +42,8 @@ export default function Options({ title, options }) {
     </>
   );
 }
+QA.propTypes = {
+  id: PropTypes.string,
+  title: PropTypes.string,
+  question: PropTypes.string
+};
