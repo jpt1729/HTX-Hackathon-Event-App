@@ -1,0 +1,4 @@
+
+.radio:checked + label{
+    @apply border-red-accent
+}

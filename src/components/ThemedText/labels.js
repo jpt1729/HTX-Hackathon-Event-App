@@ -21,6 +21,7 @@ export default function ThemedLabels({
   children,
   ...props
 }) {
+
   switch (type) {
     case "paragraph":
       return (
@@ -56,10 +57,10 @@ export default function ThemedLabels({
         </label>
       );
     case "radio":
+      
       return (
         <label
-          className={`rounded-full px-4 border border-gray active:border-red-accent focus:border-red-accent hover:border-red-accent aria-selected:border-red-accent selection:border-red-accent outline-none transition-colors ${className}`}
-          
+          className={`rounded-full px-4 border border-gray active:border-red-accent checked:border-red-accent focus:border-red-accent hover:border-red-accent aria-selected:border-red-accent selection:border-red-accent outline-none transition-colors ${className}`}
           {...props}
         >
           {children}

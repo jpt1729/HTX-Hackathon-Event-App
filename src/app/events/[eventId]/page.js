@@ -44,8 +44,8 @@ export default function EventsPage({ params }) {
   const { eventId } = params;
 
   return (
-    <main>
-      <div>
+    <main className="h-[calc(100vh-60px)]">
+      <div className="flex-1">
         <ThemedText type="heading">{EventInfo.title}</ThemedText>
         <URLComponent />
         <div className="flex gap-2">
@@ -54,8 +54,8 @@ export default function EventsPage({ params }) {
         </div>
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <div className="flex flex-col gap-4 ">
-        <div>
+      <div className="h-[calc(100vh-156px)] grid grid-rows-[65%] grid-cols-2 gap-2">
+        <div className="overflow-y-scroll grid-row">
           <CustomMarkdown
             source={`
           ## Welcome to our event
@@ -68,25 +68,30 @@ export default function EventsPage({ params }) {
         `}
           />
         </div>
-        <div className="flex gap-2">
-          <div className="flex-1">
-            <ThemedText type="subheading">Upcoming Activities</ThemedText>
-            <div>
-              <ActivityCard
-                id="swe-qa-panel"
-                eventId={eventId}
-                title="SWE Q&A Panel"
-                eventTime={fiveMinutesFromNow()}
-                description={
-                  "Q&A Panel w/ Software Engineers from around the Area. Come and ask questions!"
-                }
-                mandatory={true}
-              />
-            </div>
+        <div className="flex-1 h-[calc(100vh-156px)]">
+          <ThemedText type="subheading">Upcoming Activities</ThemedText>
+          <div className="flex flex-col gap-2 overflow-y-scroll h-[calc(100vh-188px)] pr-2">
+            {[1,2,3,4,5,6,7,8].map((_) => {return(<ActivityCard
+              key={_}
+              id="swe-qa-panel"
+              eventId={eventId}
+              title="SWE Q&A Panel"
+              eventTime={fiveMinutesFromNow()}
+              description={
+                "Q&A Panel w/ Software Engineers from around the Area. Come and ask questions!"
+              }
+              mandatory={true}
+            />)})}
           </div>
-          <div className="flex-1"></div>
+        </div>
+        <div className="flex-1">
+          <ThemedText type="subheading">Event Radio</ThemedText>
+          <iframe style={{borderRadius:'12px'}} src="https://open.spotify.com/embed/playlist/37i9dQZF1E8Ow52yxxSpp5?utm_source=generator" width="100%" height="152" frameBorder="0" allowFullscreen="" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>
         </div>
       </div>
+      <div className="relative bottom-3 translate-y-1/2">
+            Warning: 
+        </div>
     </main>
   );
 }

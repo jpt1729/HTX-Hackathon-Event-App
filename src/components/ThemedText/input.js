@@ -1,6 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 
+import styles from './input.module.css'
+
 /**
  * This component renders themed text to keep app text styles consistent.
  *
@@ -42,9 +44,10 @@ export default function ThemedInput({
       );
     case "radio":
       return (
+
           <input
             type="radio"
-            className={`hidden ${className}`}
+            className={`hidden ${className} ${styles.radio}`}
             {...props}
           />
       );

@@ -42,10 +42,12 @@ export default function Page() {
           title="Ask the engineers questions!"
           question="Write your question for the engineers!"
         />
-        <Options
-          title="How many hours do you sleep?"
-          options={["2-4 Hours", "6-8 Hours", "8-12 Hours"]}
-        />
+        <form>
+          <Options
+            title="How many hours do you sleep?"
+            options={["2-4 Hours", "6-8 Hours", "8-12 Hours"]}
+          />
+        </form>
       </div>
     </main>
   );
