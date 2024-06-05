@@ -1,7 +1,7 @@
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
 import CustomMarkdown from "@/components/pages/markdown";
-import QA from "@/components/pages/activity/q&a";
+import QA from "@/components/pages/activity/qa";
 import Options from "@/components/pages/activity/options";
 
 const ActivityInfo = {
