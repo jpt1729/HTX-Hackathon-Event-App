@@ -11,10 +11,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} p-5 flex gap-5`}>
-        <div className="min-w-[254px] h-[500px] bg-black">
-          {/*Place holder for navbar*/}
-        </div>
+      <body className={`${inter.className} p-5`}>
         {children}
       </body>
     </html>

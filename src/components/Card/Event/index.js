@@ -4,6 +4,7 @@ import Link from "next/link";
 import LocationWidget from "./location-widget.js";
 import CalendarWidget from "./calendar-widget.js";
 import styles from '../event.module.css'
+import PropTypes from "prop-types";
 
 /*
 Returns whether event date is within 12 hours
