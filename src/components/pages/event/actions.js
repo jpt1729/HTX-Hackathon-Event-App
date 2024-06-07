@@ -7,7 +7,11 @@ export async function addEvent(prevState, formData) {
   const session = await auth();
   const userId = session.userId;
   const eventId = formData.get("eventId");
+  if ((eventId.length !== 25) && (eventId[0] !== 'c')){
+    return {
+      message: 'Invalid id'
+    }
+  }
   const res = await addEventToUser(userId, eventId);
-  console.log(res)
-  return {message: 'hey'}
+  return res
 }
