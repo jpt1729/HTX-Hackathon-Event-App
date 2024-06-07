@@ -1,0 +1,13 @@
+/*
+.DropDown{
+    animation: EnterAnimation 300ms ease-out;
+}
+@keyframes EnterAnimation {
+    0% {
+        @apply opacity-50;
+    }
+    100%{
+        @apply opacity-100;
+    }
+}
+*/

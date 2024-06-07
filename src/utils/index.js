@@ -1,4 +1,5 @@
 const formatTime = ( dateObject ) => {
+    
     let formattedTime = dateObject.toLocaleString("en-US", {
         hour: 'numeric',
         minute: '2-digit',
@@ -11,7 +12,7 @@ const formatTime = ( dateObject ) => {
         month: '2-digit',
         day: '2-digit'
     });
-    return `${formattedTime} - ${formattedDate}`
+    return `${formattedTime} ${formattedDate}`
 }
 
 export {

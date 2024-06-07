@@ -1,6 +1,9 @@
-import { auth } from "@/auth";
+import { CalendarDaysIcon } from "@heroicons/react/24/solid";
 
+import { auth } from "@/auth";
+import Link from "next/link";
 import { SignInNavbar } from "../auth/sign-in";
+import ThemedText from "../ThemedText";
 
 import Profile from "./Profile";
 
@@ -8,7 +11,12 @@ export default async function Navbar({}) {
   const session = await auth();
   return (
     <nav className="min-w-[254px] h-full flex flex-col justify-between">
-      <div></div>
+      <div>
+        <Link href="/events" className="flex items-center gap-2 hover:underline hover:!text-red-accent">
+          <CalendarDaysIcon className="size-6"/>
+          <span className="font-bold"> My Events</span>
+        </Link>
+      </div>
       <div>{session ? <Profile /> : <SignInNavbar />}</div>
     </nav>
   );

@@ -1,7 +1,7 @@
 import { MapPinIcon } from "@heroicons/react/24/outline";
 import ThemedText from "@/components/ThemedText";
 import Link from "next/link";
-import styles from '../event.module.css'
+import styles from '@/components/Card/event.module.css'
 import PropTypes from "prop-types";
 /**
  * EventTime Object

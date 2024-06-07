@@ -1,9 +1,9 @@
 import Card from "../index.js";
 import ThemedText from "@/components/ThemedText";
 import Link from "next/link";
-import LocationWidget from "./location-widget.js";
-import CalendarWidget from "./calendar-widget.js";
-import styles from '../event.module.css'
+import LocationWidget from "./locationWidget";
+import CalendarWidget from "./calendarWidget";
+import styles from "../event.module.css";
 import PropTypes from "prop-types";
 
 /*
@@ -44,27 +44,38 @@ export default function EventCard({
   description,
   eventTime,
   location,
-  className = '',
+  className = "",
   ...props
 }) {
   return (
-    <Card active={CheckDate(eventTime)} className = {`${styles.EventCard} ${className}`} {...props}>
+    <Card
+      active={CheckDate(eventTime)}
+      className={`${styles.EventCard} ${className}`}
+      {...props}
+    >
       <ThemedText type="subheading">
-        <Link href={`/events/${id}`}>
-          {title}
-        </Link>
+        <Link href={`/events/${id}`}>{title}</Link>
       </ThemedText>
       <ThemedText type="paragraph">{description}</ThemedText>
       <div className="flex gap-2">
-        <CalendarWidget eventTime={eventTime}/>
-        <LocationWidget location={location}/>
+        <CalendarWidget
+          event={{
+            id,
+            title,
+            description,
+            eventTime,
+            location,
+          }}
+          eventTime={eventTime}
+        />
+        <LocationWidget location={location} />
       </div>
     </Card>
   );
 }
 EventCard.propTypes = {
   id: PropTypes.string,
-  title:PropTypes.string,
+  title: PropTypes.string,
   className: PropTypes.string,
   description: PropTypes.string,
   eventTime: PropTypes.Object,

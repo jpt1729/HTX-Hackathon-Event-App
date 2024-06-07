@@ -15,10 +15,9 @@ const ModalContent = ({}) => {
   const [state, formAction] = useFormState(addEvent, {
     message: "",
   });
-  console.log(state);
   return (
     <div>
-      <form action={formAction}>
+      <form action={formAction} autocomplete="off">
         <ThemedLabels type="subheading">Add an Event</ThemedLabels>
         <br />
         <br />
@@ -30,7 +29,7 @@ const ModalContent = ({}) => {
         <ThemedLabels
             type="subtext"
             aria-live="polite"
-            className="!text-warning font-bold pl-5"
+            className="!text-warning font-bold pl-5 !text-sm"
           >
             {state.message}
           </ThemedLabels>
