@@ -1,5 +1,6 @@
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
+import PropTypes from 'prop-types'
 /**
  * This component renders an options Prompt
  *
@@ -42,7 +43,7 @@ export default function Options({ id, title, options }) {
     </>
   );
 }
-QA.propTypes = {
+Options.propTypes = {
   id: PropTypes.string,
   title: PropTypes.string,
   question: PropTypes.string

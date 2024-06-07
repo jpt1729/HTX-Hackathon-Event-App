@@ -79,15 +79,16 @@ model Authenticator {
 }
 
 model Event {
-  id              String   @id @default(cuid())
-  slug            String   @unique @default(uuid())
-  published       Boolean? @default(true)
-  title           String
-  description     String?
-  location        Json
-  playlist        String?
-  startTime       DateTime
-  endTime         DateTime
+  id          String   @id @default(cuid())
+  slug        String   @unique @default(uuid())
+  published   Boolean? @default(false)
+  title       String
+  description String?
+  content String?
+  location    Json
+  playlist    String?
+  startTime   DateTime
+  endTime     DateTime
 
   eventOwners       User[]     @relation("organizerEvents")
   eventParticipants User[]     @relation("participantsEvents")
@@ -95,15 +96,15 @@ model Event {
 }
 
 model Activity {
-  id              String   @id @default(cuid())
-  eventId         String
-  slug            String
-  published       Boolean? @default(true)
-  title           String
-  description     String?
-  content         Json?
-  startTime       DateTime
-  endTime         DateTime
+  id          String   @id @default(cuid())
+  eventId     String
+  slug        String   @unique
+  published   Boolean? @default(false)
+  title       String
+  description String?
+  content     Json?
+  startTime   DateTime
+  endTime     DateTime
 
   event                Event  @relation("eventActivities", fields: [eventId], references: [id])
   activityOwners       User[] @relation("organizerActivities")

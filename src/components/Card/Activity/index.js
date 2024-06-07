@@ -8,7 +8,7 @@ Takes in a date and returns a string that shows how far away that date is
 */
 function getUpcomingEventMessage(eventDate) {
     const now = new Date();
-    const timeDifference = eventDate.getTime() - now.getTime(); // difference in milliseconds
+    const timeDifference = eventDate.startTime.getTime() - now.getTime(); // difference in milliseconds
 
     if (timeDifference < 0) {
         return "The event has already passed.";
@@ -54,7 +54,7 @@ const CheckDate = (eventTime) => {
 export default function ActivityCard({ id, eventId, title, mandatory = false, description, eventTime, className='' }) {
   return (
     <Card active={CheckDate(eventTime)} className={`${styles.EventCard} ${className}`} href={`/events/${eventId}/activity/${id}`}>
-      <div>
+      <div className="w-full">
         <div className="flex justify-between">
             <ThemedText type="paragraph" className="font-bold" style={{ lineHeight: 1.5 }}>
                 {title}
@@ -71,7 +71,7 @@ export default function ActivityCard({ id, eventId, title, mandatory = false, de
                 {getUpcomingEventMessage(eventTime)}
             </ThemedText>
             <ThemedText type='subtext'>
-                {formatTime(eventTime)}
+                {formatTime(eventTime.startTime)}
             </ThemedText>
         </div>
       </div>
