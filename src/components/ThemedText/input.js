@@ -37,7 +37,7 @@ export default function ThemedInput({
       return (
         <input
           type="submit"
-          className={`font-bold text-red-accent hover:underline ${className}`}
+          className={`font-bold ${props.disabled ? 'text-gray' : 'text-red-accent'} hover:underline ${className}`}
           {...props}
         />
       );

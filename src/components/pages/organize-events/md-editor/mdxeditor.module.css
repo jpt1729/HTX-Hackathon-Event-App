@@ -1,0 +1,15 @@
+.mdxEditor h1 {
+    @apply text-4xl font-bold text-black;
+}
+.mdxEditor h2 {
+    @apply text-2xl font-bold text-black;
+}
+.mdxEditor p {
+    @apply text-base leading-7 text-black;
+}
+.mdxEditor ol {
+    @apply list-decimal list-inside;
+}
+.mdxEditor ul {
+    @apply list-disc list-inside;
+}
