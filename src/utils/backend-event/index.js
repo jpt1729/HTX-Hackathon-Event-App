@@ -109,3 +109,20 @@ export async function addEventToUser(userId, eventId) {
     await prisma.$disconnect();
   }
 }
+
+export async function getEventParticipants(eventId){
+  try {
+    const eventPartcipants = await prisma.event.findUnique({
+      where: { id: eventId },
+      include: {
+        eventParticipants: true,
+      },
+    });
+
+    return eventPartcipants;
+  } catch (error) {
+    console.error("Error fetching event participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}

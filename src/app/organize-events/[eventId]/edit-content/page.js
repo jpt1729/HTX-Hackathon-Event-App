@@ -1,19 +1,22 @@
 import React, { Suspense } from "react";
+import dynamic from "next/dynamic";
 
 import ThemedText from "@/components/ThemedText";
 import CalendarWidget from "@/components/Card/Event/calendarWidget";
 import LocationWidget from "@/components/Card/Event/locationWidget";
 import URLComponent from "@/components/pages/layout/urlComponent";
 
-import MarkdownViewTabs from "@/components/pages/organize-events/edit-content/tabs";
-import { getEventData, getActivities } from "@/utils/backend-event";
+import { getEventData } from "@/utils/backend-event";
+const EditorComp = dynamic(
+  () => import("@/components/pages/organize-events/md-editor"),
+  { ssr: false }
+);
 
 export default async function EditContentPage({ params }) {
   const { eventId } = params;
 
   const eventData = await getEventData(eventId);
-  const activitiesData = await getActivities(eventData.id);
-
+  
   return (
     <main>
       <div>
@@ -27,9 +30,11 @@ export default async function EditContentPage({ params }) {
         </div>
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <Suspense fallback={<></>}>
-      <MarkdownViewTabs eventData={eventData} />
-      </Suspense>
+      <div>
+        <Suspense fallback={null}>
+          <EditorComp markdown={eventData.content} eventId={eventData.id} />
+        </Suspense>
+      </div>
     </main>
   );
 }

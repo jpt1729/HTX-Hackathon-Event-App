@@ -1,13 +1,13 @@
 import URLComponent from "@/components/pages/layout/urlComponent";
 import ThemedText from "@/components/ThemedText";
-import dynamic from "next/dynamic";
 
 import LocationWidget from "@/components/Card/Event/locationWidget";
 import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
 import ActivityCard from "@/components/Card/Activity";
 
-import { Suspense } from "react";
+import CustomMarkdown from "@/components/pages/markdown";
+
 import styles from "./event.module.css";
 
 import {
@@ -15,11 +15,12 @@ import {
   getEventData,
   getActivities,
 } from "@/utils/backend-event";
-
-const EditorComp = dynamic(
-  () => import("@/components/pages/organize-events/md-editor"),
-  { ssr: false }
-);
+import Menu from "@/components/pages/organize-events/menu";
+/*
+<button className="text-warning border px-2 py-1 border-warning rounded border-dashed">
+            Leave Event
+          </button>
+*/
 
 export default async function EventsPage({ params }) {
   const { eventId } = params;
@@ -28,7 +29,7 @@ export default async function EventsPage({ params }) {
   const activitiesData = await getActivities(eventData.id);
 
   return (
-    <main className="h-[calc(100vh-40px)] overflow-y-scroll w-full">
+    <main className="h-[calc(100vh-40px)] overflow-y-scroll">
       <div>
         <ThemedText type="heading">{eventData.title}</ThemedText>
         <URLComponent />
@@ -40,13 +41,9 @@ export default async function EventsPage({ params }) {
         </div>
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <div className={`grid ${styles.EventGrid} gap-4 h-[calc(100vh-136px)]`}>
-        <div className={`${styles.md}`}>
-          <div className="absolute">
-            <Suspense fallback={null}>
-              <EditorComp markdown={eventData.content} eventId={eventData.id}/>
-            </Suspense>
-          </div>
+      <div className={`grid ${styles.EventGrid} gap-4 h-[calc(100vh-172px)]`}>
+        <div className={`${styles.md} pt-1`}>
+          <CustomMarkdown source={eventData.content} />
         </div>
         <div className={`${styles.act} overflow-y-scroll pr-1`}>
           <ThemedText type="subheading">Upcoming Activities</ThemedText>
@@ -80,6 +77,7 @@ export default async function EventsPage({ params }) {
           </div>
         </div>
       </div>
+      <Menu/>
     </main>
   );
 }

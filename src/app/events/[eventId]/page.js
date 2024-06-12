@@ -42,7 +42,7 @@ export default async function EventsPage({ params }) {
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
       <div className={`grid ${styles.EventGrid} gap-4 h-[calc(100vh-136px)]`}>
-        <div className={`${styles.md}`}>
+        <div className={`${styles.md} pt-1`}>
           <CustomMarkdown source={eventData.content} />
         </div>
         <div className={`${styles.act} overflow-y-scroll pr-1`}>
@@ -77,6 +77,7 @@ export default async function EventsPage({ params }) {
             ></iframe>
           </div>
         </div>
+        
       </div>
     </main>
   );

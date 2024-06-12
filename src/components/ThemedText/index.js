@@ -24,19 +24,19 @@ export default function ThemedText({
   switch (type) {
     case "paragraph":
       return (
-        <p className={`text-base leading-7 text-black ${className}`} {...props}>
+        <p className={`text-base leading-7 ${className}`} {...props}>
           {children}
         </p>
       );
     case "heading":
       return (
-        <h1 className={`text-4xl font-bold text-black ${className}`} {...props}>
+        <h1 className={`text-4xl font-bold ${className}`} {...props}>
           {children}
         </h1>
       );
     case "subheading":
       return (
-        <h2 className={`text-2xl font-bold text-black ${className}`} {...props}>
+        <h2 className={`text-2xl font-bold ${className}`} {...props}>
           {children}
         </h2>
       );

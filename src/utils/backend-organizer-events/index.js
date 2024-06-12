@@ -59,8 +59,6 @@ export async function changeEventContent(userId, eventId, updatedMarkdown) {
     },
   });
 
-  return {
-    message: 'Successfully updated event content.'
-  };
+  return updatedEvent;
 
 }

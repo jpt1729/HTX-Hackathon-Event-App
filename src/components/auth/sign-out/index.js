@@ -7,6 +7,7 @@ export function SignOut() {
         "use server"
         await signOut()
       }}
+      className="flex items-center"
     >
       <button type="submit">Sign Out</button>
     </form>

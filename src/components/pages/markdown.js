@@ -1,4 +1,3 @@
-"use client"
 import { MDXRemote } from 'next-mdx-remote/rsc'
 import ThemedText from '../ThemedText'
 import Link from 'next/link'
