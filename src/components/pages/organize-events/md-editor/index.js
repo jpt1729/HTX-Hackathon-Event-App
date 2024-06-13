@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { useFormState } from "react-dom";
-
+import { useModal } from "@/utils/context/ModalContext";
 import {
   headingsPlugin,
   listsPlugin,
@@ -42,8 +42,9 @@ export default function CustomMDXEditor({
   const [state, formAction] = useFormState(editEventContent, {
     message: "",
   });
+  //const { showModal } = useModal() modal not working with mdx editor????
   if (state.message !== "") {
-    alert(state.message);
+    alert('Successfully updated content')
   }
   const internalEditorRef = useRef(null);
   return (

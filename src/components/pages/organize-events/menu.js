@@ -29,7 +29,7 @@ export default function Menu({}) {
         </Link>
       </div>
       <Link
-        href=""
+        href={`${pathname}/options`}
         className="flex gap-1 hover:text-red-accent hover:stroke-red-accent transition-colors hover:underline"
       >
         <EllipsisHorizontalCircleIcon className="size-6" />

@@ -3,9 +3,9 @@ import Image from "next/image";
 
 import { TrashIcon } from "@heroicons/react/24/outline";
 
-export default function ParticipantCard({ user, ownerPanel }) {
+export default function ParticipantCard({ user }) {
   return (
-    <div className="flex justify-between">
+    <div className="flex justify-between items-center">
       <div className="flex gap-2 items-center">
         <Image
           src={user?.image}

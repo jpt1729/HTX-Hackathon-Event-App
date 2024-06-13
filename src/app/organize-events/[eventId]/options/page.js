@@ -21,12 +21,8 @@ export default async function EditContentPage({ params }) {
         <URLComponent />
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <div className="pt-4 flex flex-col gap-2">
-        {eventParticipants.eventParticipants && eventParticipants.eventParticipants.map((user, _i) => {
-          return (
-            <ParticipantCard key={_i} user={user} />
-          )
-        })}
+      <div className="pt-4">
+        
       </div>
     </main>
   );
