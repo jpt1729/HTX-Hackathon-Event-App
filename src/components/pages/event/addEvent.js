@@ -11,6 +11,8 @@ import { addEvent } from "./actions";
 const ModalContent = ({}) => {
   //TODO: QR CODE feature
   //TODO: Verify submissions
+  //TODO: Close modal on success
+  //TODO: Success message not in red
 
   const [state, formAction] = useFormState(addEvent, {
     message: "",

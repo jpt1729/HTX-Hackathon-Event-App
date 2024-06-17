@@ -17,7 +17,7 @@ export default async function EditContentPage({ params }) {
   return (
     <main className="w-full">
       <div>
-        <ThemedText type="heading">Edit Content</ThemedText>
+        <ThemedText type="heading">Options</ThemedText>
         <URLComponent />
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
