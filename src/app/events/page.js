@@ -2,7 +2,7 @@ import EventCard from "@/components/Card/Event";
 import URLComponent from "@/components/pages/layout/urlComponent";
 import ThemedText from "@/components/ThemedText";
 
-import AddEvent from "@/components/pages/event/addEvent";
+import AddEvent from "@/components/pages/event/add-event";
 
 import { getParticipantEventsForUser } from "@/utils/backend-event";
 import { auth } from "@/auth";

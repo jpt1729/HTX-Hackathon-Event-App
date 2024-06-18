@@ -6,12 +6,17 @@ import { addEventToUser } from "@/utils/backend-event";
 export async function addEvent(prevState, formData) {
   const session = await auth();
   const userId = session.userId;
-  const eventId = formData.get("eventId");
-  if ((eventId.length !== 25) && (eventId[0] !== 'c')){
+  const eventSlug = formData.get("event-slug");
+  const res = await addEventToUser(userId, eventSlug);
+  const success = userId === res.id // on success returns user object
+  if (success) {
     return {
-      message: 'Invalid id'
+      status: 'success',
+      message: ''
     }
   }
-  const res = await addEventToUser(userId, eventId);
-  return res
+  return {
+    status: '',
+    message: ''
+  }
 }
