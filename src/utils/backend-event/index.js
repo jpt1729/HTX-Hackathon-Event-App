@@ -49,7 +49,6 @@ export async function getActivities(eventId) {
         ...activity,
       };
     });
-    console.log(processedActivityData);
     return processedActivityData;
   } catch (error) {
     console.error("Error retrieving slugs: ", error);
@@ -58,16 +57,17 @@ export async function getActivities(eventId) {
   }
 }
 
-export async function getParticipantEventsForUser(userId) {
+export async function getEventsForUser(userId) {
   try {
-    const userWithParticipantEvents = await prisma.user.findUnique({
-      where: { id: userId },
+    const userEvents = await prisma.userEventRole.findMany({
+      where: { userId: userId },
       include: {
-        participantsEvents: true,
+        event: true,
       },
     });
-    const participantsEvents = userWithParticipantEvents.participantsEvents;
-    let processedEventData = participantsEvents.map((event) => {
+    
+    let processedEventData = userEvents.map((eventObject) => {
+      const event = eventObject.event
       return {
         eventTime: {
           startTime: event.startTime,
@@ -86,12 +86,26 @@ export async function getParticipantEventsForUser(userId) {
 }
 export async function addEventToUser(userId, eventSlug) {
   try {
-    const res = await prisma.user.update({
-      where: { id: userId },
+    // Check if the user and event exist
+    const user = await prisma.user.findUnique({ where: { id: userId } });
+    const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
+
+    if (!user) {
+      console.error('User not found');
+      return;
+    }
+
+    if (!event) {
+      console.error('Event not found');
+      return;
+    }
+
+    // Create the UserEventRole entry
+    const res = await prisma.userEventRole.create({
       data: {
-        participantsEvents: {
-          connect: { slug: eventSlug },
-        },
+        userId: userId,
+        eventId: event.id,
+        role: 'participant', // Setting the role as 'participant'
       },
     });
     console.log(`Event ${eventSlug} added to user ${userId}`);
@@ -107,30 +121,23 @@ export async function addEventToUser(userId, eventSlug) {
 
 export async function getEventParticipants(eventId){
   try {
-    const eventPartcipants = await prisma.event.findUnique({
+    const eventParticipants = await prisma.event.findUnique({
       where: { id: eventId },
       include: {
-        eventParticipants: true,
+        eventParticipants: {
+          include: {
+            user: true
+          }
+        },
       },
     });
-
-    return eventPartcipants;
-  } catch (error) {
-    console.error("Error fetching event participants:", error);
-  } finally {
-    await prisma.$disconnect();
-  }
-}
-export async function getEventOwners(eventId){
-  try {
-    const eventPartcipants = await prisma.event.findUnique({
-      where: { id: eventId },
-      include: {
-        eventOwners: true,
-      },
-    });
-
-    return eventPartcipants;
+    const eventParticipantsUsers = eventParticipants.eventParticipants.map((relation) => {
+      return {
+        role: relation.role,
+        ...relation.user
+      }
+    })
+    return eventParticipantsUsers
   } catch (error) {
     console.error("Error fetching event participants:", error);
   } finally {

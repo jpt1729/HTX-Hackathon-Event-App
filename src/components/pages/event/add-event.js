@@ -21,7 +21,7 @@ const ModalContent = ({ close }) => {
     message: "",
   });
   if (state.status === 'success') {
-    close()
+    close() //fix this function :(
     router.refresh()
   }
   return (

@@ -8,8 +8,8 @@ export async function addEvent(prevState, formData) {
   const userId = session.userId;
   const eventSlug = formData.get("event-slug");
   const res = await addEventToUser(userId, eventSlug);
-  const success = userId === res.id // on success returns user object
-  if (success) {
+  
+  if (res) {
     return {
       status: 'success',
       message: ''

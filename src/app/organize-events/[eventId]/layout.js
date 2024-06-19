@@ -1,6 +1,19 @@
+import { userRole } from '@/utils/backend-organizer-events';
+import { auth } from '@/auth';
 import AlertNotification from '@/components/Notifications/alert'
-export default function EventLayout({ children }) {
+
+const checkPermission = async (userId, eventSlug) => {
+  const res = await userRole(userId, undefined, eventSlug)
+  return (res.role === 'organizer' || res.role === 'owner')
+}
+
+export default function EventLayout({ params, children }) {
   //todo: implement error bound
+  const { eventId } = params;
+  const session = auth()
+
+  if(!checkPermission(session.id, eventId)) return <h1>Not allowed {':('}</h1>;
+
   const notifications = [
     {
       id: '123',

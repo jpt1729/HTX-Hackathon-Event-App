@@ -4,14 +4,13 @@ import ThemedText from "@/components/ThemedText";
 
 import AddEvent from "@/components/pages/event/add-event";
 
-import { getParticipantEventsForUser } from "@/utils/backend-event";
+import { getEventsForUser } from "@/utils/backend-event";
 import { auth } from "@/auth";
 
 export default async function Events() {
   const session = await auth();
 
-  const userEvents = await getParticipantEventsForUser(session.user.id);
-
+  const userEvents = await getEventsForUser(session.user.id);
   return (
     <main className="w-full">
       <div>

@@ -17,7 +17,7 @@ const ModalContent = ({ user, close }) => {
   });
   if (state.status === "success"){
     close()
-    router.refresh()
+    router.refresh() //todo: add error messages!
   };
   return (
     <form action={formAction}>
