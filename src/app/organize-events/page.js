@@ -8,7 +8,7 @@ import { auth } from "@/auth";
 export default async function Events() {
   const session = await auth();
 
-  const userEvents = await getOrganizerEventsForUser(session.user.id);
+  const userEvents = await getOrganizerEventsForUser(session?.user?.id);
   return (
     <main className="w-full">
       <div>

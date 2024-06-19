@@ -10,7 +10,7 @@ import { auth } from "@/auth";
 export default async function Events() {
   const session = await auth();
 
-  const userEvents = await getEventsForUser(session.user.id);
+  const userEvents = await getEventsForUser(session?.user?.id);
   return (
     <main className="w-full">
       <div>
@@ -32,7 +32,7 @@ export default async function Events() {
             );
           })}
       </div>
-      <AddEvent userId = {session.user.id}/>
+      <AddEvent userId = {session?.user?.id}/>
     </main>
   );
 }

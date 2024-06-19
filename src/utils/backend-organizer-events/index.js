@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
+
 export async function userRole(userId, eventId, eventSlug = null){
   let trueEventId = eventId;
   if (eventSlug){
@@ -86,7 +87,7 @@ export async function changeEventContent(userId, eventId, updatedMarkdown) {
   return updatedEvent;
 
 }
-export async function addUserToEventOrganizers(userId, eventSlug) {
+export async function updateUserRole(userId, eventSlug, newRole) {
   try {
     const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
     const userRecord = await prisma.userEventRole.findFirst({
@@ -100,10 +101,10 @@ export async function addUserToEventOrganizers(userId, eventSlug) {
         id: userRecord.id,
       },
       data: {
-        role: "organizer",
+        role: newRole,
       },
     });
-    console.log(`Promoted ${userId} to organizer for ${event.id} at ${userRecord.id}`);
+    console.log(`Updated ${userId} to ${newRole} for ${event.id} at ${userRecord.id}`);
     return res
   } catch (error) {
     console.error("Error adding event to user:", error);

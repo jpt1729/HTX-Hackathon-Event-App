@@ -4,11 +4,10 @@ import Image from "next/image";
 import { useModal } from "@/utils/context/ModalContext";
 
 import PromoteUser from "./promote-user";
-
-import { TrashIcon, UserPlusIcon } from "@heroicons/react/24/outline";
+import RemoveUser from "./remove-user";
 // TODO: make it so that the owner can remove organizers but not vice versa
 
-export default function ParticipantCard({ user, owner }) {
+export default function ParticipantCard({ user, currentUser }) {
   const { showModal } = useModal();
   return (
     <div className="flex justify-between items-center">
@@ -32,18 +31,8 @@ export default function ParticipantCard({ user, owner }) {
         </div>
       </div>
       <div className="flex justify-center gap-2">
-        {user.role === "participant"  && (
-          <>
-            <PromoteUser user={user} />
-            <button
-              onClick={() => {
-                showModal(<>Remove User?</>);
-              }}
-            >
-              <TrashIcon className="size-6 hover:stroke-warning transition-colors" />
-            </button>
-          </>
-        )}
+            {currentUser.role === 'owner' && user.role === "participant" && <PromoteUser user={user} />}
+            {((user.role === "organizer" && currentUser.role === "owner") || user.role==="organizer" || user.role === "participant") &&  <RemoveUser user={user}/>}
       </div>
     </div>
   );
