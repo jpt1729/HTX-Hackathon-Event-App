@@ -18,7 +18,7 @@ export default async function Events() {
         <ThemedText type="heading">Your Events</ThemedText>
         <URLComponent />
       </div>
-      <div className="flex flex-col gap-4 pt-4">
+      <div className="flex flex-col gap-4 pt-4 overflow-y-scroll h-[calc(100vh-40px-64px-16px)]">
         {userEvents &&
           userEvents.map((eventData) => {
             return (

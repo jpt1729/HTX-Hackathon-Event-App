@@ -62,3 +62,23 @@ export async function changeEventContent(userId, eventId, updatedMarkdown) {
   return updatedEvent;
 
 }
+export async function addUserToEventOrganizers(userId, eventSlug) {
+  try {
+    const res = await prisma.user.update({
+      where: { id: userId },
+      data: {
+        organizerEvents: {
+          connect: { slug: eventSlug },
+        },
+      },
+    });
+    console.log(`Event ${eventSlug} added to user ${userId}`);
+    return res
+  } catch (error) {
+    console.error("Error adding event to user:", error);
+    
+    return error
+  } finally {
+    await prisma.$disconnect();
+  }
+}

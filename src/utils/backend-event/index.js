@@ -121,3 +121,19 @@ export async function getEventParticipants(eventId){
     await prisma.$disconnect();
   }
 }
+export async function getEventOwners(eventId){
+  try {
+    const eventPartcipants = await prisma.event.findUnique({
+      where: { id: eventId },
+      include: {
+        eventOwners: true,
+      },
+    });
+
+    return eventPartcipants;
+  } catch (error) {
+    console.error("Error fetching event participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
