@@ -1,70 +1,77 @@
+const { PrismaClient } = require('@prisma/client');
 
+const prisma = new PrismaClient();
 
 async function main() {
-  // Create sample Users
-  /*
+  // Create users
   const user1 = await prisma.user.create({
     data: {
-      id: 'user1',
-      name: 'Alice',
-      email: 'alice@example.com',
+      email: "alice@example.com",
+      name: "Alice",
     },
   });
 
   const user2 = await prisma.user.create({
     data: {
-      id: 'user2',
-      name: 'Bob',
-      email: 'bob@example.com',
+      email: "bob@example.com",
+      name: "Bob",
     },
   });
-  */
-  // Create an Event
-  const event = await prisma.event.create({
+
+  // Create events
+  const event1 = await prisma.event.create({
     data: {
-      title: 'Annual Conference',
-      description: 'An event for professionals in the industry.',
+      title: "Conference 2024",
+      description: "Annual Tech Conference",
+      content: "Details about the conference...",
       location: {
         address: "401 Franklin St, Houston, TX 77201, USA",
         googleMapsLink: "https://maps.app.goo.gl/WWfBrhsYFanNg8ZK8",
       },
-      playlist: 'conference-playlist',
-      startTime: new Date('2024-06-10T09:00:00Z'),
-      endTime: new Date('2024-06-10T17:00:00Z'),
-      eventOwners: {
-        connect: [{ id: 'user1' }]
-      },
+      startTime: new Date("2024-09-15T09:00:00.000Z"),
+      endTime: new Date("2024-09-15T17:00:00.000Z"),
+      published: true,
       eventParticipants: {
-        connect: [{ id: 'user2' }]
-      }
+        create: [
+          {
+            user: { connect: { id: user1.id } },
+            role: "organizer",
+          },
+          {
+            user: { connect: { id: user2.id } },
+            role: "participant",
+          },
+        ],
+      },
     },
   });
 
-  // Create an Activity
-  const activity = await prisma.activity.create({
+  // Create activities for the event
+  const activity1 = await prisma.activity.create({
     data: {
-      slug: 'workshop-1',
-      title: 'Workshop on AI',
-      description: 'An in-depth workshop on AI technologies.',
-      content: {
-        type: 'workshop',
-        details: 'Covering the basics and advanced concepts of AI.'
-      },
-      startTime: new Date('2024-06-10T10:00:00Z'),
-      endTime: new Date('2024-06-10T12:00:00Z'),
-      event: {
-        connect: { id: event.id }
-      },
-      activityOwners: {
-        connect: [{ id: 'user1' }]
-      },
+      eventId: event1.id,
+      title: "Keynote Speech",
+      description: "Opening keynote speech by industry leader",
+      content: {},
+      startTime: new Date("2024-09-15T10:00:00.000Z"),
+      endTime: new Date("2024-09-15T11:00:00.000Z"),
+      published: true,
       activityParticipants: {
-        connect: [{ id: 'user2' }]
-      }
+        create: [
+          {
+            user: { connect: { id: user1.id } },
+            role: "speaker",
+          },
+          {
+            user: { connect: { id: user2.id } },
+            role: "attendee",
+          },
+        ],
+      },
     },
   });
 
-  console.log('Seeding completed.');
+  console.log("Seeding finished.");
 }
 
 main()

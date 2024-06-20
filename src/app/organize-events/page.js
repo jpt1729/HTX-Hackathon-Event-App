@@ -2,23 +2,20 @@ import OrganizerEventCard from "@/components/Card/Event/organize";
 import URLComponent from "@/components/pages/layout/urlComponent";
 import ThemedText from "@/components/ThemedText";
 
-import AddEvent from "@/components/pages/event/addEvent";
-
 import { getOrganizerEventsForUser } from "@/utils/backend-organizer-events";
 import { auth } from "@/auth";
 
 export default async function Events() {
   const session = await auth();
 
-  const userEvents = await getOrganizerEventsForUser(session.user.id);
-  console.log(userEvents)
+  const userEvents = await getOrganizerEventsForUser(session?.user?.id);
   return (
     <main className="w-full">
       <div>
         <ThemedText type="heading">Events Organized by Me</ThemedText>
         <URLComponent />
       </div>
-      <div className="flex flex-col gap-4 pt-4">
+      <div className="flex flex-col gap-4 pt-4 h-[calc(100vh-40px-64px-16px)]">
         {userEvents &&
           userEvents.map((eventData) => {
             return (
@@ -33,7 +30,6 @@ export default async function Events() {
             );
           })}
       </div>
-      <AddEvent userId = {session.user.id}/>
     </main>
   );
 }

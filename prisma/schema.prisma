@@ -16,10 +16,8 @@ model User {
   accounts               Account[]
   sessions               Session[]
   Authenticator          Authenticator[]
-  organizerEvents        Event[]         @relation("organizerEvents")
-  participantsEvents     Event[]         @relation("participantsEvents")
-  organizerActivities    Activity[]      @relation("organizerActivities")
-  participantsActivities Activity[]      @relation("participantsActivities")
+  events UserEventRole[]
+  activities UserActivityRole[]
   createdAt              DateTime        @default(now())
   updatedAt              DateTime        @updatedAt
 }
@@ -90,15 +88,14 @@ model Event {
   startTime   DateTime
   endTime     DateTime
 
-  eventOwners       User[]     @relation("organizerEvents")
-  eventParticipants User[]     @relation("participantsEvents")
+  eventParticipants UserEventRole[]
   activities        Activity[] @relation("eventActivities")
 }
 
 model Activity {
   id          String   @id @default(cuid())
   eventId     String
-  slug        String   @unique
+  slug        String   @unique @default(cuid())
   published   Boolean? @default(false)
   title       String
   description String?
@@ -107,6 +104,30 @@ model Activity {
   endTime     DateTime
 
   event                Event  @relation("eventActivities", fields: [eventId], references: [id])
-  activityOwners       User[] @relation("organizerActivities")
-  activityParticipants User[] @relation("participantsActivities")
+  activityParticipants UserActivityRole[]
+}
+model UserEventRole {
+  id        String  @id @default(cuid())
+  userId    String
+  eventId   String
+  role      String
+  createdAt DateTime @default(now())
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+}
+
+model UserActivityRole {
+  id        String  @id @default(cuid())
+  userId    String
+  activityId   String
+  role      String @default("participant")
+  createdAt DateTime @default(now())
+
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  activity     Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, activityId])
 }

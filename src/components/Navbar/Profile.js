@@ -11,13 +11,13 @@ export default async function Profile({}) {
       <div className="flex gap-2 items-center">
         <Image
           src={session?.user?.image}
-          alt={`${session.user.name}'s profile picture`}
+          alt={`${session?.user?.name}'s profile picture`}
           width={30}
           height={30}
           className="rounded-full"
         />
         <ThemedText type="paragraph" className="font-bold">
-          {session.user.name}
+          {session?.user?.name}
         </ThemedText>
       </div>
       <SignOut />

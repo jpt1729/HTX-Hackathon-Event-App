@@ -4,21 +4,22 @@ import ThemedText from "@/components/ThemedText";
 
 import AddEvent from "@/components/pages/event/add-event";
 
-import { getParticipantEventsForUser } from "@/utils/backend-event";
+import ThisComponentThrowsAnError from '@/components/ErrorBound/throw-error'
+
+import { getEventsForUser } from "@/utils/backend-event";
 import { auth } from "@/auth";
 
 export default async function Events() {
   const session = await auth();
 
-  const userEvents = await getParticipantEventsForUser(session.user.id);
-
+  const userEvents = await getEventsForUser(session?.user?.id);
   return (
     <main className="w-full">
       <div>
         <ThemedText type="heading">Your Events</ThemedText>
         <URLComponent />
       </div>
-      <div className="flex flex-col gap-4 pt-4">
+      <div className="flex flex-col gap-4 pt-4 overflow-y-scroll h-[calc(100vh-40px-64px-16px)]">
         {userEvents &&
           userEvents.map((eventData) => {
             return (
@@ -33,7 +34,7 @@ export default async function Events() {
             );
           })}
       </div>
-      <AddEvent userId = {session.user.id}/>
+      <AddEvent userId = {session?.user?.id}/>
     </main>
   );
 }

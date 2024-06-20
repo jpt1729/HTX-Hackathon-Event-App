@@ -1,6 +1,6 @@
 "use client";
 import { useFormState } from "react-dom";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
 import { useModal } from "@/utils/context/ModalContext";
@@ -15,12 +15,14 @@ const ModalContent = ({ close }) => {
   //TODO: Close modal on success
   //TODO: Success message not in red
   const router = useRouter()
+  const pathname = usePathname()
   const [state, formAction] = useFormState(addEvent, {
     status: "Not Submitted",
     message: "",
   });
   if (state.status === 'success') {
-    router.reload()
+    close()
+    router.refresh()
   }
   return (
     <div>
