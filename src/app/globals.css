@@ -36,3 +36,25 @@ body{
   background-color: #FF5D73; /* Red highlight */
   color: white; /* Text color for the highlighted text */
 }
+
+h1{
+  @apply text-4xl font-bold;
+}
+h2{
+  @apply text-2xl font-bold;
+}
+p {
+  @apply text-base leading-7 w-fit;
+}
+li {
+
+}
+ul {
+  @apply list-disc list-inside leading-7;
+}
+ol {
+  @apply list-decimal list-inside leading-7;
+}
+li > p {
+  @apply inline-block;
+}

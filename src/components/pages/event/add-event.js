@@ -1,5 +1,6 @@
 "use client";
 import { useFormState } from "react-dom";
+import { useRouter } from "next/navigation";
 
 import { SquaresPlusIcon } from "@heroicons/react/24/outline";
 import { useModal } from "@/utils/context/ModalContext";
@@ -8,21 +9,27 @@ import ThemedInput from "@/components/ThemedText/input";
 
 import { addEvent } from "./actions";
 
-const ModalContent = ({}) => {
+const ModalContent = ({ close }) => {
   //TODO: QR CODE feature
   //TODO: Verify submissions
-
+  //TODO: Close modal on success
+  //TODO: Success message not in red
+  const router = useRouter()
   const [state, formAction] = useFormState(addEvent, {
+    status: "Not Submitted",
     message: "",
   });
+  if (state.status === 'success') {
+    router.reload()
+  }
   return (
     <div>
       <form action={formAction} autocomplete="off">
-        <ThemedLabels type="subheading">Add an Event</ThemedLabels>
+        <ThemedLabels type="subheading">Add event</ThemedLabels>
         <br />
         <br />
         <div className="flex gap-2">
-          <ThemedInput type="text" name="eventId" placeholder="Event ID" />
+          <ThemedInput type="text" name="event-slug" placeholder="Event ID" />
 
           <ThemedInput type="submit" />
         </div>
@@ -39,11 +46,11 @@ const ModalContent = ({}) => {
 };
 
 export default function AddEvent({ userId }) {
-  const { showModal } = useModal();
+  const { showModal, hideModal } = useModal();
   return (
     <button
       onClick={(e) => {
-        showModal(<ModalContent />);
+        showModal(<ModalContent close={hideModal}/>);
       }}
       className="absolute right-5 bottom-5 bg-red-accent p-2 rounded-full hover:scale-110 transition-transform"
     >

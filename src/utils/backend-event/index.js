@@ -84,27 +84,22 @@ export async function getParticipantEventsForUser(userId) {
     await prisma.$disconnect();
   }
 }
-export async function addEventToUser(userId, eventId) {
+export async function addEventToUser(userId, eventSlug) {
   try {
-    await prisma.user.update({
+    const res = await prisma.user.update({
       where: { id: userId },
       data: {
         participantsEvents: {
-          connect: { id: eventId },
+          connect: { slug: eventSlug },
         },
       },
     });
-    console.log(`Event ${eventId} added to user ${userId}`);
-    return {
-      message: "success",
-    };
+    console.log(`Event ${eventSlug} added to user ${userId}`);
+    return res
   } catch (error) {
     console.error("Error adding event to user:", error);
-    if (error.code === "P2025") {
-      return {
-        message: "Event does not exist",
-      };
-    }
+    
+    return error
   } finally {
     await prisma.$disconnect();
   }
