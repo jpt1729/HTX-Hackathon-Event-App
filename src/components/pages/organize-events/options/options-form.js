@@ -1,35 +1,34 @@
 "use client";
 import React, { useState } from "react";
+import { useFormState } from "react-dom";
 
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 
-import { action } from "./action";
+import { optionsFormAction } from "./action";
 
-function formatDateTime(input) {
-  const date = new Date(input);
-
-  // Extract year, month, day, hour, and minutes
-  const year = date.getUTCFullYear();
-  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-  const day = String(date.getUTCDate()).padStart(2, "0");
-  const hours = String(date.getUTCHours()).padStart(2, "0");
-  const minutes = String(date.getUTCMinutes()).padStart(2, "0");
-
-  // Construct the desired format
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
+import { formatDateTime } from "@/utils";
 
 export default function OptionsForm({ eventData }) {
+  const [times, setTimes] = useState({
+    startTime: formatDateTime(eventData.startTime),
+    endTime: formatDateTime(eventData.endTime),
+  });
+  const [state, action] = useFormState(optionsFormAction, {
+    status: "",
+    message: "",
+    errors: {},
+  });
 
-    const [times, setTimes] = useState({
-        startTime: formatDateTime(eventData.endTime),
-        endTime: formatDateTime(eventData.startTime)
-    })
   return (
-    <form className="flex flex-col gap-5">
+    <form className="flex flex-col gap-5" action={action}>
       <div className="flex flex-col gap-1 w-1/2">
         <ThemedLabels type="subheading">Event Details</ThemedLabels>
+        {state.message && (
+            <ThemedLabels className="text-warning">
+              {state.message}
+            </ThemedLabels>
+          )}
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Title</ThemedLabels>
           <ThemedInput
@@ -52,35 +51,43 @@ export default function OptionsForm({ eventData }) {
           <ThemedLabels className="font-bold">Event Start Time</ThemedLabels>
           <input
             type="datetime-local"
-            name="event-start-time"
+            name="start-time"
             defaultValue={times.startTime}
             onChange={(e) => {
-                setTimes({
-                    ...times,
-                    startTime:e.target.value,
-                    
-                })
-                console.log(times)
+              setTimes({
+                ...times,
+                startTime: e.target.value,
+              });
+              console.log(times);
             }}
             max={times.endTime}
           />
+          {state.errors["start-time"] && (
+            <ThemedLabels type="subtext" className="text-warning">
+              {state.errors["start-time"]}
+            </ThemedLabels>
+          )}
         </div>
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Event End Time</ThemedLabels>
           <input
             type="datetime-local"
-            name="event-end-time"
+            name="end-time"
             defaultValue={times.endTime}
             onChange={(e) => {
-                setTimes({
-                    ...times,
-                    endTime:e.target.value,
-                    
-                })
-                console.log(times)
+              setTimes({
+                ...times,
+                endTime: e.target.value,
+              });
+              console.log(times);
             }}
             min={times.startTime}
           />
+          {state.errors["end-time"] && (
+            <ThemedLabels type="subtext" className="text-warning">
+              {state.errors["end-time"]}
+            </ThemedLabels>
+          )}
         </div>
       </div>
       <div className="flex flex-col gap-1 w-1/2">
@@ -90,7 +97,7 @@ export default function OptionsForm({ eventData }) {
           <ThemedInput
             type="text"
             name="address"
-            placeholder="Description"
+            placeholder="721 Broadway, New York, NY 10003, USA"
             defaultValue={eventData?.location?.address}
           />
         </div>
@@ -99,20 +106,38 @@ export default function OptionsForm({ eventData }) {
           <ThemedInput
             type="text"
             name="google-maps-link"
-            placeholder="Google Maps Link"
+            placeholder="https://maps.app.goo.gl/7v3EPoBYKBGnocZ87"
             defaultValue={eventData?.location?.googleMapsLink}
           />
+          {state.errors["google-maps-link"] && (
+            <ThemedLabels type="subtext" className="text-warning">
+              {state.errors["google-maps-link"]}
+            </ThemedLabels>
+          )}
         </div>
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Slug *</ThemedLabels>
           <ThemedInput
             type="text"
             name="slug"
-            placeholder="Slug"
+            placeholder="hack-htx"
             defaultValue={eventData?.slug}
             required
           />
+          {state.errors["slug"] && (
+            <ThemedLabels type="subtext" className="text-warning">
+              {state.errors["slug"]}
+            </ThemedLabels>
+          )}
         </div>
+        <input
+          type="text"
+          name="event-id"
+          value={eventData.id}
+          readOnly
+          className="hidden"
+        />
+        <ThemedInput type="submit" value="save" className="w-fit" />
       </div>
     </form>
   );

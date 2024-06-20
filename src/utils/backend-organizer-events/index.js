@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function userRole(userId, eventId, eventSlug = null){
+export async function getUserRole(userId, eventId, eventSlug = null){
   let trueEventId = eventId;
   if (eventSlug){
     const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
@@ -108,6 +108,34 @@ export async function updateUserRole(userId, eventSlug, newRole) {
     return res
   } catch (error) {
     console.error("Error adding event to user:", error);
+    
+    return error
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function updateEventInfo(eventId, title, description, startTime, endTime, address, googleMapsLink, slug) {
+  try {
+    const res = await prisma.event.update({
+      where: {
+        id: eventId,
+      },
+      data: {
+        title: title,
+        description:description,
+        startTime: startTime,
+        endTime: endTime,
+        location: {
+          address: address, googleMapsLink:googleMapsLink
+        },
+        slug: slug,
+      },
+    });
+    console.log(res)
+    return res
+  } catch (error) {
+    console.error("Error updating event info: ", error);
     
     return error
   } finally {

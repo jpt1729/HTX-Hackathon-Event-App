@@ -1,9 +1,9 @@
-import { userRole } from '@/utils/backend-organizer-events';
+import { getUserRole } from '@/utils/backend-organizer-events';
 import { auth } from '@/auth';
 import AlertNotification from '@/components/Notifications/alert'
 
 const checkPermission = async (userId, eventSlug) => {
-  const res = await userRole(userId, undefined, eventSlug)
+  const res = await getUserRole(userId, undefined, eventSlug)
   return (res.role === 'organizer' || res.role === 'owner')
 }
 
