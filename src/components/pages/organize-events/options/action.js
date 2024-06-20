@@ -4,6 +4,8 @@ import {
   updateEventInfo,
   updateUserRole,
 } from "@/utils/backend-organizer-events";
+
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
 export async function optionsFormAction(prevState, formData) {
@@ -28,58 +30,61 @@ export async function optionsFormAction(prevState, formData) {
 
   const oldEventData = userRole.event;
 
-  console.log(userRole)
   if (!(userRole.role === "owner" || userRole.role === "organizer")) {
     state.status = "error";
     state.message = "Insufficient permission";
   }
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     state.status = "error";
-    state.errors["slug"] = "Invalid slug"
+    state.errors["slug"] = "Invalid slug";
   }
   if (isNaN(startTime.getTime())) {
     state.status = "error";
-    state.errors["start-time"] = "Invalid start time"
+    state.errors["start-time"] = "Invalid start time";
     // Handle error case, perhaps show a message to the user
   }
   if (isNaN(endTime.getTime())) {
     state.status = "error";
-    state.errors["end-time"] = "Invalid end time"
+    state.errors["end-time"] = "Invalid end time";
     // Handle error case, perhaps show a message to the user
   }
   if (endTime <= startTime) {
     state.status = "error";
-    state.errors["end-time"] = 'End time must be after start time';
+    state.errors["end-time"] = "End time must be after start time";
     // Handle error case, perhaps show a message to the user
   }
-  if (!/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(googleMapsLink)){
+  if (!/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(googleMapsLink)) {
     state.status = "error";
-    state.errors["google-maps-link"] = 'Invalid URL';
+    state.errors["google-maps-link"] = "Invalid URL";
   }
 
   if (state.status === "success") {
-    updateEventInfo(
-      eventId,
-      title,
-      description,
-      startTime,
-      endTime,
-      address,
-      googleMapsLink,
-      slug
-    );
-    if (slug !== oldEventData.slug) {
+    try {
+      updateEventInfo(
+        eventId,
+        title,
+        description,
+        startTime,
+        endTime,
+        address,
+        googleMapsLink,
+        slug
+      );
+      if (slug !== oldEventData.slug) {
+        redirect(`/organize-events/${slug}/options?slug-change=true`);
+      }
       return {
-        status: 'success',
-        message: `Slug updated:${slug}`,
-        errors: {}
-    }
-    }
-    return {
-        status: 'success',
-        message: '',
-        errors: {}
+        status: "success",
+        message: "Settings updated successfully!",
+        errors: {},
+      };
+    } catch (error) {
+      return {
+        status: "error",
+        message: error,
+        errors: {},
+      };
     }
   }
-  return state
+  return state;
 }

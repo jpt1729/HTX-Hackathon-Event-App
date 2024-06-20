@@ -36,7 +36,6 @@ export default function CustomMDXEditor({
   eventId,
   ...props
 }) {
-  console.log(markdown);
   const [changeStatus, setChangeStatus] = useState(false);
   const [formMd, setFormMd] = useState(markdown);
   const [state, formAction] = useFormState(editEventContent, {

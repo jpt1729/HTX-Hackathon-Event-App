@@ -10,6 +10,5 @@ export async function editEventContent(prevState, formData) {
   
   const markdown = formData.get("markdown");
   const res = await changeEventContent(userId, eventId, markdown);
-  console.log(res)
   return res
 }

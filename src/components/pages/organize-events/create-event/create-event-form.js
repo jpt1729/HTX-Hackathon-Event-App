@@ -8,10 +8,9 @@ import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 import ThemedText from "@/components/ThemedText";
 
-import { optionsFormAction } from "./action";
 import { formatDateTime } from "@/utils";
 
-export default function OptionsForm({ eventData }) {
+export default function CreateEventForm({ eventData }) {
   const searchParams = useSearchParams()
 
   const slugChange = searchParams.get('slug-change')
@@ -20,15 +19,12 @@ export default function OptionsForm({ eventData }) {
     startTime: formatDateTime(eventData?.startTime),
     endTime: formatDateTime(eventData?.endTime),
   });
-  const [state, action] = useFormState(optionsFormAction, {
+  const [state, action] = useFormState(() => {}, {
     status: "",
     message: "",
     errors: {},
   });
   
-  if (slugChange) {
-    showModal(<div><ThemedText>Settings updated successfully!</ThemedText></div>)
-  }
   if (state.status === "success"){
     showModal(<div><ThemedText>{state.status.message}</ThemedText></div>)
   }
@@ -130,20 +126,9 @@ export default function OptionsForm({ eventData }) {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-1 border-warning border rounded-lg p-5">
-        <ThemedLabels type="subheading" className="text-warning">
-          Danger Zone
-        </ThemedLabels>
-        <ThemedLabels type="paragraph" className="">
-          You are entering the danger zone. Please ensure you know what you are
-          doing before changing anything
-        </ThemedLabels>
+      <div className="flex flex-col gap-1 ">
         <div className="flex flex-col">
-          <ThemedLabels className="font-bold">Slug *</ThemedLabels>
-          <ThemedLabels type="paragraph" className="">
-            After you change your event slug, another organization may take your
-            slug.
-          </ThemedLabels>
+          <ThemedLabels className="font-bold">Slug</ThemedLabels>
           <span>
             <span>/events/</span>
             <ThemedInput

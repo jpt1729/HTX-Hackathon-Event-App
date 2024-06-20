@@ -139,7 +139,6 @@ export async function updateEventInfo(eventId, title, description, startTime, en
         slug: slug,
       },
     });
-    console.log(res)
     return res
   } catch (error) {
     console.error("Error updating event info: ", error);
