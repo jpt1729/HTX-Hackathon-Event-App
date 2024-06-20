@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useModal } from "@/utils/context/ModalContext";
 
 import PromoteUser from "./promote-user";
+import DemoteUser from "./demote-user";
 import RemoveUser from "./remove-user";
 // TODO: make it so that the owner can remove organizers but not vice versa
 
@@ -32,6 +33,7 @@ export default function ParticipantCard({ user, currentUser }) {
       </div>
       <div className="flex justify-center gap-2">
             {currentUser.role === 'owner' && user.role === "participant" && <PromoteUser user={user} />}
+            {currentUser.role === 'owner' && user.role === "organizer" && <DemoteUser user={user} />}
             {((user.role === "organizer" && currentUser.role === "owner") || user.role==="organizer" || user.role === "participant") &&  <RemoveUser user={user}/>}
       </div>
     </div>

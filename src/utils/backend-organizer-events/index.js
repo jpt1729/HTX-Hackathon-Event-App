@@ -2,17 +2,24 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getUserRole(userId, eventId, eventSlug = null){
+export async function getUserRole(userId, eventId, eventSlug = null, includeEventData = false){
   let trueEventId = eventId;
   if (eventSlug){
     const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
     trueEventId = event.id
+  } else {
+    if (includeEventData){
+      const event = await prisma.event.findUnique({ where: { id: eventId } })
+    }
   }
   const res = await prisma.UserEventRole.findFirst({
     where: {
       userId: userId,
       eventId: trueEventId,
     },
+    include: {
+      event: includeEventData
+    }
   });
   return res;
 }

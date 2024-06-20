@@ -18,12 +18,17 @@ export async function optionsFormAction(prevState, formData) {
   const endTime = new Date(formData.get("end-time"));
   const address = formData.get("address");
   const googleMapsLink = formData.get("google-maps-link");
+
   const slug = formData.get("slug");
-
   const eventId = formData.get("event-id");
-  const session = await auth();
-  const userRole = await getUserRole(session.user.id, eventId);
 
+  const session = await auth();
+
+  const userRole = await getUserRole(session.user.id, eventId, null, true);
+
+  const oldEventData = userRole.event;
+
+  console.log(userRole)
   if (!(userRole.role === "owner" || userRole.role === "organizer")) {
     state.status = "error";
     state.message = "Insufficient permission";
@@ -63,6 +68,13 @@ export async function optionsFormAction(prevState, formData) {
       googleMapsLink,
       slug
     );
+    if (slug !== oldEventData.slug) {
+      return {
+        status: 'success',
+        message: `Slug updated:${slug}`,
+        errors: {}
+    }
+    }
     return {
         status: 'success',
         message: '',

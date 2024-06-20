@@ -43,11 +43,11 @@ const ModalContent = ({ user, close }) => {
 };
 
 export default function PromoteUser({ user }) {
-  const { showModal, closeModal } = useModal();
+  const { showModal, hideModal } = useModal();
   return (
     <button
       onClick={() => {
-        showModal(<ModalContent user={user} close={closeModal}/>);
+        showModal(<ModalContent user={user} close={hideModal}/>);
         //TODO: Make it so that people can be promoted to make activities and stuff
       }}
     >

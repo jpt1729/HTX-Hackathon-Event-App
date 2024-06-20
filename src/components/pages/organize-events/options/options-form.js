@@ -1,7 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import { useFormState } from "react-dom";
 
+import { useRouter } from "next/navigation";
+import { useFormState } from "react-dom";
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 
@@ -10,6 +11,7 @@ import { optionsFormAction } from "./action";
 import { formatDateTime } from "@/utils";
 
 export default function OptionsForm({ eventData }) {
+  const router = useRouter()
   const [times, setTimes] = useState({
     startTime: formatDateTime(eventData.startTime),
     endTime: formatDateTime(eventData.endTime),
@@ -19,10 +21,12 @@ export default function OptionsForm({ eventData }) {
     message: "",
     errors: {},
   });
-
+  if (state.message.split(':')[0] === 'Slug updated') {
+    router.push(`/organize-events/${state.message.split(':')}/options`)
+  }
   return (
-    <form className="flex flex-col gap-5" action={action}>
-      <div className="flex flex-col gap-1 w-1/2">
+    <form className="flex flex-col gap-5 w-full max-w-screen-md" action={action}>
+      <div className="flex flex-col gap-1">
         <ThemedLabels type="subheading">Event Details</ThemedLabels>
         {state.message && (
             <ThemedLabels className="text-warning">
@@ -90,7 +94,7 @@ export default function OptionsForm({ eventData }) {
           )}
         </div>
       </div>
-      <div className="flex flex-col gap-1 w-1/2">
+      <div className="flex flex-col gap-1">
         <ThemedLabels type="subheading">Location</ThemedLabels>
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Address</ThemedLabels>
@@ -115,8 +119,15 @@ export default function OptionsForm({ eventData }) {
             </ThemedLabels>
           )}
         </div>
+      </div>
+      <div className="flex flex-col gap-1 border-warning border rounded-lg p-5">
+        <ThemedLabels type="subheading" className="text-warning">Danger Zone</ThemedLabels>
+        <ThemedLabels type="paragraph" className="">You are entering the danger zone. Please ensure you know what you are doing before changing anything</ThemedLabels>
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Slug *</ThemedLabels>
+          <ThemedLabels type="paragraph" className="">After you change your event slug, another organization may take your slug.</ThemedLabels>
+          <span>
+          <span>/events/</span>
           <ThemedInput
             type="text"
             name="slug"
@@ -129,6 +140,7 @@ export default function OptionsForm({ eventData }) {
               {state.errors["slug"]}
             </ThemedLabels>
           )}
+          </span>
         </div>
         <input
           type="text"
@@ -137,8 +149,8 @@ export default function OptionsForm({ eventData }) {
           readOnly
           className="hidden"
         />
-        <ThemedInput type="submit" value="save" className="w-fit" />
       </div>
+      <ThemedInput type="submit" value="save" className="w-fit" />
     </form>
   );
 }

@@ -1,27 +1,27 @@
-import { TrashIcon } from "@heroicons/react/24/outline";
-import { useFormState } from "react-dom";
+"use client";
 import { usePathname, useRouter } from "next/navigation";
-import { useModal } from "@/utils/context/ModalContext";
+import { useFormState } from "react-dom";
+
+import { UserMinusIcon } from "@heroicons/react/24/outline";
 import ThemedInput from "@/components/ThemedText/input";
 import ThemedLabels from "@/components/ThemedText/labels";
+import { useModal } from "@/utils/context/ModalContext";
+import { demoteUserAction } from "./action";
 
-import { removeUserAction } from "./action";
-
-const RemoveUserForm = ({ user }) => {
+const ModalContent = ({ user, close }) => {
   const pathname = usePathname();
   const router = useRouter();
-
-  const [state, formAction] = useFormState(removeUserAction, {
+  const [state, formAction] = useFormState(demoteUserAction, {
     status: "",
     message: "",
   });
-  if (state.status === "success") {
-    close();
-    router.refresh(); //todo: add error messages!
-  }
+  if (state.status === "success"){
+    close()
+    router.refresh() //todo: add error messages!
+  };
   return (
     <form action={formAction}>
-      <ThemedLabels>Are you sure you want to remove {user.name}?</ThemedLabels>
+      <ThemedLabels>Are you sure you want to demote {user.name}?</ThemedLabels>
       <br />
       <input
         type="text"
@@ -41,15 +41,17 @@ const RemoveUserForm = ({ user }) => {
     </form>
   );
 };
-export default function RemoveUser({ user }) {
+
+export default function DemoteUser({ user }) {
   const { showModal, hideModal } = useModal();
   return (
     <button
       onClick={() => {
-        showModal(<RemoveUserForm user={user} close={hideModal} />);
+        showModal(<ModalContent user={user} close={hideModal}/>);
+        //TODO: Make it so that people can be promoted to make activities and stuff
       }}
     >
-      <TrashIcon className="size-6 hover:stroke-warning transition-colors" />
+      <UserMinusIcon className="size-6 hover:stroke-warning transition-colors" />
     </button>
   );
 }
