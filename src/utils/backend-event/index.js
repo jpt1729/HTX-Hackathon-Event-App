@@ -60,7 +60,12 @@ export async function getActivities(eventId) {
 export async function getEventsForUser(userId) {
   try {
     const userEvents = await prisma.userEventRole.findMany({
-      where: { userId: userId },
+      where: {
+        userId: userId,
+        NOT: {
+          role: "banned",
+        },
+      },
       include: {
         event: true,
       },
@@ -131,6 +136,11 @@ export async function getEventParticipants(eventId, eventSlug) {
         eventParticipants: {
           include: {
             user: true,
+          },
+          where: {
+            NOT: {
+              role: "banned",
+            },
           },
         },
       },
