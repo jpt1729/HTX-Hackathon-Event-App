@@ -46,6 +46,8 @@ export async function getActivities(eventId) {
           startTime: activity.startTime,
           endTime: activity.endTime,
         },
+        start: activity.startTime,
+        end: activity.endTime,
         ...activity,
       };
     });
