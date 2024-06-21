@@ -148,3 +148,33 @@ export async function updateEventInfo(eventId, title, description, startTime, en
     await prisma.$disconnect();
   }
 }
+export async function createNewEvent(userId, title, description, startTime, endTime, address, googleMapsLink, slug) {
+  try {
+    const res = await prisma.event.create({
+      data: {
+        title: title,
+        description:description,
+        startTime: startTime,
+        endTime: endTime,
+        published: false,
+        location: {
+          address: address, googleMapsLink:googleMapsLink
+        },
+        slug: slug,
+        eventParticipants: [
+          {
+            user: { connect: { id: userId } },
+            role: "owner",
+          },
+        ]
+      },
+    });
+    return res
+  } catch (error) {
+    console.error("Error creating a new event: ", error);
+    
+    return error
+  } finally {
+    await prisma.$disconnect();
+  }
+}

@@ -20,6 +20,8 @@ export default function OptionsForm({ eventData }) {
     startTime: formatDateTime(eventData?.startTime),
     endTime: formatDateTime(eventData?.endTime),
   });
+  const [description, setDescription] = useState(eventData?.description);
+
   const [state, action] = useFormState(optionsFormAction, {
     status: "",
     message: "",
@@ -55,13 +57,26 @@ export default function OptionsForm({ eventData }) {
           />
         </div>
         <div className="flex flex-col">
-          <ThemedLabels className="font-bold">Description</ThemedLabels>
-          <ThemedInput
-            type="text"
+        <ThemedLabels className="font-bold">Description</ThemedLabels>
+          <textarea
             name="description"
-            placeholder="Description"
-            defaultValue={eventData?.description}
-          />
+            placeholder=""
+            className="resize-none p-3 rounded-lg border border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
+            rows="6"
+            cols="15"
+            value={description}
+            onChange={(e) => {
+              if (e.target.value.length <= 500){
+                setDescription(e.target.value)
+              }
+            }}
+          ></textarea>
+          <ThemedLabels type='subtext' className={`${description.length >= 500 && 'text-warning'} transition-colors`}>{description.length}/500 Characters</ThemedLabels>
+          {state.errors["description"] && (
+            <ThemedLabels type="subtext" className="text-warning">
+              {state.errors["description"]}
+            </ThemedLabels>
+          )}
         </div>
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Event Start Time</ThemedLabels>
