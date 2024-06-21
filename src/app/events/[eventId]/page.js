@@ -4,6 +4,8 @@ import ThemedText from "@/components/ThemedText";
 import LocationWidget from "@/components/Card/Event/locationWidget";
 import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
+import Menu from "@/components/pages/event/menu";
+
 import ActivityCard from "@/components/Card/Activity";
 
 import CustomMarkdown from "@/components/pages/markdown";
@@ -15,12 +17,6 @@ import {
   getEventData,
   getActivities,
 } from "@/utils/backend-event";
-
-/*
-<button className="text-warning border px-2 py-1 border-warning rounded border-dashed">
-            Leave Event
-          </button>
-*/
 
 export default async function EventsPage({ params }) {
   const { eventId } = params;
@@ -41,7 +37,7 @@ export default async function EventsPage({ params }) {
         </div>
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <div className={`grid ${styles.EventGrid} gap-4 h-[calc(100vh-136px)]`}>
+      <div className={`grid ${styles.EventGrid} gap-4 h-[calc(100vh-172px)]`}>
         <div className={`${styles.md} pt-1`}>
           <CustomMarkdown source={eventData.content} />
         </div>
@@ -77,8 +73,8 @@ export default async function EventsPage({ params }) {
             ></iframe>
           </div>
         </div>
-        
       </div>
+      <Menu/>
     </main>
   );
 }

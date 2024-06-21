@@ -36,6 +36,7 @@
     "primereact": "^10.6.6",
     "prismjs": "^1.29.0",
     "react": "^18",
+    "react-big-calendar": "^1.13.0",
     "react-dom": "^18",
     "react-simple-code-editor": "^0.13.1"
   },

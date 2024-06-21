@@ -9,7 +9,7 @@ export default function EventLayout({ children }) {
     }
   ]
   return (
-    <div>
+    <>
       {children}
       {notifications && notifications.map((notification) => {
         <AlertNotification key={notification.id} close={() => {
@@ -18,6 +18,6 @@ export default function EventLayout({ children }) {
           {notification.content}
         </AlertNotification>
       })}
-    </div>
+    </>
   );
 }

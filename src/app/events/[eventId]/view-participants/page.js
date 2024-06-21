@@ -2,7 +2,7 @@ import React from "react";
 
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
-import ParticipantCard from "@/components/pages/organize-events/participant-card/";
+import ParticipantCard from "@/components/pages/event/participant-card/";
 
 import { getUserRole } from "@/utils/backend-organizer-events";
 import { auth } from "@/auth";
