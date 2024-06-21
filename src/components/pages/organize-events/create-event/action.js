@@ -1,19 +1,32 @@
 "use server";
-import {
-    createNewEvent
-} from "@/utils/backend-organizer-events";
+import { createNewEvent } from "@/utils/backend-organizer-events";
 
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
+const dummyFunction = (
+  userId,
+  title,
+  description,
+  startTime,
+  endTime,
+  address,
+  googleMapsLink,
+  slug
+) => {
+  console.log("run");
+};
+
 export async function createEventAction(prevState, formData) {
+  console.log("running");
   let state = {
     status: "success",
     message: "",
     errors: {},
   };
   const title = formData.get("title"); // test too long
-  const description = formData.get("description"); // test too long
+
+  const description = formData.get("description");
   const startTime = new Date(formData.get("start-time"));
   const endTime = new Date(formData.get("end-time"));
   const address = formData.get("address");
@@ -54,27 +67,28 @@ export async function createEventAction(prevState, formData) {
     state.status = "error";
     state.errors["description"] = "Description too long";
   }
+  try {
+    const res = await createNewEvent(
+      session?.user?.id,
+      title,
+      description,
+      startTime,
+      endTime,
+      address,
+      googleMapsLink,
+      slug
+    );
+    
+  } catch (error) {
+    console.log(error);
+    return {
+      state: "error",
+      message: error,
+      ...state,
+    };
+  }
   if (state.status === "success") {
-    try {
-      createNewEvent(
-        session?.user?.id,
-        eventId,
-        title,
-        description,
-        startTime,
-        endTime,
-        address,
-        googleMapsLink,
-        slug
-      );
-      return state;
-    } catch (error) {
-      return {
-        status: "error",
-        message: error,
-        errors: {},
-      };
-    }
+    redirect(`/organize-events/${slug}`);
   }
   return state;
 }

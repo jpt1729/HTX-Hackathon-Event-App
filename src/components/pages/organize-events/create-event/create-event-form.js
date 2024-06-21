@@ -55,6 +55,7 @@ export default function CreateEventForm({ }) {
             type="text"
             name="title"
             placeholder="Title"
+            required
           />
         </div>
         <div className="flex flex-col">
@@ -91,7 +92,9 @@ export default function CreateEventForm({ }) {
                 startTime: e.target.value,
               });
             }}
+            min={new Date()}
             max={times.endTime}
+            required
           />
           {state.errors["start-time"] && (
             <ThemedLabels type="subtext" className="text-warning">
@@ -112,6 +115,7 @@ export default function CreateEventForm({ }) {
               });
             }}
             min={times.startTime}
+            required
           />
           {state.errors["end-time"] && (
             <ThemedLabels type="subtext" className="text-warning">
@@ -128,6 +132,7 @@ export default function CreateEventForm({ }) {
             type="text"
             name="address"
             placeholder="721 Broadway, New York, NY 10003, USA"
+            required
           />
         </div>
         <div className="flex flex-col">
@@ -136,6 +141,7 @@ export default function CreateEventForm({ }) {
             type="text"
             name="google-maps-link"
             placeholder="https://maps.app.goo.gl/7v3EPoBYKBGnocZ87"
+            required
           />
           {state.errors["google-maps-link"] && (
             <ThemedLabels type="subtext" className="text-warning">

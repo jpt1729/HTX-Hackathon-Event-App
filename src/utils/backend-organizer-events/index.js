@@ -2,14 +2,19 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-export async function getUserRole(userId, eventId, eventSlug = null, includeEventData = false){
+export async function getUserRole(
+  userId,
+  eventId,
+  eventSlug = null,
+  includeEventData = false
+) {
   let trueEventId = eventId;
-  if (eventSlug){
+  if (eventSlug) {
     const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
-    trueEventId = event.id
+    trueEventId = event.id;
   } else {
-    if (includeEventData){
-      const event = await prisma.event.findUnique({ where: { id: eventId } })
+    if (includeEventData) {
+      const event = await prisma.event.findUnique({ where: { id: eventId } });
     }
   }
   const res = await prisma.UserEventRole.findFirst({
@@ -18,8 +23,8 @@ export async function getUserRole(userId, eventId, eventSlug = null, includeEven
       eventId: trueEventId,
     },
     include: {
-      event: includeEventData
-    }
+      event: includeEventData,
+    },
   });
   return res;
 }
@@ -33,13 +38,13 @@ export async function getOrganizerEventsForUser(userId) {
             OR: [{ role: "organizer" }, { role: "owner" }],
           },
           include: {
-            event: true
-          }
+            event: true,
+          },
         },
       },
     });
     let processedEventData = organizerEventsForUser.events.map((relation) => {
-      let event = relation.event
+      let event = relation.event;
       return {
         eventTime: {
           startTime: event.startTime,
@@ -65,20 +70,19 @@ export async function changeEventContent(userId, eventId, updatedMarkdown) {
       eventId: eventId,
       OR: [
         {
-          role: "organizer"
+          role: "organizer",
         },
         {
-          role: "owner"
-        }
-      ]
+          role: "owner",
+        },
+      ],
     },
   });
 
   if (!isOwner) {
     return {
-      message: 'User is not an event owner'
-    }
-    
+      message: "User is not an event owner",
+    };
   }
 
   // Update the event content
@@ -92,7 +96,6 @@ export async function changeEventContent(userId, eventId, updatedMarkdown) {
   });
 
   return updatedEvent;
-
 }
 export async function updateUserRole(userId, eventSlug, newRole) {
   try {
@@ -101,8 +104,8 @@ export async function updateUserRole(userId, eventSlug, newRole) {
       where: {
         userId: userId,
         eventId: event.id,
-      }
-    })
+      },
+    });
     const res = await prisma.userEventRole.update({
       where: {
         id: userRecord.id,
@@ -111,18 +114,29 @@ export async function updateUserRole(userId, eventSlug, newRole) {
         role: newRole,
       },
     });
-    console.log(`Updated ${userId} to ${newRole} for ${event.id} at ${userRecord.id}`);
-    return res
+    console.log(
+      `Updated ${userId} to ${newRole} for ${event.id} at ${userRecord.id}`
+    );
+    return res;
   } catch (error) {
     console.error("Error adding event to user:", error);
-    
-    return error
+
+    return error;
   } finally {
     await prisma.$disconnect();
   }
 }
 
-export async function updateEventInfo(eventId, title, description, startTime, endTime, address, googleMapsLink, slug) {
+export async function updateEventInfo(
+  eventId,
+  title,
+  description,
+  startTime,
+  endTime,
+  address,
+  googleMapsLink,
+  slug
+) {
   try {
     const res = await prisma.event.update({
       where: {
@@ -130,50 +144,63 @@ export async function updateEventInfo(eventId, title, description, startTime, en
       },
       data: {
         title: title,
-        description:description,
+        description: description,
         startTime: startTime,
         endTime: endTime,
         location: {
-          address: address, googleMapsLink:googleMapsLink
+          address: address,
+          googleMapsLink: googleMapsLink,
         },
         slug: slug,
       },
     });
-    return res
+    return res;
   } catch (error) {
     console.error("Error updating event info: ", error);
-    
-    return error
+
+    return error;
   } finally {
     await prisma.$disconnect();
   }
 }
-export async function createNewEvent(userId, title, description, startTime, endTime, address, googleMapsLink, slug) {
+export async function createNewEvent(
+  userId,
+  title,
+  description,
+  startTime,
+  endTime,
+  address,
+  googleMapsLink,
+  slug
+) {
   try {
     const res = await prisma.event.create({
       data: {
         title: title,
-        description:description,
+        description: description,
         startTime: startTime,
         endTime: endTime,
         published: false,
         location: {
-          address: address, googleMapsLink:googleMapsLink
+          address: address,
+          googleMapsLink: googleMapsLink,
         },
         slug: slug,
-        eventParticipants: [
-          {
-            user: { connect: { id: userId } },
-            role: "owner",
-          },
-        ]
+        eventParticipants: {
+          create: [
+            {
+              user: { connect: { id: userId } },
+              role: "owner",
+            },
+          ],
+        },
       },
     });
-    return res
+    return res;
   } catch (error) {
     console.error("Error creating a new event: ", error);
-    
-    return error
+
+    return error;
   } finally {
     await prisma.$disconnect();
   }
