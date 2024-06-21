@@ -1,15 +1,17 @@
 "use client";
 import React, { useState, useCallback, useMemo } from "react";
 
-import ThemedText from "@/components/ThemedText";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
-import Toolbar from "./toolbar";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
-
 const localizer = momentLocalizer(moment);
+
+import ThemedText from "@/components/ThemedText";
+import Toolbar from "./toolbar";
+import { EventDay } from "./event";
+import { TimeSlotWrapper } from "./extras";
 
 const Event = ({ event }) => {
   const pathname = usePathname();
@@ -38,6 +40,9 @@ export default function CustomCalendar({ activities, eventData }) {
         event: Event,
         eventWrapper: EventWrapper,
         toolbar: Toolbar,
+        day: {
+          event: EventDay,
+        },
       },
     }),
     []
@@ -47,7 +52,7 @@ export default function CustomCalendar({ activities, eventData }) {
   const [date, setDate] = useState(eventData.startTime);
 
   return (
-    <div className="h-[calc(100vh-68px-20px-20px)] pt-5">
+    <>
       <Calendar
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         defaultDate={defaultDate}
@@ -63,6 +68,6 @@ export default function CustomCalendar({ activities, eventData }) {
         }}
         components={components}
       />
-    </div>
+    </>
   );
 }

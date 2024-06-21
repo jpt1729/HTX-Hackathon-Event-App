@@ -7,7 +7,7 @@ import ParticipantCard from "@/components/pages/organize-events/participant-card
 import { getUserRole } from "@/utils/backend-organizer-events";
 import { auth } from "@/auth";
 import { getEventParticipants } from "@/utils/backend-event";
-
+import { PageMenu } from "@/components/pages/event/menu";
 export default async function ViewParticipantsPage({ params }) {
   const { eventId } = params;
   const session = await auth();
@@ -21,13 +21,14 @@ export default async function ViewParticipantsPage({ params }) {
         <URLComponent />
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <div className="pt-4 flex flex-col gap-2">
+      <div className="pt-5 flex flex-col gap-2 h-[calc(100vh-40px-32px-68px)]">
       {eventParticipants && eventParticipants.map((user, _i) => {
           return (
             <ParticipantCard key={_i} user={user} currentUser={currentUser}/>
           )
         })}
       </div>
+      <PageMenu/>
     </main>
   );
 }

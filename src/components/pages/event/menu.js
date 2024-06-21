@@ -2,7 +2,8 @@
 import {
   UserGroupIcon,
   EllipsisHorizontalCircleIcon,
-  ViewColumnsIcon
+  ViewColumnsIcon,
+  ArrowLeftIcon
 } from "@heroicons/react/24/outline";
 import ThemedText from "@/components/ThemedText";
 import Link from "next/link";
@@ -37,4 +38,24 @@ export default function Menu({}) {
       </Link>
     </div>
   );
+}
+function removeLastSegment(pathname) {
+  // Split the pathname by the '/' character
+  let segments = pathname.split('/');
+  // Remove the last segment
+  segments.pop();
+  // Join the segments back together with '/'
+  let newPathname = segments.join('/');
+  return newPathname;
+}
+
+export function PageMenu({}){
+  const pathname = usePathname()
+  return (
+    <div className="h-6 w-full mt-2 flex gap-3 items-center">
+      <Link href={removeLastSegment(pathname)}>
+        <ArrowLeftIcon className="size-6"/>
+      </Link>
+    </div>
+  )
 }

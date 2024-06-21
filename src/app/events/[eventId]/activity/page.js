@@ -1,6 +1,6 @@
 import URLComponent from "@/components/pages/layout/urlComponent";
 import ThemedText from "@/components/ThemedText";
-
+import { PageMenu } from "@/components/pages/event/menu";
 import CustomCalendar from "@/components/pages/event/activity/calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
@@ -21,7 +21,10 @@ export default async function Activity({ params }) {
         <URLComponent />
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <CustomCalendar activities={activitiesData} eventData={eventData} />
+      <div className="w-full h-[calc(100vh-40px-32px-68px)] pt-5">
+        <CustomCalendar activities={activitiesData} eventData={eventData} />
+      </div>
+      <PageMenu/>
     </main>
   );
 }
