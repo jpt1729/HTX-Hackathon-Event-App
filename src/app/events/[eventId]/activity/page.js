@@ -5,7 +5,6 @@ import CustomCalendar from "@/components/pages/event/activity/calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import {
-    getAllSlugs,
     getEventData,
     getActivities,
   } from "@/utils/backend-event";

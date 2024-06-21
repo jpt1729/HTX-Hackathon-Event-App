@@ -5,29 +5,30 @@ import ThemedText from "@/components/ThemedText";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 
+import Toolbar from "./toolbar";
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 
 const localizer = momentLocalizer(moment);
+
 const Event = ({ event }) => {
   const pathname = usePathname();
   const activity = event; // changing react-big calendar's wording to ours
   return (
     <Link href={`${pathname}/${activity.slug}`}>
-      <ThemedText className="font-bold !leading-none">{activity.title}</ThemedText>
+      <ThemedText className="font-bold !leading-none">
+        {activity.title}
+      </ThemedText>
       <ThemedText className="!leading-none">{activity.description}</ThemedText>
     </Link>
   );
 };
 const EventWrapper = ({ event, children }) => {
-    const activity = event;
-    return (
-        <>
-            {children}
-        </>
-    )
-}
-const None = () => <></>
+  const activity = event;
+  return <>{children}</>;
+};
+
+const None = () => <></>;
 export default function CustomCalendar({ activities, eventData }) {
   const { defaultDate, scrollToTime, components } = useMemo(
     () => ({
@@ -36,6 +37,7 @@ export default function CustomCalendar({ activities, eventData }) {
       components: {
         event: Event,
         eventWrapper: EventWrapper,
+        toolbar: Toolbar,
       },
     }),
     []
