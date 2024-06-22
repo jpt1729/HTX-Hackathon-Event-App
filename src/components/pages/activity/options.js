@@ -12,7 +12,7 @@ import PropTypes from 'prop-types'
  */
 export default function Options({ id, title, options }) {
   return (
-    <>
+    <form className="border-t-1 border-gray">
       <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
         {title}
       </ThemedLabels>
@@ -40,7 +40,8 @@ export default function Options({ id, title, options }) {
             );
           })}
       </div>
-    </>
+      <ThemedInput type='submit' value='Submit'/>
+    </form>
   );
 }
 Options.propTypes = {
