@@ -9,19 +9,19 @@ datasource db {
 }
 
 model User {
-  id                       String                    @id @default(cuid())
+  id                       String                     @id @default(cuid())
   name                     String?
-  email                    String                    @unique
+  email                    String                     @unique
   emailVerified            DateTime?
   image                    String?
-  createdAt                DateTime                  @default(now())
-  updatedAt                DateTime                  @updatedAt
-  accounts                 Account[]                 @relation("AccountToUser")
-  activitycontentresponses ActivityContentResponses? @relation("UserToActivityContentResponses")
-  Authenticator            Authenticator[]           @relation("AuthenticatorToUser")
-  sessions                 Session[]                 @relation("SessionToUser")
-  activities               UserActivityRole[]        @relation("UserToUserActivityRole")
-  events                   UserEventRole[]           @relation("UserToUserEventRole")
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  activitycontentresponses ActivityContentResponses[] @relation("UserToActivityContentResponses")
+  accounts                 Account[]                  @relation("AccountToUser")
+  Authenticator            Authenticator[]            @relation("AuthenticatorToUser")
+  sessions                 Session[]                  @relation("SessionToUser")
+  activities               UserActivityRole[]         @relation("UserToUserActivityRole")
+  events                   UserEventRole[]            @relation("UserToUserEventRole")
 }
 
 model Account {
@@ -99,7 +99,7 @@ model Activity {
   startTime            DateTime
   endTime              DateTime
   event                Event              @relation("eventActivities", fields: [eventId], references: [id])
-  activitycontent      ActivityContent[]   @relation("ActivityToActivityContent")
+  activitycontent      ActivityContent[]  @relation("ActivityToActivityContent")
   activityParticipants UserActivityRole[] @relation("ActivityToUserActivityRole")
 }
 
@@ -131,7 +131,7 @@ model ActivityContent {
   id         String                     @id @default(cuid())
   title      String?
   type       String
-  activityId String                     
+  activityId String
   content    Json
   activity   Activity                   @relation("ActivityToActivityContent", fields: [activityId], references: [id])
   responses  ActivityContentResponses[] @relation("ActivityContentResponsesToActivityContent")
@@ -140,7 +140,7 @@ model ActivityContent {
 model ActivityContentResponses {
   id                String           @id @default(cuid())
   activitycontentId String?
-  userId            String           @unique
+  userId            String
   response          String
   activitycontent   ActivityContent? @relation("ActivityContentResponsesToActivityContent", fields: [activitycontentId], references: [id])
   user              User             @relation("UserToActivityContentResponses", fields: [userId], references: [id])

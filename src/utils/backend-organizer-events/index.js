@@ -97,13 +97,24 @@ export async function changeEventContent(userId, eventId, updatedMarkdown) {
 
   return updatedEvent;
 }
-export async function updateUserRole(userId, eventSlug, newRole) {
+export async function updateUserRole(
+  userId,
+  eventSlug,
+  newRole,
+  eventId = null
+) {
   try {
-    const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
+    let queryEventId = eventId;
+    if (!eventId) {
+      const event = await prisma.event.findUnique({
+        where: { slug: eventSlug },
+      });
+      queryEventId = event.id;
+    }
     const userRecord = await prisma.userEventRole.findFirst({
       where: {
         userId: userId,
-        eventId: event.id,
+        eventId: queryEventId
       },
     });
     const res = await prisma.userEventRole.update({
@@ -115,11 +126,11 @@ export async function updateUserRole(userId, eventSlug, newRole) {
       },
     });
     console.log(
-      `Updated ${userId} to ${newRole} for ${event.id} at ${userRecord.id}`
+      `Updated ${userId} to ${newRole} for ${queryEventId} at ${userRecord.id}`
     );
     return res;
   } catch (error) {
-    console.error("Error adding event to user:", error);
+    console.error("Error updating user role:", error);
 
     return error;
   } finally {
@@ -205,4 +216,3 @@ export async function createNewEvent(
     await prisma.$disconnect();
   }
 }
-

@@ -148,16 +148,16 @@ async function addActivity(id, activity) {
   const activityContent = await prisma.activityContent.create({
     data: {
       activityId: id,
-      ...activity
+      ...activity,
     },
   });
 
   console.log("Activity content created:", activityContent);
 }
 addActivity("clxpnndm00001t1ddzbu7sbq9", {
-  type: "QA",
-  title: "What are your favorite programming languages?",
+  type: "MC",
+  title: "Preferred Code Editor",
   content: {
-    question: "Share your favorite programming languages!",
+    options: ["VS Code", "Sublime Text", "Atom", "PyCharm"],
   },
 });

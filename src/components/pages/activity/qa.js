@@ -34,6 +34,7 @@ export default function QA({ id, title, question }) {
             name="question-response"
             className="w-full border py-1 rounded-full px-4 border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
             placeholder={question}
+            required
           />
           {state.status === "error" && (
             <ThemedLabels type="subtext" className="text-warning">

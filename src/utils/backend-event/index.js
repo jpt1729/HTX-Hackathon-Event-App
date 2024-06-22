@@ -67,14 +67,14 @@ export async function getActivityData(activitySlug) {
       },
     });
     let processedActivityData = {
-        eventTime: {
-          startTime: activityData.startTime,
-          endTime: activityData.endTime,
-        },
-        start: activityData.startTime,
-        end: activityData.endTime,
-        ...activityData,
-      }
+      eventTime: {
+        startTime: activityData.startTime,
+        endTime: activityData.endTime,
+      },
+      start: activityData.startTime,
+      end: activityData.endTime,
+      ...activityData,
+    };
     return processedActivityData;
   } catch (error) {
     console.error("Error retrieving slugs: ", error);
@@ -88,7 +88,14 @@ export async function getEventsForUser(userId) {
       where: {
         userId: userId,
         NOT: {
-          role: "banned",
+          OR: [
+            {
+              role: "banned",
+            },
+            {
+              role: "left",
+            },
+          ],
         },
       },
       include: {
@@ -129,7 +136,28 @@ export async function addEventToUser(userId, eventSlug) {
       console.error("Event not found");
       return;
     }
-
+    // Check if user left
+    const userRole = await prisma.UserEventRole.findFirst({
+      where: {
+        userId: userId,
+        eventId: event.id,
+      },
+    });
+    if (userRole) {
+      if (userRole.role !== "left") {
+        return;
+      }
+      const res = await prisma.UserEventRole.update({
+        where: {
+          id: userRole.id,
+        },
+        data: {
+          role: "participant",
+        },
+      });
+      console.log(res);
+      return res;
+    }
     // Create the UserEventRole entry
     const res = await prisma.userEventRole.create({
       data: {
@@ -186,20 +214,25 @@ export async function getEventParticipants(eventId, eventSlug) {
   }
 }
 
-export async function createActivityContentResponse(activitycontentId, userId, response) {
+export async function createActivityContentResponse(
+  activitycontentId,
+  userId,
+  response
+) {
   try {
-    const activityContentResponse = await prisma.activityContentResponses.create({
-      data: {
-        activitycontentId: activitycontentId,
-        userId: userId,
-        response: response,
-      },
-    });
+    const activityContentResponse =
+      await prisma.activityContentResponses.create({
+        data: {
+          activitycontentId: activitycontentId,
+          userId: userId,
+          response: response,
+        },
+      });
 
-    console.log('ActivityContentResponse created:', activityContentResponse);
+    console.log("ActivityContentResponse created:", activityContentResponse);
     return activityContentResponse;
   } catch (error) {
-    console.error('Error creating ActivityContentResponse:', error);
+    console.error("Error creating ActivityContentResponse:", error);
     throw error;
   } finally {
     await prisma.$disconnect();

@@ -53,8 +53,8 @@ export function PageMenu({}){
   const pathname = usePathname()
   return (
     <div className="h-6 w-full mt-2 flex gap-3 items-center">
-      <Link href={removeLastSegment(pathname)}>
-        <ArrowLeftIcon className="size-6"/>
+      <Link href={removeLastSegment(pathname)} className="flex gap-1">
+        <ArrowLeftIcon className="size-6"/>{" "}Back
       </Link>
     </div>
   )

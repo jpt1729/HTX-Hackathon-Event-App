@@ -4,8 +4,6 @@ import { auth } from "@/auth"
 
 export async function QAAction(prevState, formData){
     const response = formData.get('question-response')
-    const id = formData.get('id')
-    const session = await auth()
 
     if (response === ""){
         return {
@@ -13,6 +11,10 @@ export async function QAAction(prevState, formData){
             message: "Blank response",
         }
     }
+
+    const id = formData.get('id')
+    const session = await auth()
+    
     createActivityContentResponse(id, session.user.id, response)
     return {
         status: "",
@@ -20,5 +22,18 @@ export async function QAAction(prevState, formData){
     }
 }
 export async function OptionsAction(prevState, formData){
-
+    const option = formData.get('option')
+    if(!option){
+        return {
+            status: "error",
+            message: "Select an option"
+        }
+    }
+    const id = formData.get('id')
+    const session = await auth()
+    createActivityContentResponse(id, session.user.id, option)
+    return {
+        status: "",
+        message: ""
+    }
 }
