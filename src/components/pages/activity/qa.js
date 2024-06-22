@@ -1,11 +1,12 @@
 "use client";
 import { useFormState } from "react-dom";
+import EditBar from "./edit-bar";
 
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 import PropTypes from "prop-types";
 
-import { QAAction } from "./action";
+import { QAAction } from "./action";;
 
 /**
  * This component renders a Q&A Prompt
@@ -16,44 +17,41 @@ import { QAAction } from "./action";
  * @param {string} [props.question] question of the question
  * @returns {React.ReactNode} A React element that renders a Q&A prompt
  */
-export default function QA({ id, title, question }) {
+export default function QA({ id, title, question, admin }) {
   const [state, formAction] = useFormState(QAAction, {
     status: "",
     message: "",
   });
   return (
-    <form action={formAction} className="w-full max-w-screen-sm">
-      <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
-        {title}
-      </ThemedLabels>
-      <br />
-      <div className="flex gap-2">
-        <div className="flex-grow">
-          <ThemedInput
-            type="text"
-            name="question-response"
-            className="w-full border py-1 rounded-full px-4 border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
-            placeholder={question}
-            required
+    <form action={formAction} className="flex items-center gap-5">
+      {admin && <EditBar id = {id}/>}
+      <div className="w-full max-w-screen-sm ">
+        <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
+          {title}
+        </ThemedLabels>
+        <br />
+        <div className="flex gap-2">
+          <div className="flex-grow">
+            <ThemedInput
+              type="text"
+              name="question-response"
+              className="w-full border py-1 rounded-full px-4 border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
+              placeholder={question}
+              required
+            />
+            {state.status === "error" && (
+              <ThemedLabels type="subtext" className="text-warning">
+                {state.message}
+              </ThemedLabels>
+            )}
+          </div>
+          <input
+            type="submit"
+            className="font-bold text-red-accent hover:underline"
           />
-          {state.status === "error" && (
-            <ThemedLabels type="subtext" className="text-warning">
-              {state.message}
-            </ThemedLabels>
-          )}
         </div>
-        <input
-          type="submit"
-          className="font-bold text-red-accent hover:underline"
-        />
+        <input type="text" name="id" className="hidden" value={id} readOnly />
       </div>
-      <input
-          type="text"
-          name="id"
-          className="hidden"
-          value={id}
-          readOnly
-        />
     </form>
   );
 }

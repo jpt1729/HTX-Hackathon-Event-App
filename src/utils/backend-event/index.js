@@ -275,39 +275,37 @@ export async function getActivityParticipants(activityId, activitySlug) {
     await prisma.$disconnect();
   }
 }
-export async function getUserActivityRole(userId, activityId, activitySlug) {
+export async function getUserActivityRole(userId, activityId) {
   try {
-    let query = { id: activityId };
-    if (activitySlug) {
-      query = { slug: activitySlug };
-    }
-    const activityParticipants = await prisma.activity.findUnique({
-      where: query,
-      include: {
-        activityParticipants: {
-          include: {
-            user: true,
-          },
-          where: {
-            NOT: {
-              role: "banned",
-            },
-          },
-        },
-      },
-    });
-    console.log(activityParticipants)
-    const activityParticipantsUsers = activityParticipants.activityParticipants.map(
-      (relation) => {
-        return {
-          role: relation.role,
-          ...relation.user,
-        };
+    const userActivityRole = await prisma.userActivityRole.findFirst({
+      where: {
+        activityId: activityId,
+        userId: userId,
       }
-    );
-    return activityParticipantsUsers;
+    });
+
+    return userActivityRole;
   } catch (error) {
     console.error("Error fetching activity participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getActivityContentById(activityContentId) {
+  try {
+    const activityContent = await prisma.activityContent.findUnique({
+      where: { id: activityContentId },
+    });
+
+    if (!activityContent) {
+      throw new Error(`ActivityContent with ID "${activityContentId}" not found`);
+    }
+
+    console.log('ActivityContent:', activityContent);
+    return activityContent;
+  } catch (error) {
+    console.error('Error fetching ActivityContent:', error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }
