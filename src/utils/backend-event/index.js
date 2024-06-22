@@ -58,7 +58,30 @@ export async function getActivities(eventId) {
     await prisma.$disconnect();
   }
 }
-
+export async function getActivityData(activitySlug) {
+  try {
+    const activityData = await prisma.activity.findUnique({
+      where: { published: true, slug: activitySlug },
+      include: {
+        activitycontent: true,
+      },
+    });
+    let processedActivityData = {
+        eventTime: {
+          startTime: activityData.startTime,
+          endTime: activityData.endTime,
+        },
+        start: activityData.startTime,
+        end: activityData.endTime,
+        ...activityData,
+      }
+    return processedActivityData;
+  } catch (error) {
+    console.error("Error retrieving slugs: ", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 export async function getEventsForUser(userId) {
   try {
     const userEvents = await prisma.userEventRole.findMany({
@@ -158,6 +181,26 @@ export async function getEventParticipants(eventId, eventSlug) {
     return eventParticipantsUsers;
   } catch (error) {
     console.error("Error fetching event participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function createActivityContentResponse(activitycontentId, userId, response) {
+  try {
+    const activityContentResponse = await prisma.activityContentResponses.create({
+      data: {
+        activitycontentId: activitycontentId,
+        userId: userId,
+        response: response,
+      },
+    });
+
+    console.log('ActivityContentResponse created:', activityContentResponse);
+    return activityContentResponse;
+  } catch (error) {
+    console.error('Error creating ActivityContentResponse:', error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }

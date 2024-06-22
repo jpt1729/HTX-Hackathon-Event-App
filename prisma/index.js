@@ -98,9 +98,9 @@ async function test() {
   console.log(isOwner)*/
   const userRecord = await prisma.userEventRole.findFirst({
     where: {
-      userId: userId
-    }
-  })
+      userId: userId,
+    },
+  });
   const updatedUserEventRole = await prisma.userEventRole.update({
     where: {
       id: userRecord.id,
@@ -109,6 +109,55 @@ async function test() {
       role: "owner",
     },
   });
-  console.log(updatedUserEventRole)
+  console.log(updatedUserEventRole);
 }
-test();
+
+async function createActivity() {
+  const eventId = "clxm2ln07000212odx9q4h6dq";
+
+  // Create the activity
+  const activity = await prisma.activity.create({
+    data: {
+      eventId: eventId,
+      slug: "new-activity-slug", // Make sure this is unique
+      published: true,
+      title: "New Activity Title",
+      description: "This is a description for the new activity.",
+      startTime: new Date("2024-07-01T10:00:00.000Z"), // Adjust as necessary
+      endTime: new Date("2024-07-01T12:00:00.000Z"), // Adjust as necessary
+    },
+  });
+
+  // Create the activity content
+  const activityContent = await prisma.activityContent.create({
+    data: {
+      activityId: activity.id,
+      title: "Activity Content Title",
+      type: "md", // or "QA" or "Multiple Choice" as needed
+      content: {
+        markdown: "# This is the markdown content", // Adjust as necessary
+      },
+    },
+  });
+
+  console.log("Activity created:", activity);
+  console.log("Activity content created:", activityContent);
+}
+
+async function addActivity(id, activity) {
+  const activityContent = await prisma.activityContent.create({
+    data: {
+      activityId: id,
+      ...activity
+    },
+  });
+
+  console.log("Activity content created:", activityContent);
+}
+addActivity("clxpnndm00001t1ddzbu7sbq9", {
+  type: "QA",
+  title: "What are your favorite programming languages?",
+  content: {
+    question: "Share your favorite programming languages!",
+  },
+});
