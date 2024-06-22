@@ -41,7 +41,7 @@ const Render = ({ activityData, admin }) => {
             case "md":
               return (
                 <div key={contentPiece.id} className="flex items-center gap-5">
-                  {admin && <EditBar/>}
+                  {admin && <EditBar id={contentPiece.id}/>}
                   <CustomMarkdown
                     id={contentPiece.id}
                     source={contentPiece.content.markdown}

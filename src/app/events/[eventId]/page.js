@@ -25,7 +25,7 @@ export default async function EventsPage({ params }) {
   const activitiesData = await getActivities(eventData.id);
 
   return (
-    <main className="h-[calc(100vh-40px)] overflow-y-scroll">
+    <main className="h-[calc(100vh-40px)] overflow-y-scroll w-full">
       <div>
         <ThemedText type="heading">{eventData.title}</ThemedText>
         <URLComponent />
