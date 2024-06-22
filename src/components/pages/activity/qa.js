@@ -22,7 +22,7 @@ export default function QA({ id, title, question }) {
     message: "",
   });
   return (
-    <form action={formAction}>
+    <form action={formAction} className="w-full max-w-screen-sm">
       <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
         {title}
       </ThemedLabels>

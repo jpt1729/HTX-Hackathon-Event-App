@@ -192,7 +192,7 @@ export async function getEventParticipants(eventId, eventSlug) {
           },
           where: {
             NOT: {
-              role: "banned",
+              OR: [{ role: "banned" }, { role: "left" }],
             },
           },
         },
@@ -234,6 +234,80 @@ export async function createActivityContentResponse(
   } catch (error) {
     console.error("Error creating ActivityContentResponse:", error);
     throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getActivityParticipants(activityId, activitySlug) {
+  try {
+    let query = { id: activityId };
+    if (activitySlug) {
+      query = { slug: activitySlug };
+    }
+    const activityParticipants = await prisma.activity.findUnique({
+      where: query,
+      include: {
+        activityParticipants: {
+          include: {
+            user: true,
+          },
+          where: {
+            NOT: {
+              role: "banned",
+            },
+          },
+        },
+      },
+    });
+    console.log(activityParticipants)
+    const activityParticipantsUsers = activityParticipants.activityParticipants.map(
+      (relation) => {
+        return {
+          role: relation.role,
+          ...relation.user,
+        };
+      }
+    );
+    return activityParticipantsUsers;
+  } catch (error) {
+    console.error("Error fetching activity participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getUserActivityRole(userId, activityId, activitySlug) {
+  try {
+    let query = { id: activityId };
+    if (activitySlug) {
+      query = { slug: activitySlug };
+    }
+    const activityParticipants = await prisma.activity.findUnique({
+      where: query,
+      include: {
+        activityParticipants: {
+          include: {
+            user: true,
+          },
+          where: {
+            NOT: {
+              role: "banned",
+            },
+          },
+        },
+      },
+    });
+    console.log(activityParticipants)
+    const activityParticipantsUsers = activityParticipants.activityParticipants.map(
+      (relation) => {
+        return {
+          role: relation.role,
+          ...relation.user,
+        };
+      }
+    );
+    return activityParticipantsUsers;
+  } catch (error) {
+    console.error("Error fetching activity participants:", error);
   } finally {
     await prisma.$disconnect();
   }

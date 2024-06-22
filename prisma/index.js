@@ -154,10 +154,48 @@ async function addActivity(id, activity) {
 
   console.log("Activity content created:", activityContent);
 }
-addActivity("clxpnndm00001t1ddzbu7sbq9", {
-  type: "MC",
-  title: "Preferred Code Editor",
-  content: {
-    options: ["VS Code", "Sublime Text", "Atom", "PyCharm"],
-  },
-});
+
+async function addUserActivityRole(userId, activityId) {
+  try {
+    const userActivityRole = await prisma.userActivityRole.create({
+      data: {
+        userId: userId,
+        activityId: activityId,
+        role: 'participant',
+      },
+    });
+
+    console.log('UserActivityRole created:', userActivityRole);
+    return userActivityRole;
+  } catch (error) {
+    console.error('Error creating UserActivityRole:', error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+async function updateUserActivityRole(userId, activityId, newRole) {
+  try {
+    const updatedUserActivityRole = await prisma.userActivityRole.update({
+      where: {
+        userId_activityId: {
+          userId: userId,
+          activityId: activityId,
+        },
+      },
+      data: {
+        role: newRole,
+      },
+    });
+
+    console.log('UserActivityRole updated:', updatedUserActivityRole);
+    return updatedUserActivityRole;
+  } catch (error) {
+    console.error('Error updating UserActivityRole:', error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+updateUserActivityRole("clxm2u5r10000o8cmmr0zto3t", "clxpnndm00001t1ddzbu7sbq9", "organizer")

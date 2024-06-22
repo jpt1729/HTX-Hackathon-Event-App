@@ -3,8 +3,7 @@ import URLComponent from "@/components/pages/layout/urlComponent";
 import CustomMarkdown from "@/components/pages/markdown";
 import QA from "@/components/pages/activity/qa";
 import Options from "@/components/pages/activity/options";
-
-import LocationWidget from "@/components/Card/Event/locationWidget";
+import ActivityMenu from "@/components/pages/activity/menu";
 import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
 import { getActivityData } from "@/utils/backend-event";
@@ -49,7 +48,7 @@ export default async function ActivityPage({ params }) {
   const { activityId } = params
   const activityData = await getActivityData(activityId)
   return (
-    <main>
+    <main className="w-full">
       <div>
         <ThemedText type="heading">{activityData.title}</ThemedText>
         <URLComponent />
@@ -63,6 +62,7 @@ export default async function ActivityPage({ params }) {
       <div className="flex flex-col gap-4 w-full h-[calc(100vh-172px)] overflow-y-scroll pr-3 pt-4">
         <Render activityData={activityData} />
       </div>
+      <ActivityMenu/>
     </main>
   );
 }
