@@ -4,21 +4,7 @@ import { createNewEvent } from "@/utils/backend-organizer-events";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
-const dummyFunction = (
-  userId,
-  title,
-  description,
-  startTime,
-  endTime,
-  address,
-  googleMapsLink,
-  slug
-) => {
-  console.log("run");
-};
-
 export async function createEventAction(prevState, formData) {
-  console.log("running");
   let state = {
     status: "success",
     message: "",

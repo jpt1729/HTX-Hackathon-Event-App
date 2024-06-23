@@ -29,5 +29,4 @@ export async function leaveEventAction(eventId){
     return;
   }
   const res = await updateUserRole(session.user.id, undefined, "left", eventId);
-  console.log(res)
 }

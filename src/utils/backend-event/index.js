@@ -259,15 +259,14 @@ export async function getActivityParticipants(activityId, activitySlug) {
         },
       },
     });
-    console.log(activityParticipants)
-    const activityParticipantsUsers = activityParticipants.activityParticipants.map(
-      (relation) => {
+    console.log(activityParticipants);
+    const activityParticipantsUsers =
+      activityParticipants.activityParticipants.map((relation) => {
         return {
           role: relation.role,
           ...relation.user,
         };
-      }
-    );
+      });
     return activityParticipantsUsers;
   } catch (error) {
     console.error("Error fetching activity participants:", error);
@@ -281,7 +280,7 @@ export async function getUserActivityRole(userId, activityId) {
       where: {
         activityId: activityId,
         userId: userId,
-      }
+      },
     });
 
     return userActivityRole;
@@ -298,13 +297,57 @@ export async function getActivityContentById(activityContentId) {
     });
 
     if (!activityContent) {
-      throw new Error(`ActivityContent with ID "${activityContentId}" not found`);
+      throw new Error(
+        `ActivityContent with ID "${activityContentId}" not found`
+      );
     }
 
-    console.log('ActivityContent:', activityContent);
+    console.log("ActivityContent:", activityContent);
     return activityContent;
   } catch (error) {
-    console.error('Error fetching ActivityContent:', error);
+    console.error("Error fetching ActivityContent:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function updateActivityContent(
+  activityContentId,
+  userId,
+  updatedData
+) {
+  try {
+    const activityContent = await prisma.activityContent.findUnique({
+      where: { id: activityContentId },
+      include: {
+        activity: {
+          include: {
+            activityParticipants: {
+              where: { userId: userId },
+              select: { role: true },
+            },
+          },
+        },
+      },
+    });
+    if (!activityContent) {
+      throw new Error('ActivityContent not found');
+    }
+  
+    const userRole = activityContent.activity.activityParticipants[0]?.role;
+
+  if (!(userRole === 'organizer' || userRole === 'owner')) {
+    throw new Error('User does not have permission to update this activity content');
+  } 
+  
+  const updatedActivityContent = await prisma.activityContent.update({
+    where: { id: activityContentId },
+    data: updatedData,
+  });
+
+  return updatedActivityContent;
+  } catch (error) {
+    console.error("Error updating ActivityContent:", error);
     throw error;
   } finally {
     await prisma.$disconnect();

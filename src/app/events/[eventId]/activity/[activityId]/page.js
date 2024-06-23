@@ -42,10 +42,12 @@ const Render = ({ activityData, admin }) => {
               return (
                 <div key={contentPiece.id} className="flex items-center gap-5">
                   {admin && <EditBar id={contentPiece.id}/>}
-                  <CustomMarkdown
-                    id={contentPiece.id}
-                    source={contentPiece.content.markdown}
-                  />
+                  <div>
+                    <CustomMarkdown
+                      id={contentPiece.id}
+                      source={contentPiece.content.markdown}
+                    />
+                  </div>
                 </div>
               );
           }
@@ -65,7 +67,6 @@ export default async function ActivityPage({ params }) {
   const admin =
     userActivityRole?.role === "organizer" ||
     userActivityRole?.role === "owner";
-  console.log(userActivityRole);
   return (
     <main className="w-full">
       <div>

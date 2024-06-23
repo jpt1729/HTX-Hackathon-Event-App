@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useFormState } from "react-dom";
 
 import { MinusIcon, PlusIcon } from "@heroicons/react/24/outline";
+import { useModal } from "@/utils/context/ModalContext";
 
 import ThemedText from "@/components/ThemedText";
 import ThemedLabels from "@/components/ThemedText/labels";
@@ -19,7 +20,8 @@ export default function EditMC({ activityContent }) {
     status: "",
     message: "",
     errors: {},
-  });
+  })
+  
   return (
     <form action={formAction}>
       <ThemedLabels type="subheading">Title</ThemedLabels>
@@ -28,6 +30,7 @@ export default function EditMC({ activityContent }) {
         type="text"
         name="title"
         defaultValue={activityContent.title}
+        className="w-full max-w-screen-sm"
       />
       <br />
       <br />
@@ -98,6 +101,7 @@ export default function EditMC({ activityContent }) {
         </div>
       </div>
       <ThemedInput type="submit" value="save" />
+      <input type='text' className="hidden" name='id' value={activityContent.id} readOnly/>
     </form>
   );
 }

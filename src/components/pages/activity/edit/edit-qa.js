@@ -29,6 +29,7 @@ export default function EditQA({ activityContent }) {
       <br />
       <ThemedInput type="text" className = 'w-full' name="question" defaultValue={activityContent.content.question}/>
       <ThemedInput type="submit" value="save" />
+      <input type='text' className="hidden" name='id' value={activityContent.id} readOnly/>
     </form>
   );
 }

@@ -1,10 +1,13 @@
 "use server";
+import { updateActivityContent } from "@/utils/backend-event";
+import { auth } from "@/auth";
 
 export async function editMCAction(prevState, formData){
+    const activityContentId = formData.get("id")
     const optionsNames = [];
     
     for (let [name] of formData) {
-      if (!optionsNames.includes(name) && !(name === 'title')) {
+      if (!optionsNames.includes(name) && !(name === 'title') && !(name === 'id')) {
         optionsNames.push(name);
       }
     }
@@ -26,16 +29,24 @@ export async function editMCAction(prevState, formData){
             })
         }
     }
-    console.log(updatedMC)
+    const session = await auth();
+    if (!session) {
+        return {
+            status: "error",
+            message: "You must be logged in",
+        }
+    }
+    const res = await updateActivityContent(activityContentId, session?.user?.id, updatedMC)
     return {
-        status: "",
-        message: "",
+        status: "success",
+        message: "Successfully updated multiple choice",
         errors: {}
     }
 }
 export async function editQAAction(prevState, formData){
     const title = formData.get("title")
     const question = formData.get("question")
+    const activityContentId = formData.get("id")
     if (title === "") {
         return {
             status: "error",
@@ -51,17 +62,25 @@ export async function editQAAction(prevState, formData){
             question: question
         }
     }
-    console.log(updatedQA)
+    const session = await auth();
+    if (!session) {
+        return {
+            status: "error",
+            message: "You must be logged in",
+        }
+    }
+    const res = await updateActivityContent(activityContentId, session?.user?.id, updatedQA)
     return {
-        status: "",
-        message: "",
+        status: "success",
+        message: "Successfully updated question and answer",
         errors: {}
     }
 }
 
 export async function editMDAction(prevState, formData){
     const title = formData.get("title")
-    const question = formData.get("question")
+    const markdown = formData.get("markdown")
+    const activityContentId = formData.get("id")
     if (title === "") {
         return {
             status: "error",
@@ -71,16 +90,23 @@ export async function editMDAction(prevState, formData){
             }
         }
     }
-    const updatedQA = {
+    const updatedMD = {
         title: title,
         content: {
-            question: question
+            markdown: markdown
         }
     }
-    console.log(updatedQA)
+    const session = await auth();
+    if (!session) {
+        return {
+            status: "error",
+            message: "You must be logged in",
+        }
+    }
+    const res = await updateActivityContent(activityContentId, session?.user?.id, updatedMD)
     return {
-        status: "",
-        message: "",
+        status: "success",
+        message: "Successfully updated markdown",
         errors: {}
     }
 }
