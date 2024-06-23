@@ -140,6 +140,7 @@ model ActivityContent {
 model ActivityContentResponses {
   id                String           @id @default(cuid())
   activitycontentId String?
+  createdAt         DateTime         @default(now())
   userId            String
   response          String
   activitycontent   ActivityContent? @relation("ActivityContentResponsesToActivityContent", fields: [activitycontentId], references: [id])

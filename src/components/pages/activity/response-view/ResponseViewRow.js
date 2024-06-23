@@ -3,8 +3,15 @@ import { useState } from "react";
 import ThemedText from "@/components/ThemedText";
 import UserCard from "./user-card";
 
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+
+
 export default function ResponseViewRow({ activityResponse, handleSelect }) {
   const [checked, setChecked] = useState(false);
+
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   return (
     <tr className={`${checked && "bg-red-accent/5"} border-b border-gray`}>
       <td>
@@ -15,7 +22,7 @@ export default function ResponseViewRow({ activityResponse, handleSelect }) {
             checked={checked}
             onChange={() => {
               setChecked(!checked);
-              handleSelect(activityResponse.id)
+              handleSelect(activityResponse.id);
             }}
           />
         </div>
@@ -24,7 +31,15 @@ export default function ResponseViewRow({ activityResponse, handleSelect }) {
         <ThemedText>{activityResponse.id}</ThemedText>
       </td>
       <td>
-        <ThemedText>{activityResponse.activitycontentId}</ThemedText>
+        <button
+          onClick={(e) => {
+            const params = new URLSearchParams(searchParams);
+            params.set("id", activityResponse.activitycontentId);
+            router.replace(`${pathname}?${params.toString()}`);
+          }}
+        >
+          <ThemedText>{activityResponse.activitycontentId}</ThemedText>
+        </button>
       </td>
       <td>
         <ThemedText>{activityResponse.response}</ThemedText>

@@ -351,14 +351,27 @@ export async function updateActivityContent(
     await prisma.$disconnect();
   }
 }
-export async function getActivityResponses(activityContentId) {
+export async function getActivityResponses(activitySlug) {
   try {
+    const activity = await prisma.activity.findUnique({
+      where: {
+        slug: activitySlug,
+      },
+    });
+
+    if (!activity) {
+      throw new Error(`Activity with slug ${activitySlug} not found`);
+    }
+
     const responses = await prisma.activityContentResponses.findMany({
       where: {
-        activitycontentId: activityContentId,
+        activitycontent: {
+          activityId: activity.id,
+        },
       },
       include: {
         user: true,
+        activitycontent: true,
       },
     });
 

@@ -4,11 +4,11 @@ import React, { useState } from "react";
 import ThemedText from "@/components/ThemedText";
 
 import ResponseViewRow from "./ResponseViewRow";
+import NonSelectedMenu from "./NonSelectedMenu";
 
 import { deleteResponses } from "./action";
 
 function SelectedMenu({ selectedResponses }) {
-    console.log(selectedResponses)
   return (
     <>
       <button
@@ -24,7 +24,8 @@ function SelectedMenu({ selectedResponses }) {
   );
 }
 
-export default function ResponseViewTable({ activityResponses }) {
+export default function ResponseViewTable({ activityResponses, searchParams }) {
+  const { id, sort } = searchParams;
   const [selectedResponses, setSelectedResponses] = useState([]);
   const handleSelect = (id) => {
     setSelectedResponses((prevSelected) =>
@@ -32,12 +33,15 @@ export default function ResponseViewTable({ activityResponses }) {
         ? prevSelected.filter((itemId) => itemId !== id)
         : [...prevSelected, id]
     );
-    
   };
   return (
     <>
-      <div>
-        <SelectedMenu selectedResponses={selectedResponses} />
+      <div className="w-full relative">
+        {selectedResponses.length > 0 ? (
+          <SelectedMenu selectedResponses={selectedResponses} />
+        ) : (
+          <NonSelectedMenu />
+        )}
       </div>
       <table className="w-full border-spacing-y-5">
         <thead>
