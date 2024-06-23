@@ -368,16 +368,15 @@ export async function getActivityResponses(activitySlug, search) {
       activitycontent: {
         activityId: activity.id,
       },
-      
-    }
+    };
     if (search.id) {
-      whereClause.activitycontentId = search.id
+      whereClause.activitycontentId = search.id;
     }
-    let orderBy = []
-    if (search.sort === 'ascending'){
-      orderBy.push({createdAt: 'asc'})
-    } else if (search.sort === 'descending') {
-      orderBy.push({createdAt: 'desc'})
+    let orderBy = [];
+    if (search.sort === "ascending") {
+      orderBy.push({ createdAt: "asc" });
+    } else if (search.sort === "descending") {
+      orderBy.push({ createdAt: "desc" });
     }
     const responses = await prisma.activityContentResponses.findMany({
       where: whereClause,
@@ -414,3 +413,4 @@ export async function deleteActivityResponses(responseIds) {
     await prisma.$disconnect();
   }
 }
+

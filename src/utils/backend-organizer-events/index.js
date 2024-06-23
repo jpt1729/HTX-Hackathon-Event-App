@@ -211,7 +211,117 @@ export async function createNewEvent(
   } catch (error) {
     console.error("Error creating a new event: ", error);
 
-    return error;
+    return {status: 'error',
+      error: error
+    };
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function createActivity(eventSlug, activityData) {
+  try {
+    // Find the event by its slug
+    const eventAndUsers = await prisma.event.findUnique({
+      where: { slug: eventSlug },
+      include: {
+        eventParticipants: {
+          where: {
+            role: {
+              in: ["organizer", "owner"],
+            },
+          },
+          select: {
+            userId: true,
+          },
+        },
+      },
+    });
+    if (!eventAndUsers) {
+      throw new Error("Event not found");
+    }
+
+    // Create the new activity associated with the event
+
+    const newActivity = await prisma.activity.create({
+      data: {
+        title: activityData.title,
+        description: activityData.description,
+        startTime: new Date(activityData.startTime),
+        endTime: new Date(activityData.endTime),
+        slug: activityData.slug,
+        event: {
+          connect: { id: eventAndUsers.id },
+        },
+        activityParticipants: {
+          create: eventAndUsers.eventParticipants.map((user) => {
+            return {
+              user: { connect: { id: user.userId } },
+              role: "organizer",
+            };
+          }),
+        },
+      },
+    });
+
+    console.log("New activity created:", newActivity);
+    return newActivity;
+  } catch (error) {
+    console.error("Error creating activity:", error);
+    return {
+      status: "error",
+      error: error
+    }
+  }
+}
+export async function getActivities(eventId) {
+  try {
+    const activityData = await prisma.activity.findMany({
+      where: { eventId: eventId },
+    });
+
+    let processedActivityData = activityData.map((activity) => {
+      return {
+        eventTime: {
+          startTime: activity.startTime,
+          endTime: activity.endTime,
+        },
+        start: activity.startTime,
+        end: activity.endTime,
+        ...activity,
+      };
+    });
+    return processedActivityData;
+  } catch (error) {
+    console.error("Error retrieving slugs: ", error);
+    return {
+      status: "error",
+      error: error
+    }
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getActivityData(activitySlug) {
+  try {
+    const activityData = await prisma.activity.findUnique({
+      where: { slug: activitySlug },
+      include: {
+        activitycontent: true,
+      },
+    });
+    let processedActivityData = {
+      eventTime: {
+        startTime: activityData.startTime,
+        endTime: activityData.endTime,
+      },
+      start: activityData.startTime,
+      end: activityData.endTime,
+      ...activityData,
+    };
+    return processedActivityData;
+  } catch (error) {
+    console.error("Error retrieving slugs: ", error);
   } finally {
     await prisma.$disconnect();
   }

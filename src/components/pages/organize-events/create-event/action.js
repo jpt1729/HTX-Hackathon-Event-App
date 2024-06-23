@@ -53,16 +53,21 @@ export async function createEventAction(prevState, formData) {
     state.status = "error";
     state.errors["description"] = "Description too long";
   }
-  console.log({
+  const res = await createNewEvent({
     title,
     slug,
     description,
     startTime,
     endTime,
   })
-
-  if (state.status === "success") {
-    //redirect(`/organize-events/${slug}`);
+  if (res.status !== 'error'){
+    redirect(`/organize-events/${eventSlug}/activity/${slug}`)
+  }
+  if (res.status === 'error') {
+    if (res.error.code === 'P2002') {
+        state.status = "error";
+        state.errors["slug"] = "slug in use!";
+    }
   }
   return state;
 }

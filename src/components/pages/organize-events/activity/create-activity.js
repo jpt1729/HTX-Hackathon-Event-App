@@ -7,9 +7,9 @@ import ThemedInput from "@/components/ThemedText/input";
 
 import { formatDateTime } from "@/utils";
 
-import createActivityAction from "./action";
+import { createActivityAction } from "./action";
 
-export default function CreateActivityFrom({ start, end }) {
+export default function CreateActivityFrom({ start, end, eventSlug }) {
   const [description, setDescription] = useState("");
   const [times, setTimes] = useState({
     startTime: start ? start : "",
@@ -18,9 +18,7 @@ export default function CreateActivityFrom({ start, end }) {
   const [state, formAction] = useFormState(createActivityAction, {
     status: "",
     message: "",
-    errors: {
-
-    }
+    errors: {},
   });
   const now = new Date();
 
@@ -34,7 +32,14 @@ export default function CreateActivityFrom({ start, end }) {
           type="text"
           name="title"
           placeholder="SWE Q&A Panel"
+          required
         ></ThemedInput>
+        <br />
+        {state.errors["title"] && (
+          <ThemedLabels type="subtext" className="text-warning">
+            {state.errors["title"]}
+          </ThemedLabels>
+        )}
       </div>
       <br />
       <div>
@@ -45,9 +50,16 @@ export default function CreateActivityFrom({ start, end }) {
           type="text"
           name="slug"
           placeholder="swe-qa-panel"
+          required
         ></ThemedInput>
+        <br />
+        {state.errors["slug"] && (
+          <ThemedLabels type="subtext" className="text-warning">
+            {state.errors["slug"]}
+          </ThemedLabels>
+        )}
       </div>
-      <br/>
+      <br />
       <div className="flex flex-col gap-1 w-full">
         <ThemedLabels className="font-bold">Description *</ThemedLabels>
         <textarea
@@ -95,8 +107,13 @@ export default function CreateActivityFrom({ start, end }) {
           max={times.endTime}
           required
         />
+        <br />
+        {state.errors["start-time"] && (
+          <ThemedLabels type="subtext" className="text-warning">
+            {state.errors["start-time"]}
+          </ThemedLabels>
+        )}
       </div>
-      <br />
       <div>
         <ThemedLabels className="font-bold">End Time *</ThemedLabels>
         <br />
@@ -113,10 +130,16 @@ export default function CreateActivityFrom({ start, end }) {
           min={times.start}
           required
         />
+        <br />
+        {state.errors["end-time"] && (
+          <ThemedLabels type="subtext" className="text-warning">
+            {state.errors["end-time"]}
+          </ThemedLabels>
+        )}
       </div>
-      <br/>
-      <br/>
+      <br />
       <ThemedInput type="submit" value="Create activity" />
+      <input className="hidden" value={eventSlug} name="event-slug" readOnly />
     </form>
   );
 }

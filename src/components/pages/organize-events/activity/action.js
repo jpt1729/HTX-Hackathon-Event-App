@@ -1,6 +1,14 @@
+"use server";
+import { createActivity } from "@/utils/backend-organizer-events";
+import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
-export default async function createActivityAction(prevState, formData) {
+export async function createActivityAction(prevState, formData) {
+    const state = {
+        status: "",
+        message: "",
+        errors: {}
+    }
   const title = formData.get("title"); // test too long
 
   const description = formData.get("description");
@@ -8,6 +16,9 @@ export default async function createActivityAction(prevState, formData) {
   const endTime = new Date(formData.get("end-time"));
 
   const slug = formData.get("slug");
+
+  const eventSlug = formData.get("event-slug");
+
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     state.status = "error";
     state.errors["slug"] = "Invalid slug";
@@ -32,9 +43,27 @@ export default async function createActivityAction(prevState, formData) {
     state.errors["description"] = "Description too long";
   }
   const session = await auth();
-  return {
-    status: "",
-    message: "",
-    errors: {},
-  };
+  if (!session) {
+    (state.status = "error"), (state.message = "You must be logged in!");
+  }
+  if (state.status === "error") {
+    return state
+  }
+  const res = await createActivity(eventSlug, {
+    title,
+    description,
+    startTime,
+    endTime,
+    slug,
+  });
+  if (res.status !== 'error'){
+    redirect(`/organize-events/${eventSlug}/activity/${slug}`)
+  }
+  if (res.status === 'error') {
+    if (res.error.code === 'P2002') {
+        state.status = "error";
+        state.errors["slug"] = "slug in use!";
+    }
+  }
+  return state
 }

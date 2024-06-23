@@ -1,5 +1,7 @@
 import EditBar from "@/components/pages/activity/edit-bar";
 
+import { notFound } from "next/navigation";
+
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
 import CustomMarkdown from "@/components/pages/markdown";
@@ -59,7 +61,9 @@ export default async function ActivityPage({ params }) {
   const { activityId } = params;
   const session = await auth();
   const activityData = await getActivityData(activityId);
-
+  if (!activityData){
+    notFound();
+  }
   const userActivityRole = await getUserActivityRole(
     session?.user?.id,
     activityData.id

@@ -9,7 +9,10 @@ import ActivityMenu from "@/components/pages/activity/menu";
 import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
 import { auth } from "@/auth";
-import { getActivityData, getUserActivityRole } from "@/utils/backend-event";
+import { getActivityData } from "@/utils/backend-organizer-events";
+import { getUserActivityRole } from "@/utils/backend-event";
+
+import { notFound } from "next/navigation";
 
 const Render = ({ activityData, admin }) => {
   const content = activityData.activitycontent;
@@ -59,7 +62,9 @@ export default async function ActivityPage({ params }) {
   const { activityId } = params;
   const session = await auth();
   const activityData = await getActivityData(activityId);
-
+  if (!activityData){
+    notFound();
+  }
   const userActivityRole = await getUserActivityRole(
     session?.user?.id,
     activityData.id
