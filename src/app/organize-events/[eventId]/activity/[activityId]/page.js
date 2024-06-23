@@ -1,54 +1,91 @@
+import EditBar from "@/components/pages/activity/edit-bar";
+
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
 import CustomMarkdown from "@/components/pages/markdown";
 import QA from "@/components/pages/activity/qa";
 import Options from "@/components/pages/activity/options";
+import ActivityMenu from "@/components/pages/activity/menu";
+import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
-const ActivityInfo = {
-  title: "SWE Q&A Panel",
-  content: [
-    {
-      id: "swe-qa-panel",
-      type: "md", // different types of content. Markdown (md), Q&A, Polls
-      title: "",
-      content: "",
-    },
-  ],
-};
+import { auth } from "@/auth";
+import { getActivityData, getUserActivityRole } from "@/utils/backend-event";
 
-export default function Page() {
+const Render = ({ activityData, admin }) => {
+  const content = activityData.activitycontent;
   return (
-    <main>
+    <>
+      {content &&
+        content.map((contentPiece) => {
+          switch (contentPiece.type) {
+            case "QA":
+              return (
+                <QA
+                  id={contentPiece.id}
+                  key={contentPiece.id}
+                  title={contentPiece.title}
+                  question={contentPiece.content.question}
+                  admin={admin}
+                />
+              );
+            case "MC":
+              return (
+                <Options
+                  id={contentPiece.id}
+                  key={contentPiece.id}
+                  title={contentPiece.title}
+                  options={contentPiece.content.options}
+                  admin={admin}
+                />
+              );
+            case "md":
+              return (
+                <div key={contentPiece.id} className="flex items-center gap-5">
+                  {admin && <EditBar id={contentPiece.id}/>}
+                  <div>
+                    <CustomMarkdown
+                      id={contentPiece.id}
+                      source={contentPiece.content.markdown}
+                    />
+                  </div>
+                </div>
+              );
+          }
+        })}
+    </>
+  );
+};
+export default async function ActivityPage({ params }) {
+  const { activityId } = params;
+  const session = await auth();
+  const activityData = await getActivityData(activityId);
+
+  const userActivityRole = await getUserActivityRole(
+    session?.user?.id,
+    activityData.id
+  );
+  const admin =
+    userActivityRole?.role === "organizer" ||
+    userActivityRole?.role === "owner";
+  return (
+    <main className="w-full">
       <div>
-        <ThemedText type="heading">{ActivityInfo.title}</ThemedText>
+        <ThemedText type="heading">{activityData.title}</ThemedText>
         <URLComponent />
+        <div className="flex justify-between">
+          <div className="flex gap-2">
+            <CalendarWidget
+              event={activityData}
+              eventTime={activityData.eventTime}
+            />
+          </div>
+        </div>
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
-      <div className="flex flex-col gap-4 max-w-screen-md">
-        <div>
-          <CustomMarkdown
-            source={`
-          ## Welcome to our event
-
-          We are so happy you are here. Before we can have some fun here is a checklist.
-          - Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Porttitor rhoncus dolor purus non enim. 
-          - Massa ultricies mi quis hendrerit dolor magna eget est lorem. Enim ut tellus elementum sagittis vitae. Eu mi bibendum neque egestas congue. 
-          - Vel facilisis volutpat est velit. Lorem ipsum dolor sit amet consectetur adipiscing elit pellentesque habitant. In hac habitasse platea dictumst quisque sagittis. 
-          - Facilisi morbi tempus iaculis urna id volutpat. Ullamcorper velit sed ullamcorper morbi tincidunt ornare massa eget egestas.
-        `}
-          />
-        </div>
-        <QA
-          title="Ask the engineers questions!"
-          question="Write your question for the engineers!"
-        />
-        <form>
-          <Options
-            title="How many hours do you sleep?"
-            options={["2-4 Hours", "6-8 Hours", "8-12 Hours"]}
-          />
-        </form>
+      <div className="flex flex-col gap-4 w-full h-[calc(100vh-172px)] overflow-y-scroll pr-3 pt-4">
+        <Render activityData={activityData} admin={admin} />
       </div>
+      <ActivityMenu admin={admin} />
     </main>
   );
 }

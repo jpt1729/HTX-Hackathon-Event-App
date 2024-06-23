@@ -3,6 +3,7 @@ import {
   UserGroupIcon,
   EllipsisHorizontalCircleIcon,
   PencilSquareIcon,
+  ViewColumnsIcon
 } from "@heroicons/react/24/outline";
 import ThemedText from "@/components/ThemedText";
 import Link from "next/link";
@@ -19,6 +20,13 @@ export default function Menu({}) {
         >
           <UserGroupIcon className="size-6" />
           <ThemedText>View Participants</ThemedText>
+        </Link>
+        <Link
+          href={`${pathname}/activity`}
+          className="flex gap-1 hover:text-red-accent hover:stroke-red-accent transition-colors hover:underline"
+        >
+          <ViewColumnsIcon className="size-6" />
+          <ThemedText>Activities</ThemedText>
         </Link>
         <Link
           href={`${pathname}/edit-content`}

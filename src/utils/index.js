@@ -14,15 +14,29 @@ const formatTime = ( dateObject ) => {
     });
     return `${formattedTime} ${formattedDate}`
 }
-function formatDateTime(input) {
+function formatDateTime(input, timeZone=Intl.DateTimeFormat().resolvedOptions().timeZone) {
     const date = new Date(input);
-      
-    // Extract year, month, day, hour, and minutes
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    const hours = String(date.getUTCHours()).padStart(2, "0");
-    const minutes = String(date.getUTCMinutes()).padStart(2, "0");
+    
+    // Use Intl.DateTimeFormat to format date in the specified timezone
+    const options = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+      timeZone: timeZone
+    };
+    
+    const formatter = new Intl.DateTimeFormat('en-GB', options);
+    const formattedParts = formatter.formatToParts(date);
+    
+    // Extract formatted parts
+    const year = formattedParts.find(part => part.type === 'year').value;
+    const month = formattedParts.find(part => part.type === 'month').value;
+    const day = formattedParts.find(part => part.type === 'day').value;
+    const hours = formattedParts.find(part => part.type === 'hour').value;
+    const minutes = formattedParts.find(part => part.type === 'minute').value;
   
     // Construct the desired format
     return `${year}-${month}-${day}T${hours}:${minutes}`;
