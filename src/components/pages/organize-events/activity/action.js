@@ -1,31 +1,13 @@
-"use server";
-import { createNewEvent } from "@/utils/backend-organizer-events";
-
-import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 
-export async function createEventAction(prevState, formData) {
-  let state = {
-    status: "success",
-    message: "",
-    errors: {},
-  };
+export default async function createActivityAction(prevState, formData) {
   const title = formData.get("title"); // test too long
 
   const description = formData.get("description");
   const startTime = new Date(formData.get("start-time"));
   const endTime = new Date(formData.get("end-time"));
-  const address = formData.get("address");
-  const googleMapsLink = formData.get("google-maps-link");
 
   const slug = formData.get("slug");
-
-  const session = await auth();
-
-  if (!session) {
-    state.status = "error";
-    state.message = "You must be logged in";
-  }
   if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) {
     state.status = "error";
     state.errors["slug"] = "Invalid slug";
@@ -45,24 +27,14 @@ export async function createEventAction(prevState, formData) {
     state.errors["end-time"] = "End time must be after start time";
     // Handle error case, perhaps show a message to the user
   }
-  if (!/^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/.test(googleMapsLink)) {
-    state.status = "error";
-    state.errors["google-maps-link"] = "Invalid URL";
-  }
-  if (description.length > 500) {
+  if (description.length > 250) {
     state.status = "error";
     state.errors["description"] = "Description too long";
   }
-  console.log({
-    title,
-    slug,
-    description,
-    startTime,
-    endTime,
-  })
-
-  if (state.status === "success") {
-    //redirect(`/organize-events/${slug}`);
-  }
-  return state;
+  const session = await auth();
+  return {
+    status: "",
+    message: "",
+    errors: {},
+  };
 }

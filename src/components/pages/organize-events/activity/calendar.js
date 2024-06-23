@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useCallback, useMemo } from "react";
 
-import { usePathname } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 
 import { Calendar, momentLocalizer, Views } from "react-big-calendar";
@@ -12,8 +12,7 @@ import ThemedText from "@/components/ThemedText";
 import Toolbar from "./toolbar";
 import { EventDay } from "./event";
 
-import CreateActivity from "./create-activity";
-import { useModal } from "@/utils/context/ModalContext";
+import { formatDateTime } from "@/utils";
 
 const Event = ({ event }) => {
   const pathname = usePathname();
@@ -27,9 +26,9 @@ const Event = ({ event }) => {
     </Link>
   );
 };
-
+const None = ({}) => <></>;
 export default function CustomOrganizerCalendar({ activities, eventData }) {
-  const [events, setEvents] = useState(activities)
+
   const { defaultDate, scrollToTime, components } = useMemo(
     () => ({
       defaultDate: new Date(2024, 3, 12),
@@ -45,23 +44,23 @@ export default function CustomOrganizerCalendar({ activities, eventData }) {
     []
   );
 
-  const { showModal } = useModal();
 
   const [view, setView] = useState(Views.WEEK);
   const [date, setDate] = useState(eventData.startTime);
 
+  const router = useRouter()
+  const pathname = usePathname()
   const handleSelectSlot = useCallback(
     ({ start, end }) => {
-      showModal(<CreateActivity start={start} end={end}/>)
-      setEvents((prev) => [...prev, { start, end, title:'title' }])
+      router.push(`${pathname}/create-activity?start=${formatDateTime(start)}&end=${formatDateTime(end)}`)
     },
-    [setEvents, showModal]
-  )
+    [router, pathname]
+  );
 
   const handleSelectEvent = useCallback(
     (event) => window.alert(event.title),
     []
-  )
+  );
 
   return (
     <>
@@ -69,7 +68,7 @@ export default function CustomOrganizerCalendar({ activities, eventData }) {
         views={[Views.MONTH, Views.WEEK, Views.DAY]}
         defaultDate={defaultDate}
         localizer={localizer}
-        events={events}
+        events={activities}
         scrollToTime={scrollToTime}
         defaultView={view}
         onSelectSlot={handleSelectSlot}
