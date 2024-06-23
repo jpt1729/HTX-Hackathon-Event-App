@@ -301,8 +301,6 @@ export async function getActivityContentById(activityContentId) {
         `ActivityContent with ID "${activityContentId}" not found`
       );
     }
-
-    console.log("ActivityContent:", activityContent);
     return activityContent;
   } catch (error) {
     console.error("Error fetching ActivityContent:", error);
@@ -344,10 +342,29 @@ export async function updateActivityContent(
     where: { id: activityContentId },
     data: updatedData,
   });
-
+  console.log(updatedActivityContent)
   return updatedActivityContent;
   } catch (error) {
     console.error("Error updating ActivityContent:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getActivityResponses(activityContentId) {
+  try {
+    const responses = await prisma.activityContentResponses.findMany({
+      where: {
+        activitycontentId: activityContentId,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    return responses;
+  } catch (error) {
+    console.error("Error retrieving activity responses:", error);
     throw error;
   } finally {
     await prisma.$disconnect();

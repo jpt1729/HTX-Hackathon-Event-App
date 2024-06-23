@@ -7,7 +7,7 @@ export async function editMCAction(prevState, formData){
     const optionsNames = [];
     
     for (let [name] of formData) {
-      if (!optionsNames.includes(name) && !(name === 'title') && !(name === 'id')) {
+      if (!optionsNames.includes(name) && !(name === 'title') && !(name === 'id') && name.includes("option-")) {
         optionsNames.push(name);
       }
     }

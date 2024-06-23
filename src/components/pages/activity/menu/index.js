@@ -31,7 +31,7 @@ export default function ActivityMenu({ admin }) {
         )}
       </div>
       <Link
-        href={`${pathname}/options`}
+        href={`${pathname}/admin`}
         className="flex gap-1 hover:text-red-accent hover:stroke-red-accent transition-colors hover:underline"
       >
         <EllipsisHorizontalCircleIcon className="size-6" />

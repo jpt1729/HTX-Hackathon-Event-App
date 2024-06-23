@@ -1,9 +1,7 @@
 "use client";
-import { useState, useRef, Suspense } from "react";
+import { useState, Suspense } from "react";
 import { useFormState } from "react-dom";
 import dynamic from "next/dynamic";
-
-import { useModal } from "@/utils/context/ModalContext";
 
 import ThemedText from "@/components/ThemedText";
 import ThemedLabels from "@/components/ThemedText/labels";
@@ -24,34 +22,44 @@ export default function EditMD({ activityContent }) {
     message: "",
     errors: {},
   });
-  const { showModal } = useModal()
-  if ((state.status === "error" && state.message) || (state.status === "success" && state.message)) {
-    showModal(<ThemedText>{state.message}</ThemedText>)
-  }
   return (
-    <form action={formAction}>
-      <ThemedLabels type="subheading">Title</ThemedLabels>
-      <br />
-      <ThemedInput
-        type="text"
-        name="title"
-        defaultValue={activityContent.title}
-      />
-      <br />
-      <br />
-      <Suspense fallback={<></>}>
-        <CustomMarkdownEditor
-          markdown={markdown}
-          setMarkdown={setFormMarkdown}
+    <>
+      {((state.status === "error" && state.message) ||
+        (state.status === "success" && state.message)) && (
+        <ThemedText className={`${state.status === "error" && "text-warning"}`}>
+          {state.message}
+        </ThemedText>
+      )}
+      <form action={formAction}>
+        <ThemedLabels type="subheading">Title</ThemedLabels>
+        <br />
+        <ThemedInput
+          type="text"
+          name="title"
+          defaultValue={activityContent.title}
         />
-      </Suspense>
-      <textarea
-        className="hidden"
-        name="markdown"
-        value={markdown}
-        readOnly
-      />
-      <input type='text' className="hidden" name='id' value={activityContent.id} readOnly/>
-    </form>
+        <br />
+        <br />
+        <Suspense fallback={<></>}>
+          <CustomMarkdownEditor
+            markdown={markdown}
+            setMarkdown={setFormMarkdown}
+          />
+        </Suspense>
+        <textarea
+          className="hidden"
+          name="markdown"
+          value={markdown}
+          readOnly
+        />
+        <input
+          type="text"
+          className="hidden"
+          name="id"
+          value={activityContent.id}
+          readOnly
+        />
+      </form>
+    </>
   );
 }
