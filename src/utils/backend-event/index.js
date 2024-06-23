@@ -370,3 +370,21 @@ export async function getActivityResponses(activityContentId) {
     await prisma.$disconnect();
   }
 }
+export async function deleteActivityResponses(responseIds) {
+  try {
+    const deleteResult = await prisma.activityContentResponses.deleteMany({
+      where: {
+        id: {
+          in: responseIds,
+        },
+      },
+    });
+
+    return deleteResult;
+  } catch (error) {
+    console.error("Error deleting activity responses:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
