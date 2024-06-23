@@ -3,6 +3,7 @@ import { useState } from "react";
 import ThemedText from "@/components/ThemedText";
 import UserCard from "./user-card";
 
+import { formatTime } from "@/utils";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 
@@ -27,10 +28,10 @@ export default function ResponseViewRow({ activityResponse, handleSelect }) {
           />
         </div>
       </td>
-      <td>
+      <td className='border-l border-gray pl-1'>
         <ThemedText>{activityResponse.id}</ThemedText>
       </td>
-      <td>
+      <td className='border-l border-gray pl-1'>
         <button
           onClick={(e) => {
             const params = new URLSearchParams(searchParams);
@@ -41,10 +42,13 @@ export default function ResponseViewRow({ activityResponse, handleSelect }) {
           <ThemedText>{activityResponse.activitycontentId}</ThemedText>
         </button>
       </td>
-      <td>
+      <td className='border-l border-gray pl-1'>
         <ThemedText>{activityResponse.response}</ThemedText>
       </td>
-      <td>
+      <td className='border-l border-gray pl-1'>
+        <ThemedText>{formatTime(activityResponse.createdAt)}</ThemedText>
+      </td>
+      <td className='border-l border-gray pl-1'>
         <UserCard user={activityResponse.user} />
       </td>
     </tr>

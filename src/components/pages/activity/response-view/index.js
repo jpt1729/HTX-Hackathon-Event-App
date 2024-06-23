@@ -6,17 +6,23 @@ import ThemedText from "@/components/ThemedText";
 import ResponseViewRow from "./ResponseViewRow";
 import NonSelectedMenu from "./NonSelectedMenu";
 
+import { useRouter } from "next/navigation";
+
 import { deleteResponses } from "./action";
 
-function SelectedMenu({ selectedResponses }) {
+function SelectedMenu({ selectedResponses, setSelectedResponses }) {
+  const router = useRouter();
   return (
     <>
       <button
-        onClick={() => {
+        onClick={async () => {
           //delete stuff :()
-          deleteResponses(selectedResponses);
+          await deleteResponses(selectedResponses);
+          router.refresh();
+          setSelectedResponses([])
         }}
-        className="text-warning border px-2 py-1 border-warning rounded border-dashed"
+        name={`Delete ${selectedResponses.length} responses`}
+        className="text-warning border px-2 border-warning rounded border-dashed"
       >
         Delete {selectedResponses.length} responses
       </button>
@@ -36,9 +42,9 @@ export default function ResponseViewTable({ activityResponses, searchParams }) {
   };
   return (
     <>
-      <div className="w-full relative">
+      <div className="w-full relative flex justify-end gap-3">
         {selectedResponses.length > 0 ? (
-          <SelectedMenu selectedResponses={selectedResponses} />
+          <SelectedMenu selectedResponses={selectedResponses} setSelectedResponses={setSelectedResponses} />
         ) : (
           <NonSelectedMenu />
         )}
@@ -46,15 +52,18 @@ export default function ResponseViewTable({ activityResponses, searchParams }) {
       <table className="w-full border-spacing-y-5">
         <thead>
           <tr className="border-2 border-b-gray border-x-0 border-t-0">
-            <th className="w-[5%]">{/*Left purposely blank*/}</th>
-            <th className="w-[20%]">
+            <th className="w-[2%]">{/*Left purposely blank*/}</th>
+            <th className="w-[15%]">
               <ThemedText className="font-bold">id</ThemedText>
             </th>
-            <th className="w-[20%]">
+            <th className="w-[15%]">
               <ThemedText className="font-bold">content id</ThemedText>
             </th>
-            <th className="w-[40%]">
+            <th className="w-[28%]">
               <ThemedText className="font-bold">Response</ThemedText>
+            </th>
+            <th className="w-[15%]">
+              <ThemedText className="font-bold">CreatedAt</ThemedText>
             </th>
             <th className="w-[15%]">
               <ThemedText className="font-bold">user</ThemedText>

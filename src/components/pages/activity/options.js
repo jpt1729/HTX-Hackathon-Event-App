@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import { useFormState } from "react-dom";
 
 import EditBar from "./edit-bar";
@@ -22,10 +23,15 @@ export default function Options({ id, title, options, admin }) {
     status: "",
     message: "",
   });
+  const ref = useRef()
   return (
     <form
       className="border-t-1 border-gray flex items-center gap-5"
-      action={formAction}
+      ref={ref}
+      action={async (formData) => {
+        await formAction(formData);
+        ref?.current?.reset();
+      }}
     >
       {admin && <EditBar id = {id}/>}
       <div className="">
@@ -65,7 +71,9 @@ export default function Options({ id, title, options, admin }) {
         </div>
         <ThemedInput type="submit" value="Submit" />
         <input type="text" name="id" className="hidden" value={id} readOnly />
+        <br/>
       </div>
+     
     </form>
   );
 }

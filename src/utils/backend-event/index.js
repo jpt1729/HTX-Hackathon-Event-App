@@ -329,21 +329,23 @@ export async function updateActivityContent(
       },
     });
     if (!activityContent) {
-      throw new Error('ActivityContent not found');
+      throw new Error("ActivityContent not found");
     }
-  
+
     const userRole = activityContent.activity.activityParticipants[0]?.role;
 
-  if (!(userRole === 'organizer' || userRole === 'owner')) {
-    throw new Error('User does not have permission to update this activity content');
-  } 
-  
-  const updatedActivityContent = await prisma.activityContent.update({
-    where: { id: activityContentId },
-    data: updatedData,
-  });
-  console.log(updatedActivityContent)
-  return updatedActivityContent;
+    if (!(userRole === "organizer" || userRole === "owner")) {
+      throw new Error(
+        "User does not have permission to update this activity content"
+      );
+    }
+
+    const updatedActivityContent = await prisma.activityContent.update({
+      where: { id: activityContentId },
+      data: updatedData,
+    });
+    console.log(updatedActivityContent);
+    return updatedActivityContent;
   } catch (error) {
     console.error("Error updating ActivityContent:", error);
     throw error;
@@ -351,7 +353,7 @@ export async function updateActivityContent(
     await prisma.$disconnect();
   }
 }
-export async function getActivityResponses(activitySlug) {
+export async function getActivityResponses(activitySlug, search) {
   try {
     const activity = await prisma.activity.findUnique({
       where: {
@@ -362,13 +364,24 @@ export async function getActivityResponses(activitySlug) {
     if (!activity) {
       throw new Error(`Activity with slug ${activitySlug} not found`);
     }
-
-    const responses = await prisma.activityContentResponses.findMany({
-      where: {
-        activitycontent: {
-          activityId: activity.id,
-        },
+    let whereClause = {
+      activitycontent: {
+        activityId: activity.id,
       },
+      
+    }
+    if (search.id) {
+      whereClause.activitycontentId = search.id
+    }
+    let orderBy = []
+    if (search.sort === 'ascending'){
+      orderBy.push({createdAt: 'asc'})
+    } else if (search.sort === 'descending') {
+      orderBy.push({createdAt: 'desc'})
+    }
+    const responses = await prisma.activityContentResponses.findMany({
+      where: whereClause,
+      orderBy: orderBy,
       include: {
         user: true,
         activitycontent: true,

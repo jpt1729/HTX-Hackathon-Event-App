@@ -48,7 +48,7 @@ export default function EditMC({ activityContent }) {
             return (
               <div key={_i} className="flex items-center gap-1">
                 <button
-                  title={`Remove option ${_i + 1}`}
+                  name={`Remove option ${_i + 1}`}
                   onClick={(e) => {
                     e.preventDefault();
                     let updatedOptions = [...options];
@@ -79,6 +79,7 @@ export default function EditMC({ activityContent }) {
                 setOptions(updatedOptions);
                 setNewOption("");
               }}
+              name='Add option'
             >
               <PlusIcon className="size-6" />
             </button>

@@ -17,7 +17,7 @@ export async function QAAction(prevState, formData){
     
     createActivityContentResponse(id, session.user.id, response)
     return {
-        status: "",
+        status: "success",
         message: ""
     }
 }
@@ -33,7 +33,7 @@ export async function OptionsAction(prevState, formData){
     const session = await auth()
     createActivityContentResponse(id, session.user.id, option)
     return {
-        status: "",
+        status: "success",
         message: ""
     }
 }

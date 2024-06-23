@@ -7,6 +7,7 @@ export default function Error({ error, reset }) {
       <ThemedText type="heading">Uh oh something went very wrong!</ThemedText>
       <ThemedText>Luckly we got this magic button to fix it!</ThemedText>
       <button
+        name="Reset Webpage"
         onClick={() => {
           reset();
         }}

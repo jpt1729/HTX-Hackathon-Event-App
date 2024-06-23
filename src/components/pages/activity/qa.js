@@ -1,4 +1,5 @@
 "use client";
+import { useRef } from "react";
 import { useFormState } from "react-dom";
 import EditBar from "./edit-bar";
 
@@ -6,7 +7,7 @@ import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 import PropTypes from "prop-types";
 
-import { QAAction } from "./action";;
+import { QAAction } from "./action";
 
 /**
  * This component renders a Q&A Prompt
@@ -22,9 +23,17 @@ export default function QA({ id, title, question, admin }) {
     status: "",
     message: "",
   });
+  const ref = useRef();
   return (
-    <form action={formAction} className="flex items-center gap-5">
-      {admin && <EditBar id = {id}/>}
+    <form
+      ref={ref}
+      action={async (formData) => {
+        await formAction(formData);
+        ref?.current?.reset();
+      }}
+      className="flex items-center gap-5"
+    >
+      {admin && <EditBar id={id} />}
       <div className="w-full max-w-screen-sm ">
         <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
           {title}
@@ -37,6 +46,7 @@ export default function QA({ id, title, question, admin }) {
               name="question-response"
               className="w-full border py-1 rounded-full px-4 border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
               placeholder={question}
+              defaultValue={""}
               required
             />
             {state.status === "error" && (

@@ -6,13 +6,18 @@ import { getActivityResponses } from "@/utils/backend-event";
 import Image from "next/image";
 
 import ResponseViewTable from "@/components/pages/activity/response-view";
+import { PageMenu } from "@/components/pages/event/menu";
 
 export default async function AdminPage({ params, searchParams }) {
   const { activityId } = params;
+  const { id, sort } = searchParams;
 
-  console.log(activityId)
-  const activityResponses = await getActivityResponses(activityId);
-  console.log(activityResponses)
+  const search = {
+    id: id,
+    sort: sort,
+  }
+
+  const activityResponses = await getActivityResponses(activityId, search);
   return (
     <main className="w-full">
       <div>
@@ -23,6 +28,7 @@ export default async function AdminPage({ params, searchParams }) {
       <div className="pt-4 overflow-y-scroll h-[calc(100vh-56px-68px)]">
         <ResponseViewTable activityResponses={activityResponses} searchParams={searchParams}/>
       </div>
+      <PageMenu/>
     </main>
   );
 }
