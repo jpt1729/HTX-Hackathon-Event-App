@@ -1,5 +1,8 @@
 import AlertNotification from '@/components/Notifications/alert'
-export default function EventLayout({ children }) {
+import { EventProvider } from '@/utils/context/EventContext';
+
+export default function EventLayout({ params, children }) {
+  const { eventId } = params;
   //todo: implement error bound
   const notifications = [
     {
@@ -9,7 +12,7 @@ export default function EventLayout({ children }) {
     }
   ]
   return (
-    <>
+    <EventProvider eventSlug={eventId}>
       {children}
       {notifications && notifications.map((notification) => {
         <AlertNotification key={notification.id} close={() => {
@@ -18,6 +21,6 @@ export default function EventLayout({ children }) {
           {notification.content}
         </AlertNotification>
       })}
-    </>
+    </EventProvider>
   );
 }

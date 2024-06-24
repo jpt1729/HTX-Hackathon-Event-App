@@ -1,20 +1,19 @@
-import EditBar from "@/components/pages/activity/edit-bar";
-
+import EditBar from "@/components/pages/event/activity/content/edit-bar";
 
 import { notFound } from "next/navigation";
 
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
 import CustomMarkdown from "@/components/pages/markdown";
-import QA from "@/components/pages/activity/qa";
-import Options from "@/components/pages/activity/options";
-import ActivityMenu from "@/components/pages/activity/menu";
+import QA from "@/components/pages/event/activity/content/qa";
+import Options from "@/components/pages/event/activity/content/options";
+import ActivityMenu from "@/components/pages/event/activity/menu";
 import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
 import { auth } from "@/auth";
 import { getActivityData, getUserActivityRole } from "@/utils/backend-event";
 
-import { CreateContentBar } from "@/components/pages/activity/create-content";
+import { CreateContentBar } from "@/components/pages/event/activity/content/create-content";
 
 const Render = ({ activityData, admin }) => {
   const content = activityData.activitycontent;
