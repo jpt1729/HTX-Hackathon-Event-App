@@ -1,5 +1,6 @@
 import EditBar from "@/components/pages/activity/edit-bar";
 
+
 import { notFound } from "next/navigation";
 
 import ThemedText from "@/components/ThemedText";
@@ -12,6 +13,8 @@ import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
 import { auth } from "@/auth";
 import { getActivityData, getUserActivityRole } from "@/utils/backend-event";
+
+import { CreateContentBar } from "@/components/pages/activity/create-content";
 
 const Render = ({ activityData, admin }) => {
   const content = activityData.activitycontent;
@@ -43,7 +46,7 @@ const Render = ({ activityData, admin }) => {
             case "md":
               return (
                 <div key={contentPiece.id} className="flex items-center gap-5">
-                  {admin && <EditBar id={contentPiece.id}/>}
+                  {admin && <EditBar id={contentPiece.id} />}
                   <div>
                     <CustomMarkdown
                       id={contentPiece.id}
@@ -61,7 +64,7 @@ export default async function ActivityPage({ params }) {
   const { activityId } = params;
   const session = await auth();
   const activityData = await getActivityData(activityId);
-  if (!activityData){
+  if (!activityData) {
     notFound();
   }
   const userActivityRole = await getUserActivityRole(
@@ -88,6 +91,9 @@ export default async function ActivityPage({ params }) {
       </div>
       <div className="flex flex-col gap-4 w-full h-[calc(100vh-172px)] overflow-y-scroll pr-3 pt-4">
         <Render activityData={activityData} admin={admin} />
+        {admin && (
+          <CreateContentBar activityId={activityData.id}/>
+        )}
       </div>
       <ActivityMenu admin={admin} />
     </main>

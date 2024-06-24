@@ -1,18 +1,30 @@
 "use client"
 import Link from "next/link";
-import { PencilSquareIcon, ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
-import { usePathname } from "next/navigation";
+import { PencilSquareIcon, ChatBubbleLeftEllipsisIcon, MinusIcon } from "@heroicons/react/24/outline";
+import { deleteContent } from "./action";
+import { usePathname, useRouter } from "next/navigation";
 
 export default function EditBar({ id }){
-    const pathname = usePathname()
+    const pathname = usePathname();
+    const router = useRouter();
     return (
       <>
-      <Link title='View Responses' href={`${pathname}/admin?id=${id}`}>
-        <ChatBubbleLeftEllipsisIcon className="size-6"/>
-      </Link>
-      <Link title='Edit Content' href={`${pathname}/admin/edit-content?id=${id}`}>
-        <PencilSquareIcon className="size-6" />
-      </Link>
+      <button
+        onClick={async (e) => {
+          await deleteContent(id)
+          router.refresh()
+        }}
+      >
+        <MinusIcon className="size-6"/>
+      </button>
+      <div>
+        <Link title='View Responses' href={`${pathname}/admin?id=${id}`}>
+          <ChatBubbleLeftEllipsisIcon className="size-6"/>
+        </Link>
+        <Link title='Edit Content' href={`${pathname}/admin/edit-content?id=${id}`}>
+          <PencilSquareIcon className="size-6" />
+        </Link>
+      </div>
       </>
     )
 }

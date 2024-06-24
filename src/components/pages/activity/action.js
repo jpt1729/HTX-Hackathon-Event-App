@@ -1,5 +1,5 @@
 "use server";
-import { createActivityContentResponse } from '@/utils/backend-event'
+import { createActivityContentResponse, deleteActivityContent, createNewActivityContent } from '@/utils/backend-event'
 import { auth } from "@/auth"
 
 export async function QAAction(prevState, formData){
@@ -36,4 +36,33 @@ export async function OptionsAction(prevState, formData){
         status: "success",
         message: ""
     }
+}
+
+export async function deleteContent(id){
+    const session = await auth();
+    if (!session) {
+        return;
+    }
+    await deleteActivityContent(id, session?.user?.id)
+}
+
+export async function createActivityContent(id, type){
+    const session = await auth();
+    if (!session) {
+        return;
+    }
+    let content = {};
+    let title = ""
+    if (type === 'MC'){
+        content = {"options":["Atom","VS Code","Repl.it","Subline Text"]}
+        title = 'What is your favorite code editor?'
+    } else if (type === 'QA') {
+        content = {"question":"Share your favorite programming languages!"}
+        title = 'What is your favorite programming language?'
+    } else if (type === 'md') {
+        content = {"markdown": `## The start of greatness!`}
+    } else {
+        return;
+    }
+    await createNewActivityContent(id, content, type, title)
 }

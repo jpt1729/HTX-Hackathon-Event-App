@@ -414,3 +414,78 @@ export async function deleteActivityResponses(responseIds) {
   }
 }
 
+export async function deleteActivityContent(activityContentId, userId) {
+  try {
+    // Fetch the activity content to get the associated activity ID
+    const activityContent = await prisma.activityContent.findUnique({
+      where: { id: activityContentId },
+      include: { activity: true },
+    });
+
+    if (!activityContent) {
+      throw new Error('Activity content not found.');
+    }
+
+    const activityId = activityContent.activityId;
+
+    // Check if the user is an organizer or owner of the associated activity
+    const userActivityRole = await prisma.userActivityRole.findFirst({
+      where: {
+        activityId: activityId,
+        userId: userId,
+        role: {
+          in: ['organizer', 'owner'],
+        },
+      },
+    });
+
+    if (!userActivityRole) {
+      throw new Error('User is not an organizer or owner of the associated activity.');
+    }
+
+    // Delete activity content responses associated with the activity content
+    await prisma.activityContentResponses.deleteMany({
+      where: {
+        activitycontentId: activityContentId,
+      },
+    });
+
+    // Delete the activity content
+    await prisma.activityContent.delete({
+      where: {
+        id: activityContentId,
+      },
+    });
+
+    return 'Activity content and related data deleted successfully.';
+  } catch (error) {
+    console.error('Error deleting activity content:', error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function createNewActivityContent(activityId, content, type, title = null) {
+  try {
+    // Create the activity content
+    const newActivityContent = await prisma.activityContent.create({
+      data: {
+        content: content,
+        type: type,
+        title: title,
+        activity: {
+          connect: {
+            id: activityId
+          }
+        }
+      },
+    });
+
+    return newActivityContent;
+  } catch (error) {
+    console.error('Error creating activity content:', error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
