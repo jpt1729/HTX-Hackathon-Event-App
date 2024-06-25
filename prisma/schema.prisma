@@ -1,25 +1,27 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["rhel-openssl-1.0.x"]
+}
+
 datasource db {
   provider = "cockroachdb"
   url      = env("DATABASE_URL")
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id                     String          @id @default(cuid())
-  name                   String?
-  email                  String          @unique
-  emailVerified          DateTime?
-  image                  String?
-  accounts               Account[]
-  sessions               Session[]
-  Authenticator          Authenticator[]
-  events UserEventRole[]
-  activities UserActivityRole[]
-  createdAt              DateTime        @default(now())
-  updatedAt              DateTime        @updatedAt
+  id                       String                     @id @default(cuid())
+  name                     String?
+  email                    String                     @unique
+  emailVerified            DateTime?
+  image                    String?
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
+  activitycontentresponses ActivityContentResponses[] @relation("UserToActivityContentResponses")
+  accounts                 Account[]                  @relation("AccountToUser")
+  Authenticator            Authenticator[]            @relation("AuthenticatorToUser")
+  sessions                 Session[]                  @relation("SessionToUser")
+  activities               UserActivityRole[]         @relation("UserToUserActivityRole")
+  events                   UserEventRole[]            @relation("UserToUserEventRole")
 }
 
 model Account {
@@ -34,11 +36,9 @@ model Account {
   scope             String?
   id_token          String?
   session_state     String?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation("AccountToUser", fields: [userId], references: [id])
 
   @@id([provider, providerAccountId])
 }
@@ -47,10 +47,9 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation("SessionToUser", fields: [userId], references: [id])
 }
 
 model VerificationToken {
@@ -70,64 +69,80 @@ model Authenticator {
   credentialDeviceType String
   credentialBackedUp   Boolean
   transports           String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user                 User    @relation("AuthenticatorToUser", fields: [userId], references: [id])
 
   @@id([userId, credentialID])
 }
 
 model Event {
-  id          String   @id @default(cuid())
-  slug        String   @unique @default(uuid())
-  published   Boolean? @default(false)
-  title       String
-  description String?
-  content String?
-  location    Json
-  playlist    String?
-  startTime   DateTime
-  endTime     DateTime
-
-  eventParticipants UserEventRole[]
-  activities        Activity[] @relation("eventActivities")
+  id                String          @id @default(cuid())
+  slug              String          @unique @default(uuid())
+  published         Boolean?        @default(false)
+  title             String
+  description       String?
+  location          Json
+  playlist          String?
+  startTime         DateTime
+  endTime           DateTime
+  content           String?
+  activities        Activity[]      @relation("eventActivities")
+  eventParticipants UserEventRole[] @relation("EventToUserEventRole")
 }
 
 model Activity {
-  id          String   @id @default(cuid())
-  eventId     String
-  slug        String   @unique @default(cuid())
-  published   Boolean? @default(false)
-  title       String
-  description String?
-  content     Json?
-  startTime   DateTime
-  endTime     DateTime
-
-  event                Event  @relation("eventActivities", fields: [eventId], references: [id])
-  activityParticipants UserActivityRole[]
+  id                   String             @id @default(cuid())
+  eventId              String
+  slug                 String             @unique
+  published            Boolean?           @default(false)
+  title                String
+  description          String?
+  startTime            DateTime
+  endTime              DateTime
+  event                Event              @relation("eventActivities", fields: [eventId], references: [id])
+  activitycontent      ActivityContent[]  @relation("ActivityToActivityContent")
+  activityParticipants UserActivityRole[] @relation("ActivityToUserActivityRole")
 }
+
 model UserEventRole {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   userId    String
   eventId   String
   role      String
   createdAt DateTime @default(now())
-
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  event     Event @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  event     Event    @relation("EventToUserEventRole", fields: [eventId], references: [id])
+  user      User     @relation("UserToUserEventRole", fields: [userId], references: [id])
 
   @@unique([userId, eventId])
 }
 
 model UserActivityRole {
-  id        String  @id @default(cuid())
-  userId    String
-  activityId   String
-  role      String @default("participant")
-  createdAt DateTime @default(now())
-
-  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  activity     Activity @relation(fields: [activityId], references: [id], onDelete: Cascade)
+  id         String   @id @default(cuid())
+  userId     String
+  activityId String
+  role       String   @default("participant")
+  createdAt  DateTime @default(now())
+  activity   Activity @relation("ActivityToUserActivityRole", fields: [activityId], references: [id])
+  user       User     @relation("UserToUserActivityRole", fields: [userId], references: [id])
 
   @@unique([userId, activityId])
+}
+
+model ActivityContent {
+  id         String                     @id @default(cuid())
+  title      String?
+  type       String
+  activityId String
+  content    Json
+  activity   Activity                   @relation("ActivityToActivityContent", fields: [activityId], references: [id])
+  responses  ActivityContentResponses[] @relation("ActivityContentResponsesToActivityContent")
+}
+
+model ActivityContentResponses {
+  id                String           @id @default(cuid())
+  activitycontentId String?
+  createdAt         DateTime         @default(now())
+  userId            String
+  response          String
+  activitycontent   ActivityContent? @relation("ActivityContentResponsesToActivityContent", fields: [activitycontentId], references: [id])
+  user              User             @relation("UserToActivityContentResponses", fields: [userId], references: [id])
 }

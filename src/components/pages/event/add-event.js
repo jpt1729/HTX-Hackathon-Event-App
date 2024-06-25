@@ -7,7 +7,7 @@ import { useModal } from "@/utils/context/ModalContext";
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 
-import { addEvent } from "./actions";
+import { addEventAction } from "./actions";
 
 const ModalContent = ({ close }) => {
   //TODO: QR CODE feature
@@ -16,7 +16,7 @@ const ModalContent = ({ close }) => {
   //TODO: Success message not in red
   const router = useRouter()
   const pathname = usePathname()
-  const [state, formAction] = useFormState(addEvent, {
+  const [state, formAction] = useFormState(addEventAction, {
     status: "Not Submitted",
     message: "",
   });
@@ -32,7 +32,6 @@ const ModalContent = ({ close }) => {
         <br />
         <div className="flex gap-2">
           <ThemedInput type="text" name="event-slug" placeholder="Event ID" />
-
           <ThemedInput type="submit" />
         </div>
         <ThemedLabels

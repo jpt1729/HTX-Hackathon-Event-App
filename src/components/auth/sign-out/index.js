@@ -9,7 +9,7 @@ export function SignOut() {
       }}
       className="flex items-center"
     >
-      <button type="submit">Sign Out</button>
+      <button name='Sign Out' type="submit">Sign Out</button>
     </form>
   )
 } 

@@ -1,35 +1,43 @@
 "use client";
 import React, { useState } from "react";
-
-import { useModal } from "@/utils/context/ModalContext";
-import { useSearchParams } from 'next/navigation'
 import { useFormState } from "react-dom";
+
+import { createEventAction } from './action'
+import { useModal } from "@/utils/context/ModalContext";
+
 import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 import ThemedText from "@/components/ThemedText";
 
-import { formatDateTime } from "@/utils";
+export default function CreateEventForm({ }) {
 
-export default function CreateEventForm({ eventData }) {
-  const searchParams = useSearchParams()
+  const { showModal } = useModal();
 
-  const slugChange = searchParams.get('slug-change')
-  const { showModal } = useModal()
   const [times, setTimes] = useState({
-    startTime: formatDateTime(eventData?.startTime),
-    endTime: formatDateTime(eventData?.endTime),
+    startTime: '',
+    endTime: '',
   });
-  const [state, action] = useFormState(() => {}, {
+
+  const [description, setDescription] = useState("")
+  const [state, action] = useFormState(createEventAction, {
     status: "",
     message: "",
     errors: {},
   });
-  
-  if (state.status === "success"){
-    showModal(<div><ThemedText>{state.status.message}</ThemedText></div>)
+
+  if (state.status === "success") {
+    showModal(
+      <div>
+        <ThemedText>{state.status.message}</ThemedText>
+      </div>
+    );
   }
-  if (state.status === "error" && state.message !== ""){
-    showModal(<div><ThemedText>{state.status.message}</ThemedText></div>)
+  if (state.status === "error" && state.message !== "") {
+    showModal(
+      <div>
+        <ThemedText>{state.status.message}</ThemedText>
+      </div>
+    );
   }
   return (
     <form
@@ -47,17 +55,30 @@ export default function CreateEventForm({ eventData }) {
             type="text"
             name="title"
             placeholder="Title"
-            defaultValue={eventData?.title}
+            required
           />
         </div>
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Description</ThemedLabels>
-          <ThemedInput
-            type="text"
+          <textarea
             name="description"
-            placeholder="Description"
-            defaultValue={eventData?.description}
-          />
+            placeholder=""
+            className="resize-none p-3 rounded-lg border border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
+            rows="6"
+            cols="15"
+            value={description}
+            onChange={(e) => {
+              if (e.target.value.length <= 500){
+                setDescription(e.target.value)
+              }
+            }}
+          ></textarea>
+          <ThemedLabels type='subtext' className={`${description.length >= 500 && 'text-warning'} transition-colors`}>{description.length}/500 Characters</ThemedLabels>
+          {state.errors["description"] && (
+            <ThemedLabels type="subtext" className="text-warning">
+              {state.errors["description"]}
+            </ThemedLabels>
+          )}
         </div>
         <div className="flex flex-col">
           <ThemedLabels className="font-bold">Event Start Time</ThemedLabels>
@@ -71,7 +92,9 @@ export default function CreateEventForm({ eventData }) {
                 startTime: e.target.value,
               });
             }}
+            min={new Date()}
             max={times.endTime}
+            required
           />
           {state.errors["start-time"] && (
             <ThemedLabels type="subtext" className="text-warning">
@@ -92,6 +115,7 @@ export default function CreateEventForm({ eventData }) {
               });
             }}
             min={times.startTime}
+            required
           />
           {state.errors["end-time"] && (
             <ThemedLabels type="subtext" className="text-warning">
@@ -108,7 +132,7 @@ export default function CreateEventForm({ eventData }) {
             type="text"
             name="address"
             placeholder="721 Broadway, New York, NY 10003, USA"
-            defaultValue={eventData?.location?.address}
+            required
           />
         </div>
         <div className="flex flex-col">
@@ -117,7 +141,7 @@ export default function CreateEventForm({ eventData }) {
             type="text"
             name="google-maps-link"
             placeholder="https://maps.app.goo.gl/7v3EPoBYKBGnocZ87"
-            defaultValue={eventData?.location?.googleMapsLink}
+            required
           />
           {state.errors["google-maps-link"] && (
             <ThemedLabels type="subtext" className="text-warning">
@@ -135,7 +159,6 @@ export default function CreateEventForm({ eventData }) {
               type="text"
               name="slug"
               placeholder="hack-htx"
-              defaultValue={eventData?.slug}
               required
             />
             {state.errors["slug"] && (
@@ -145,13 +168,6 @@ export default function CreateEventForm({ eventData }) {
             )}
           </span>
         </div>
-        <input
-          type="text"
-          name="event-id"
-          value={eventData?.id}
-          readOnly
-          className="hidden"
-        />
       </div>
       <ThemedInput type="submit" value="save" className="w-fit" />
     </form>

@@ -24,9 +24,9 @@ const generateCalendarLink = (event) => {
   return googleCalendarEventUrl({
     title: title,
     details: description,
-    location: location.googleMapsLink
-      ? location.googleMapsLink
-      : location.address,
+    location: location?.googleMapsLink
+      ? location?.googleMapsLink
+      : location?.address,
     start: formatDateToISO8601(eventTime.startTime),
     end: formatDateToISO8601(eventTime.endTime),
   });

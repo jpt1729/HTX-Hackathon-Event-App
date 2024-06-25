@@ -46,6 +46,8 @@ export async function getActivities(eventId) {
           startTime: activity.startTime,
           endTime: activity.endTime,
         },
+        start: activity.startTime,
+        end: activity.endTime,
         ...activity,
       };
     });
@@ -56,14 +58,44 @@ export async function getActivities(eventId) {
     await prisma.$disconnect();
   }
 }
-
+export async function getActivityData(activitySlug) {
+  try {
+    const activityData = await prisma.activity.findUnique({
+      where: { published: true, slug: activitySlug },
+      include: {
+        activitycontent: true,
+      },
+    });
+    let processedActivityData = {
+      eventTime: {
+        startTime: activityData.startTime,
+        endTime: activityData.endTime,
+      },
+      start: activityData.startTime,
+      end: activityData.endTime,
+      ...activityData,
+    };
+    return processedActivityData;
+  } catch (error) {
+    console.error("Error retrieving slugs: ", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
 export async function getEventsForUser(userId) {
   try {
     const userEvents = await prisma.userEventRole.findMany({
       where: {
         userId: userId,
         NOT: {
-          role: "banned",
+          OR: [
+            {
+              role: "banned",
+            },
+            {
+              role: "left",
+            },
+          ],
         },
       },
       include: {
@@ -104,7 +136,28 @@ export async function addEventToUser(userId, eventSlug) {
       console.error("Event not found");
       return;
     }
-
+    // Check if user left
+    const userRole = await prisma.UserEventRole.findFirst({
+      where: {
+        userId: userId,
+        eventId: event.id,
+      },
+    });
+    if (userRole) {
+      if (userRole.role !== "left") {
+        return;
+      }
+      const res = await prisma.UserEventRole.update({
+        where: {
+          id: userRole.id,
+        },
+        data: {
+          role: "participant",
+        },
+      });
+      console.log(res);
+      return res;
+    }
     // Create the UserEventRole entry
     const res = await prisma.userEventRole.create({
       data: {
@@ -139,7 +192,7 @@ export async function getEventParticipants(eventId, eventSlug) {
           },
           where: {
             NOT: {
-              role: "banned",
+              OR: [{ role: "banned" }, { role: "left" }],
             },
           },
         },
@@ -156,6 +209,282 @@ export async function getEventParticipants(eventId, eventSlug) {
     return eventParticipantsUsers;
   } catch (error) {
     console.error("Error fetching event participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function createActivityContentResponse(
+  activitycontentId,
+  userId,
+  response
+) {
+  try {
+    const activityContentResponse =
+      await prisma.activityContentResponses.create({
+        data: {
+          activitycontentId: activitycontentId,
+          userId: userId,
+          response: response,
+        },
+      });
+
+    console.log("ActivityContentResponse created:", activityContentResponse);
+    return activityContentResponse;
+  } catch (error) {
+    console.error("Error creating ActivityContentResponse:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getActivityParticipants(activityId, activitySlug) {
+  try {
+    let query = { id: activityId };
+    if (activitySlug) {
+      query = { slug: activitySlug };
+    }
+    const activityParticipants = await prisma.activity.findUnique({
+      where: query,
+      include: {
+        activityParticipants: {
+          include: {
+            user: true,
+          },
+          where: {
+            NOT: {
+              role: "banned",
+            },
+          },
+        },
+      },
+    });
+    console.log(activityParticipants);
+    const activityParticipantsUsers =
+      activityParticipants.activityParticipants.map((relation) => {
+        return {
+          role: relation.role,
+          ...relation.user,
+        };
+      });
+    return activityParticipantsUsers;
+  } catch (error) {
+    console.error("Error fetching activity participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getUserActivityRole(userId, activityId) {
+  try {
+    const userActivityRole = await prisma.userActivityRole.findFirst({
+      where: {
+        activityId: activityId,
+        userId: userId,
+      },
+    });
+
+    return userActivityRole;
+  } catch (error) {
+    console.error("Error fetching activity participants:", error);
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getActivityContentById(activityContentId) {
+  try {
+    const activityContent = await prisma.activityContent.findUnique({
+      where: { id: activityContentId },
+    });
+
+    if (!activityContent) {
+      throw new Error(
+        `ActivityContent with ID "${activityContentId}" not found`
+      );
+    }
+    return activityContent;
+  } catch (error) {
+    console.error("Error fetching ActivityContent:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function updateActivityContent(
+  activityContentId,
+  userId,
+  updatedData
+) {
+  try {
+    const activityContent = await prisma.activityContent.findUnique({
+      where: { id: activityContentId },
+      include: {
+        activity: {
+          include: {
+            activityParticipants: {
+              where: { userId: userId },
+              select: { role: true },
+            },
+          },
+        },
+      },
+    });
+    if (!activityContent) {
+      throw new Error("ActivityContent not found");
+    }
+
+    const userRole = activityContent.activity.activityParticipants[0]?.role;
+
+    if (!(userRole === "organizer" || userRole === "owner")) {
+      throw new Error(
+        "User does not have permission to update this activity content"
+      );
+    }
+
+    const updatedActivityContent = await prisma.activityContent.update({
+      where: { id: activityContentId },
+      data: updatedData,
+    });
+    console.log(updatedActivityContent);
+    return updatedActivityContent;
+  } catch (error) {
+    console.error("Error updating ActivityContent:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function getActivityResponses(activitySlug, search) {
+  try {
+    const activity = await prisma.activity.findUnique({
+      where: {
+        slug: activitySlug,
+      },
+    });
+
+    if (!activity) {
+      throw new Error(`Activity with slug ${activitySlug} not found`);
+    }
+    let whereClause = {
+      activitycontent: {
+        activityId: activity.id,
+      },
+    };
+    if (search.id) {
+      whereClause.activitycontentId = search.id;
+    }
+    let orderBy = [];
+    if (search.sort === "ascending") {
+      orderBy.push({ createdAt: "asc" });
+    } else if (search.sort === "descending") {
+      orderBy.push({ createdAt: "desc" });
+    }
+    const responses = await prisma.activityContentResponses.findMany({
+      where: whereClause,
+      orderBy: orderBy,
+      include: {
+        user: true,
+        activitycontent: true,
+      },
+    });
+
+    return responses;
+  } catch (error) {
+    console.error("Error retrieving activity responses:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function deleteActivityResponses(responseIds) {
+  try {
+    const deleteResult = await prisma.activityContentResponses.deleteMany({
+      where: {
+        id: {
+          in: responseIds,
+        },
+      },
+    });
+
+    return deleteResult;
+  } catch (error) {
+    console.error("Error deleting activity responses:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+
+export async function deleteActivityContent(activityContentId, userId) {
+  try {
+    // Fetch the activity content to get the associated activity ID
+    const activityContent = await prisma.activityContent.findUnique({
+      where: { id: activityContentId },
+      include: { activity: true },
+    });
+
+    if (!activityContent) {
+      throw new Error('Activity content not found.');
+    }
+
+    const activityId = activityContent.activityId;
+
+    // Check if the user is an organizer or owner of the associated activity
+    const userActivityRole = await prisma.userActivityRole.findFirst({
+      where: {
+        activityId: activityId,
+        userId: userId,
+        role: {
+          in: ['organizer', 'owner'],
+        },
+      },
+    });
+
+    if (!userActivityRole) {
+      throw new Error('User is not an organizer or owner of the associated activity.');
+    }
+
+    // Delete activity content responses associated with the activity content
+    await prisma.activityContentResponses.deleteMany({
+      where: {
+        activitycontentId: activityContentId,
+      },
+    });
+
+    // Delete the activity content
+    await prisma.activityContent.delete({
+      where: {
+        id: activityContentId,
+      },
+    });
+
+    return 'Activity content and related data deleted successfully.';
+  } catch (error) {
+    console.error('Error deleting activity content:', error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
+}
+export async function createNewActivityContent(activityId, content, type, title = null) {
+  try {
+    // Create the activity content
+    const newActivityContent = await prisma.activityContent.create({
+      data: {
+        content: content,
+        type: type,
+        title: title,
+        activity: {
+          connect: {
+            id: activityId
+          }
+        }
+      },
+    });
+
+    return newActivityContent;
+  } catch (error) {
+    console.error('Error creating activity content:', error);
+    throw error;
   } finally {
     await prisma.$disconnect();
   }
