@@ -6,8 +6,9 @@ import "react-big-calendar/lib/css/react-big-calendar.css";
 
 import {
     getEventData,
-    getActivities,
-  } from "@/utils/backend-event";
+  } from "@/utils/event-backend";
+
+import { getActivities } from "@/utils/activity-backend";
 
 export default async function Activity({ params }) {
     const { eventId } = params;

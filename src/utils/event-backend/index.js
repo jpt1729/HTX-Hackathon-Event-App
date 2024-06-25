@@ -1,6 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { cache } from 'react'
 
 const prisma = new PrismaClient();
+
+export const revalidate = 3600;
 
 export async function getAllEventSlugs() {
   try {
@@ -16,7 +19,7 @@ export async function getAllEventSlugs() {
     await prisma.$disconnect();
   }
 }
-export async function getEventData(slug) {
+export const getEventData = cache(async (slug) => {
   try {
     const eventData = await prisma.event.findUnique({
       where: {
@@ -33,8 +36,8 @@ export async function getEventData(slug) {
   } finally {
     await prisma.$disconnect();
   }
-}
-export async function getEventsForUser(userId) {
+})
+export const getEventsForUser = cache(async (userId) => {
   try {
     const userEvents = await prisma.userEventRole.findMany({
       where: {
@@ -72,8 +75,8 @@ export async function getEventsForUser(userId) {
   } finally {
     await prisma.$disconnect();
   }
-}
-export async function getEventParticipants(eventId, eventSlug) {
+})
+export const getEventParticipants = cache(async (eventId, eventSlug) => {
   try {
     let query = { id: eventId };
     if (eventSlug) {
@@ -108,14 +111,13 @@ export async function getEventParticipants(eventId, eventSlug) {
   } finally {
     await prisma.$disconnect();
   }
-}
-
-export async function getUserEventRole(
+})
+export const getUserEventRole = cache(async (
   userId,
   eventId,
   eventSlug = null,
   includeEventData = false
-) {
+) => {
   let trueEventId = eventId;
   if (eventSlug) {
     const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
@@ -135,9 +137,8 @@ export async function getUserEventRole(
     },
   });
   return res;
-}
-
-export async function getOrganizerEventsForUser(userId) {
+})
+export const getOrganizerEventsForUser = cache(async (userId) => {
   try {
     const organizerEventsForUser = await prisma.user.findUnique({
       where: { id: userId },
@@ -169,8 +170,7 @@ export async function getOrganizerEventsForUser(userId) {
   } finally {
     await prisma.$disconnect();
   }
-}
-
+})
 export async function addEventToUser(userId, eventSlug) {
   try {
     // Check if the user and event exist
@@ -226,7 +226,6 @@ export async function addEventToUser(userId, eventSlug) {
     await prisma.$disconnect();
   }
 }
-
 export async function updateEventContent(userId, eventId, updatedMarkdown) {
   // Check if the user is an eventOwner
   const isOwner = await prisma.UserEventRole.findFirst({
@@ -262,7 +261,6 @@ export async function updateEventContent(userId, eventId, updatedMarkdown) {
 
   return updatedEvent;
 }
-
 export async function updateUserEventRole(
   userId,
   eventSlug,
@@ -303,7 +301,6 @@ export async function updateUserEventRole(
     await prisma.$disconnect();
   }
 }
-
 export async function updateEventInfo(
   eventId,
   title,
@@ -340,7 +337,6 @@ export async function updateEventInfo(
     await prisma.$disconnect();
   }
 }
-
 export async function createNewEvent(
   userId,
   title,

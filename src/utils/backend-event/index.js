@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import { cache } from 'react'
 
 const prisma = new PrismaClient();
 
@@ -16,7 +17,7 @@ export async function getAllSlugs() {
     await prisma.$disconnect();
   }
 }
-export async function getEventData(slug) {
+export const getEventData = cache(async (slug) => {
   try {
     const eventData = await prisma.event.findUnique({
       where: {
@@ -33,8 +34,8 @@ export async function getEventData(slug) {
   } finally {
     await prisma.$disconnect();
   }
-}
-export async function getActivities(eventId) {
+})
+export const getActivities = cache(async (eventId) => {
   try {
     const activityData = await prisma.activity.findMany({
       where: { published: true, eventId: eventId },
@@ -57,8 +58,8 @@ export async function getActivities(eventId) {
   } finally {
     await prisma.$disconnect();
   }
-}
-export async function getActivityData(activitySlug) {
+})
+export const getActivityData = cache(async (activitySlug) => {
   try {
     const activityData = await prisma.activity.findUnique({
       where: { published: true, slug: activitySlug },
@@ -81,7 +82,7 @@ export async function getActivityData(activitySlug) {
   } finally {
     await prisma.$disconnect();
   }
-}
+})
 export async function getEventsForUser(userId) {
   try {
     const userEvents = await prisma.userEventRole.findMany({

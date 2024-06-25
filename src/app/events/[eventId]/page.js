@@ -13,16 +13,18 @@ import CustomMarkdown from "@/components/pages/markdown";
 import styles from "./event.module.css";
 
 import {
-  getAllSlugs,
+  getAllEventSlugs,
   getEventData,
-  getActivities,
-} from "@/utils/backend-event";
+} from "@/utils/event-backend";
+
+import { getActivities } from "@/utils/activity-backend";
 
 export default async function EventsPage({ params }) {
   const { eventId } = params;
-
+  
   const eventData = await getEventData(eventId);
   const activitiesData = await getActivities(eventData.id);
+  
 
   return (
     <main className="h-[calc(100vh-40px)] overflow-y-scroll w-full">
@@ -74,15 +76,15 @@ export default async function EventsPage({ params }) {
           </div>
         </div>
       </div>
-      <Menu/>
+      <Menu />
     </main>
   );
 }
 
 export async function generateStaticParams() {
-  const posts = await getAllSlugs();
+  const events = await getAllEventSlugs();
 
-  return posts.map((post) => ({
-    eventId: post.slug,
+  return events.map((event) => ({
+    eventId: event.slug,
   }));
 }

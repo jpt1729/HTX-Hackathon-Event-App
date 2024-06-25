@@ -11,7 +11,7 @@ import ActivityMenu from "@/components/pages/event/activity/menu";
 import CalendarWidget from "@/components/Card/Event/calendarWidget";
 
 import { auth } from "@/auth";
-import { getActivityData, getUserActivityRole } from "@/utils/backend-event";
+import { getActivityData, getUserActivityRole } from "@/utils/activity-backend";
 
 import { CreateContentBar } from "@/components/pages/event/activity/content/create-content";
 

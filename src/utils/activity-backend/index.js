@@ -1,8 +1,9 @@
 import { PrismaClient } from "@prisma/client";
+import { cache } from 'react'
 
 const prisma = new PrismaClient();
 
-export async function getActivities(eventId) {
+export const getActivities = cache(async (eventId) => {
   try {
     const activityData = await prisma.activity.findMany({
       where: { published: true, eventId: eventId },
@@ -25,9 +26,9 @@ export async function getActivities(eventId) {
   } finally {
     await prisma.$disconnect();
   }
-}
+})
 
-export async function getActivityData(activitySlug) {
+export const getActivityData = cache(async (activitySlug) => {
   try {
     const activityData = await prisma.activity.findUnique({
       where: { published: true, slug: activitySlug },
@@ -50,9 +51,9 @@ export async function getActivityData(activitySlug) {
   } finally {
     await prisma.$disconnect();
   }
-}
+})
 
-export async function getActivityParticipants(activityId, activitySlug) {
+export const getActivityParticipants = cache(async (activityId, activitySlug) => {
   try {
     let query = { id: activityId };
     if (activitySlug) {
@@ -87,9 +88,9 @@ export async function getActivityParticipants(activityId, activitySlug) {
   } finally {
     await prisma.$disconnect();
   }
-}
+})
 
-export async function getUserActivityRole(userId, activityId) {
+export const getUserActivityRole = cache(async (userId, activityId) => {
   try {
     const userActivityRole = await prisma.userActivityRole.findFirst({
       where: {
@@ -104,9 +105,9 @@ export async function getUserActivityRole(userId, activityId) {
   } finally {
     await prisma.$disconnect();
   }
-}
+})
 
-export async function getActivityContentById(activityContentId) {
+export const getActivityContentById = cache(async (activityContentId) => {
   try {
     const activityContent = await prisma.activityContent.findUnique({
       where: { id: activityContentId },
@@ -124,9 +125,9 @@ export async function getActivityContentById(activityContentId) {
   } finally {
     await prisma.$disconnect();
   }
-}
+})
 
-export async function getActivityResponses(activitySlug, search) {
+export const getActivityResponses = cache(async (activitySlug, search) => {
   try {
     const activity = await prisma.activity.findUnique({
       where: {
@@ -167,7 +168,7 @@ export async function getActivityResponses(activitySlug, search) {
   } finally {
     await prisma.$disconnect();
   }
-}
+})
 
 export async function updateActivityContent(
     activityContentId,

@@ -1,16 +1,12 @@
 import React from "react";
 
 import ThemedText from "@/components/ThemedText";
-import ThemedLabels from "@/components/ThemedText/labels";
-import ThemedInput from "@/components/ThemedText/input";
 import { PageMenu } from "@/components/pages/event/menu";
 
 import URLComponent from "@/components/pages/layout/urlComponent";
 import LeaveEvent from "@/components/pages/event/leave-event";
 
-import { auth } from "@/auth";
-
-import { getEventData } from "@/utils/backend-event";
+import { getEventData } from "@/utils/event-backend";
 
 
 export default async function EditContentPage({ params }) {
