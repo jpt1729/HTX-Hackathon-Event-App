@@ -23,58 +23,60 @@ export default function Options({ id, title, options, admin }) {
     status: "",
     message: "",
   });
-  const ref = useRef()
+  const ref = useRef();
   return (
-    <form
-      className="border-t-1 border-gray flex items-center gap-5"
-      ref={ref}
-      action={async (formData) => {
-        await formAction(formData);
-        ref?.current?.reset();
-      }}
-    >
-      {admin && <EditBar id = {id}/>}
-      <div className="">
-        <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
-          {title}
-        </ThemedLabels>
-        <br />
-        <div>
-          <div className="flex gap-2">
-            {options &&
-              options.map((option, _i) => {
-                return (
-                  <>
-                    <ThemedInput
-                      key={_i + "radio"}
-                      type="radio"
-                      name={"option"}
-                      id={option.replaceAll(" ", "")}
-                      value={option}
-                    />
-                    <ThemedLabels
-                      key={_i + "radio-label"}
-                      type="radio"
-                      htmlFor={option.replaceAll(" ", "")}
-                    >
-                      {option}
-                    </ThemedLabels>
-                  </>
-                );
-              })}
+    <div className="flex gap-5 items-center w-full">
+      {admin && <EditBar id={id} />}
+
+      <form
+        className="border-t-1 border-gray flex items-center gap-5 w-full"
+        ref={ref}
+        action={async (formData) => {
+          await formAction(formData);
+          ref?.current?.reset();
+        }}
+      >
+        <div className="">
+          <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
+            {title}
+          </ThemedLabels>
+          <br />
+          <div>
+            <div className="flex gap-2">
+              {options &&
+                options.map((option, _i) => {
+                  return (
+                    <>
+                      <ThemedInput
+                        key={_i + "radio"}
+                        type="radio"
+                        name={"option"}
+                        id={option.replaceAll(" ", "")}
+                        value={option}
+                      />
+                      <ThemedLabels
+                        key={_i + "radio-label"}
+                        type="radio"
+                        htmlFor={option.replaceAll(" ", "")}
+                      >
+                        {option}
+                      </ThemedLabels>
+                    </>
+                  );
+                })}
+            </div>
+            {state.status === "error" && (
+              <ThemedLabels type="subtext" className="text-warning">
+                {state.message}
+              </ThemedLabels>
+            )}
           </div>
-          {state.status === "error" && (
-            <ThemedLabels type="subtext" className="text-warning">
-              {state.message}
-            </ThemedLabels>
-          )}
+          <ThemedInput type="submit" value="Submit" />
+          <input type="text" name="id" className="hidden" value={id} readOnly />
+          <br />
         </div>
-        <ThemedInput type="submit" value="Submit" />
-        <input type="text" name="id" className="hidden" value={id} readOnly />
-        <br/>
-      </div>
-     
-    </form>
+      </form>
+    </div>
   );
 }
 Options.propTypes = {

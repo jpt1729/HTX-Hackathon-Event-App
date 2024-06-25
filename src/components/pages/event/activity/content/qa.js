@@ -25,44 +25,46 @@ export default function QA({ id, title, question, admin }) {
   });
   const ref = useRef();
   return (
-    <form
-      ref={ref}
-      action={async (formData) => {
-        await formAction(formData);
-        ref?.current?.reset();
-      }}
-      className="flex items-center gap-5"
-    >
+    <div className="flex gap-5 items-center w-full max-w-screen-sm">
       {admin && <EditBar id={id} />}
-      <div className="w-full max-w-screen-sm ">
-        <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
-          {title}
-        </ThemedLabels>
-        <br />
-        <div className="flex gap-2">
-          <div className="flex-grow">
-            <ThemedInput
-              type="text"
-              name="question-response"
-              className="w-full border py-1 rounded-full px-4 border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
-              placeholder={question}
-              defaultValue={""}
-              required
+      <form
+        ref={ref}
+        action={async (formData) => {
+          await formAction(formData);
+          ref?.current?.reset();
+        }}
+        className="flex items-center gap-5 w-full"
+      >
+        <div className="w-full max-w-screen-sm ">
+          <ThemedLabels type="paragraph" className="font-bold" htmlFor={title}>
+            {title}
+          </ThemedLabels>
+          <br />
+          <div className="flex gap-2">
+            <div className="flex-grow">
+              <ThemedInput
+                type="text"
+                name="question-response"
+                className="w-full border py-1 rounded-full px-4 border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
+                placeholder={question}
+                defaultValue={""}
+                required
+              />
+              {state.status === "error" && (
+                <ThemedLabels type="subtext" className="text-warning">
+                  {state.message}
+                </ThemedLabels>
+              )}
+            </div>
+            <input
+              type="submit"
+              className="font-bold text-red-accent hover:underline"
             />
-            {state.status === "error" && (
-              <ThemedLabels type="subtext" className="text-warning">
-                {state.message}
-              </ThemedLabels>
-            )}
           </div>
-          <input
-            type="submit"
-            className="font-bold text-red-accent hover:underline"
-          />
+          <input type="text" name="id" className="hidden" value={id} readOnly />
         </div>
-        <input type="text" name="id" className="hidden" value={id} readOnly />
-      </div>
-    </form>
+      </form>
+    </div>
   );
 }
 QA.propTypes = {
