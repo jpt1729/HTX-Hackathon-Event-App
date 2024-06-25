@@ -10,6 +10,7 @@ export default async function Events() {
   const session = await auth();
 
   const userEvents = await getOrganizerEventsForUser(session?.user?.id);
+  
   return (
     <>
       <main className="w-full">

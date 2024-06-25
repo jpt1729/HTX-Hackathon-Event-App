@@ -1,6 +1,8 @@
 import AlertNotification from "@/components/Notifications/alert";
+import { redirect } from "next/navigation";
+import { auth } from "@/auth";
 
-export default function EventLayout({ params, children }) {
+export default async function EventLayout({ params, children }) {
   //todo: implement error bound
   const notifications = [
     {
@@ -10,6 +12,10 @@ export default function EventLayout({ params, children }) {
       type: "alert",
     },
   ];
+  const session = await auth();
+  if (!session) {
+    redirect('/sign-in')
+  }
   return (
     <>
       {children}

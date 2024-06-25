@@ -1,9 +1,12 @@
 "use client";
 import ThemedText from "@/components/ThemedText";
 import Image from "next/image";
-// TODO: make it so that the owner can remove organizers but not vice versa
 
-export default function ParticipantCard({ user }) {
+import PromoteUser from "./promote-user";
+import DemoteUser from "./demote-user";
+import RemoveUser from "./remove-user";
+
+export default function ParticipantCard({ user, currentUser, admin }) {
   return (
     <div className="flex justify-between items-center">
       <div className="flex gap-2 items-center">
@@ -25,6 +28,19 @@ export default function ParticipantCard({ user }) {
           </ThemedText>
         </div>
       </div>
+      {admin && (
+        <div className="flex justify-center gap-2">
+          {currentUser.role === "owner" && user.role === "participant" && (
+            <PromoteUser user={user} />
+          )}
+          {currentUser.role === "owner" && user.role === "organizer" && (
+            <DemoteUser user={user} />
+          )}
+          {((user.role === "organizer" && currentUser.role === "owner") ||
+            user.role === "organizer" ||
+            user.role === "participant") && <RemoveUser user={user} />}
+        </div>
+      )}
     </div>
   );
 }

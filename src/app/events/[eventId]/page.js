@@ -15,7 +15,10 @@ import styles from "./event.module.css";
 import {
   getAllEventSlugs,
   getEventData,
+  getUserEventRole,
 } from "@/utils/event-backend";
+
+import { auth } from "@/auth";
 
 import { getActivities } from "@/utils/activity-backend";
 
@@ -25,7 +28,9 @@ export default async function EventsPage({ params }) {
   const eventData = await getEventData(eventId);
   const activitiesData = await getActivities(eventData.id);
   
-
+  const session = await auth();
+  const userEventRole = await getUserEventRole(session?.user?.id, eventData.id)
+  
   return (
     <main className="h-[calc(100vh-40px)] overflow-y-scroll w-full">
       <div>
@@ -68,7 +73,6 @@ export default async function EventsPage({ params }) {
               src="https://open.spotify.com/embed/playlist/37i9dQZF1E8Ow52yxxSpp5?utm_source=generator"
               width="100%"
               height="152"
-              frameBorder="0"
               allowFullScreen=""
               allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
               loading="lazy"
@@ -76,7 +80,7 @@ export default async function EventsPage({ params }) {
           </div>
         </div>
       </div>
-      <Menu />
+      <Menu admin={userEventRole.role === 'organizer' || userEventRole.role === 'owner'}/>
     </main>
   );
 }
