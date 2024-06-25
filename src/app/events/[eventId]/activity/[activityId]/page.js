@@ -17,14 +17,17 @@ import { CreateContentBar } from "@/components/pages/event/activity/content/crea
 
 const Render = ({ activityData, admin }) => {
   const content = activityData.activitycontent;
+  
   return (
     <>
       {content &&
-        content.map((contentPiece) => {
+        content.map((contentPiece, _i) => {
           switch (contentPiece.type) {
             case "QA":
               return (
                 <QA
+                  index={_i}
+                  contentLength={content.length}
                   id={contentPiece.id}
                   key={contentPiece.id}
                   title={contentPiece.title}
@@ -35,6 +38,8 @@ const Render = ({ activityData, admin }) => {
             case "MC":
               return (
                 <Options
+                  index={_i}
+                  contentLength={content.length}
                   id={contentPiece.id}
                   key={contentPiece.id}
                   title={contentPiece.title}
@@ -45,9 +50,10 @@ const Render = ({ activityData, admin }) => {
             case "md":
               return (
                 <div key={contentPiece.id} className="flex items-center gap-5">
-                  {admin && <EditBar id={contentPiece.id} />}
+                  {admin && <EditBar key={contentPiece.id} index={_i} contentLength={content.length} id={contentPiece.id} />}
                   <div>
                     <CustomMarkdown
+                      key={contentPiece.id} 
                       id={contentPiece.id}
                       source={contentPiece.content.markdown}
                     />

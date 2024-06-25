@@ -33,7 +33,11 @@ export const getActivityData = cache(async (activitySlug) => {
     const activityData = await prisma.activity.findUnique({
       where: { published: true, slug: activitySlug },
       include: {
-        activitycontent: true,
+        activitycontent: {
+          orderBy: {
+            order: 'desc',
+          },
+        },
       },
     });
     let processedActivityData = {
@@ -396,4 +400,51 @@ export async function createActivityContentResponse(
   } finally {
     await prisma.$disconnect();
   }
+}
+export async function updateActivityContentOrder(id, change) {
+  // Fetch the current activitycontent record
+  const currentContent = await prisma.activitycontent.findUnique({
+    where: { id: id },
+  });
+
+  if (!currentContent) {
+    throw new Error(`ActivityContent with id ${id} not found`);
+  }
+
+  // Determine the target order value
+  let targetOrder = currentContent.order + change;
+
+  // Fetch the min and max order values
+  const { _min, _max } = await prisma.activitycontent.aggregate({
+    _min: { order: true },
+    _max: { order: true },
+  });
+
+  // Ensure the target order is within the valid range
+  if (targetOrder < _min.order || targetOrder > _max.order) {
+    throw new Error(`Target order value '${targetOrder}' is out of range`);
+  }
+
+  // Find the record with the target order value
+  const targetContent = await prisma.activitycontent.findFirst({
+    where: { order: targetOrder },
+  });
+
+  if (!targetContent) {
+    throw new Error(`ActivityContent with order ${targetOrder} not found`);
+  }
+
+  // Perform the order swap
+  await prisma.$transaction([
+    prisma.activitycontent.update({
+      where: { id: currentContent.id },
+      data: { order: targetOrder },
+    }),
+    prisma.activitycontent.update({
+      where: { id: targetContent.id },
+      data: { order: currentContent.order },
+    }),
+  ]);
+
+  console.log(`Order of ActivityContent with id ${id} updated to ${targetOrder}`);
 }

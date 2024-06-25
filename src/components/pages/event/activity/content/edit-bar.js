@@ -6,6 +6,8 @@ import {
   ChatBubbleLeftEllipsisIcon,
   TrashIcon,
   EllipsisVerticalIcon,
+  ArrowUpIcon,
+  ArrowDownIcon,
 } from "@heroicons/react/24/outline";
 import ThemedText from "@/components/ThemedText";
 
@@ -18,7 +20,8 @@ const dropdownVariants = {
   opened: {},
 };
 
-export default function EditBar({ id }) {
+export default function EditBar({ id, index, contentLength }) {
+  console.log(index)
   const pathname = usePathname();
   const router = useRouter();
 
@@ -63,34 +66,58 @@ export default function EditBar({ id }) {
             transition={{
               duration: 0.2,
             }}
-            className={`block absolute top-6 left-0 bg-white rounded p-5 shadow z-50 w-max`}
+            className={`flex gap-5 items-center absolute top-6 left-0 bg-white rounded p-5 shadow z-50 w-max`}
           >
-            <Link
-              title="View Responses"
-              href={`${pathname}/admin?id=${id}`}
-              className="flex gap-2 hover:text-red-accent hover:stroke-red-accent transition-colors"
-            >
-              <ChatBubbleLeftEllipsisIcon className="size-6" />
-              <ThemedText>View responses</ThemedText>
-            </Link>
-            <Link
-              title="Edit Content"
-              href={`${pathname}/admin/edit-content?id=${id}`}
-              className="flex gap-2 hover:text-red-accent hover:stroke-red-accent transition-colors"
-            >
-              <PencilSquareIcon className="size-6" />
-              <ThemedText>Edit content</ThemedText>
-            </Link>
-            <button
-              onClick={async (e) => {
-                await deleteContent(id);
-                router.refresh();
-              }}
-              className="flex gap-2 hover:text-warning hover:stroke-warning transition-colors"
-            >
-              <TrashIcon className="size-6" />
-              <ThemedText>Delete</ThemedText>
-            </button>
+            <div className="flex flex-col">
+              <button
+                title='Move content up'
+                onClick = {() => {
+                  // Get current index add by 1
+                  // replace what ever has the current index + 1 and subtract that index by 1
+                }}
+                disabled = {index === 0}
+              >
+                <ArrowUpIcon className={`size-6 ${index === 0 && 'stroke-gray'}`} />
+              </button>
+              <button
+                title='Move content up'
+                onClick = {() => {
+                  // Get current index subtract by 1
+                  // replace what ever has the current index and increase that objects index by 1
+                }}
+                disabled = {index === contentLength - 1}
+              >
+                <ArrowDownIcon className={`size-6 ${index === (contentLength - 1) && 'stroke-gray'}`} />
+              </button>
+            </div>
+            <div>
+              <Link
+                title="View Responses"
+                href={`${pathname}/admin?id=${id}`}
+                className="flex gap-2 hover:text-red-accent hover:stroke-red-accent transition-colors"
+              >
+                <ChatBubbleLeftEllipsisIcon className="size-6" />
+                <ThemedText>View responses</ThemedText>
+              </Link>
+              <Link
+                title="Edit Content"
+                href={`${pathname}/admin/edit-content?id=${id}`}
+                className="flex gap-2 hover:text-red-accent hover:stroke-red-accent transition-colors"
+              >
+                <PencilSquareIcon className="size-6" />
+                <ThemedText>Edit content</ThemedText>
+              </Link>
+              <button
+                onClick={async (e) => {
+                  await deleteContent(id);
+                  router.refresh();
+                }}
+                className="flex gap-2 hover:text-warning hover:stroke-warning transition-colors"
+              >
+                <TrashIcon className="size-6" />
+                <ThemedText>Delete</ThemedText>
+              </button>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

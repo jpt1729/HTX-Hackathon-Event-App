@@ -18,7 +18,14 @@ import { OptionsAction } from "./action";
  * @param {string[]} [props.options] question of the options
  * @returns {React.ReactNode} A React element that renders an options prompt
  */
-export default function Options({ id, title, options, admin }) {
+export default function Options({
+  id,
+  title,
+  options,
+  admin,
+  index,
+  contentLength,
+}) {
   const [state, formAction] = useFormState(OptionsAction, {
     status: "",
     message: "",
@@ -26,7 +33,7 @@ export default function Options({ id, title, options, admin }) {
   const ref = useRef();
   return (
     <div className="flex gap-5 items-center w-full">
-      {admin && <EditBar id={id} />}
+      {admin && <EditBar id={id} index={index} contentLength={contentLength} />}
 
       <form
         className="border-t-1 border-gray flex items-center gap-5 w-full"

@@ -18,7 +18,14 @@ import { QAAction } from "./action";
  * @param {string} [props.question] question of the question
  * @returns {React.ReactNode} A React element that renders a Q&A prompt
  */
-export default function QA({ id, title, question, admin }) {
+export default function QA({
+  id,
+  title,
+  question,
+  admin,
+  index,
+  contentLength,
+}) {
   const [state, formAction] = useFormState(QAAction, {
     status: "",
     message: "",
@@ -26,7 +33,7 @@ export default function QA({ id, title, question, admin }) {
   const ref = useRef();
   return (
     <div className="flex gap-5 items-center w-full max-w-screen-sm">
-      {admin && <EditBar id={id} />}
+      {admin && <EditBar id={id} index={index} contentLength={contentLength} />}
       <form
         ref={ref}
         action={async (formData) => {

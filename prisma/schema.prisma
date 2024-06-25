@@ -131,6 +131,7 @@ model ActivityContent {
   id         String                     @id @default(cuid())
   title      String?
   type       String
+  order      Int  @default(-1)
   activityId String
   content    Json
   activity   Activity                   @relation("ActivityToActivityContent", fields: [activityId], references: [id])

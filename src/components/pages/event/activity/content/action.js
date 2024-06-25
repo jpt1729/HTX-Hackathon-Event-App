@@ -1,5 +1,5 @@
 "use server";
-import { createActivityContentResponse, deleteActivityContent, createNewActivityContent } from '@/utils/backend-event'
+import { createActivityContentResponse, deleteActivityContent, createNewActivityContent, updateActivityContentOrder } from '@/utils/activity-backend'
 import { auth } from "@/auth"
 
 export async function QAAction(prevState, formData){
@@ -65,4 +65,11 @@ export async function createActivityContent(id, type){
         return;
     }
     await createNewActivityContent(id, content, type, title)
+}
+export async function updateContentOrder(id, change){
+    const session = await auth();
+    if (!session) {
+        return;
+    }
+    await updateActivityContentOrder(id, change)
 }
