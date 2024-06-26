@@ -25,6 +25,7 @@ export default function QA({
   admin,
   index,
   contentLength,
+  addOptimisticChange
 }) {
   const [state, formAction] = useFormState(QAAction, {
     status: "",
@@ -33,7 +34,7 @@ export default function QA({
   const ref = useRef();
   return (
     <div className="flex gap-5 items-center w-full max-w-screen-sm">
-      {admin && <EditBar id={id} index={index} contentLength={contentLength} />}
+      {admin && <EditBar id={id} index={index} contentLength={contentLength} addOptimisticChange={addOptimisticChange} />}
       <form
         ref={ref}
         action={async (formData) => {

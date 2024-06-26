@@ -11,7 +11,7 @@ import {
 } from "@heroicons/react/24/outline";
 import ThemedText from "@/components/ThemedText";
 
-import { deleteContent } from "./action";
+import { deleteContent, updateContentOrder } from "./action";
 import { usePathname, useRouter } from "next/navigation";
 
 import { motion, AnimatePresence } from "framer-motion";
@@ -20,8 +20,8 @@ const dropdownVariants = {
   opened: {},
 };
 
-export default function EditBar({ id, index, contentLength }) {
-  console.log(index)
+export default function EditBar({ id, index, contentLength, addOptimisticChange }) {
+  console.log(id)
   const pathname = usePathname();
   const router = useRouter();
 
@@ -71,9 +71,8 @@ export default function EditBar({ id, index, contentLength }) {
             <div className="flex flex-col">
               <button
                 title='Move content up'
-                onClick = {() => {
-                  // Get current index add by 1
-                  // replace what ever has the current index + 1 and subtract that index by 1
+                onClick = {async () => {
+                  await updateContentOrder(id, "increase")
                 }}
                 disabled = {index === 0}
               >
@@ -81,9 +80,8 @@ export default function EditBar({ id, index, contentLength }) {
               </button>
               <button
                 title='Move content up'
-                onClick = {() => {
-                  // Get current index subtract by 1
-                  // replace what ever has the current index and increase that objects index by 1
+                onClick = {async () => {
+                  await updateContentOrder(id, "decrease")
                 }}
                 disabled = {index === contentLength - 1}
               >
@@ -109,8 +107,9 @@ export default function EditBar({ id, index, contentLength }) {
               </Link>
               <button
                 onClick={async (e) => {
-                  await deleteContent(id);
-                  router.refresh();
+                  addOptimisticChange(id, 'delete')
+                  //await deleteContent(id);
+                  //router.refresh();
                 }}
                 className="flex gap-2 hover:text-warning hover:stroke-warning transition-colors"
               >

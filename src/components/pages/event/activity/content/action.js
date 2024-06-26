@@ -71,5 +71,10 @@ export async function updateContentOrder(id, change){
     if (!session) {
         return;
     }
-    await updateActivityContentOrder(id, change)
+    if (change === 'increase') {
+        await updateActivityContentOrder(id, 1)
+    }
+    if (change === 'decrease') {
+        await updateActivityContentOrder(id, -1)
+    }
 }

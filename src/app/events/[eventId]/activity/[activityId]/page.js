@@ -15,56 +15,8 @@ import { getActivityData, getUserActivityRole } from "@/utils/activity-backend";
 
 import { CreateContentBar } from "@/components/pages/event/activity/content/create-content";
 
-const Render = ({ activityData, admin }) => {
-  const content = activityData.activitycontent;
-  
-  return (
-    <>
-      {content &&
-        content.map((contentPiece, _i) => {
-          switch (contentPiece.type) {
-            case "QA":
-              return (
-                <QA
-                  index={_i}
-                  contentLength={content.length}
-                  id={contentPiece.id}
-                  key={contentPiece.id}
-                  title={contentPiece.title}
-                  question={contentPiece.content.question}
-                  admin={admin}
-                />
-              );
-            case "MC":
-              return (
-                <Options
-                  index={_i}
-                  contentLength={content.length}
-                  id={contentPiece.id}
-                  key={contentPiece.id}
-                  title={contentPiece.title}
-                  options={contentPiece.content.options}
-                  admin={admin}
-                />
-              );
-            case "md":
-              return (
-                <div key={contentPiece.id} className="flex items-center gap-5">
-                  {admin && <EditBar key={contentPiece.id} index={_i} contentLength={content.length} id={contentPiece.id} />}
-                  <div>
-                    <CustomMarkdown
-                      key={contentPiece.id} 
-                      id={contentPiece.id}
-                      source={contentPiece.content.markdown}
-                    />
-                  </div>
-                </div>
-              );
-          }
-        })}
-    </>
-  );
-};
+import { Render } from "@/components/pages/event/activity/content/render";
+
 export default async function ActivityPage({ params }) {
   const { activityId } = params;
   const session = await auth();
@@ -96,9 +48,6 @@ export default async function ActivityPage({ params }) {
       </div>
       <div className="flex flex-col gap-4 w-full h-[calc(100vh-172px)] overflow-y-scroll pr-3 pt-4">
         <Render activityData={activityData} admin={admin} />
-        {admin && (
-          <CreateContentBar activityId={activityData.id}/>
-        )}
       </div>
       <ActivityMenu admin={admin} />
     </main>

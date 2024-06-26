@@ -25,6 +25,7 @@ export default function Options({
   admin,
   index,
   contentLength,
+  addOptimisticChange
 }) {
   const [state, formAction] = useFormState(OptionsAction, {
     status: "",
@@ -33,7 +34,7 @@ export default function Options({
   const ref = useRef();
   return (
     <div className="flex gap-5 items-center w-full">
-      {admin && <EditBar id={id} index={index} contentLength={contentLength} />}
+      {admin && <EditBar id={id} index={index} contentLength={contentLength} addOptimisticChange={addOptimisticChange}/>}
 
       <form
         className="border-t-1 border-gray flex items-center gap-5 w-full"

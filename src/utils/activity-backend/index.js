@@ -3,6 +3,8 @@ import { cache } from 'react'
 
 const prisma = new PrismaClient();
 
+export const revalidate = 600
+
 export const getActivities = cache(async (eventId) => {
   try {
     const activityData = await prisma.activity.findMany({
@@ -403,7 +405,7 @@ export async function createActivityContentResponse(
 }
 export async function updateActivityContentOrder(id, change) {
   // Fetch the current activitycontent record
-  const currentContent = await prisma.activitycontent.findUnique({
+  const currentContent = await prisma.activityContent.findUnique({
     where: { id: id },
   });
 
@@ -415,7 +417,7 @@ export async function updateActivityContentOrder(id, change) {
   let targetOrder = currentContent.order + change;
 
   // Fetch the min and max order values
-  const { _min, _max } = await prisma.activitycontent.aggregate({
+  const { _min, _max } = await prisma.activityContent.aggregate({
     _min: { order: true },
     _max: { order: true },
   });
@@ -426,7 +428,7 @@ export async function updateActivityContentOrder(id, change) {
   }
 
   // Find the record with the target order value
-  const targetContent = await prisma.activitycontent.findFirst({
+  const targetContent = await prisma.activityContent.findFirst({
     where: { order: targetOrder },
   });
 
@@ -436,11 +438,11 @@ export async function updateActivityContentOrder(id, change) {
 
   // Perform the order swap
   await prisma.$transaction([
-    prisma.activitycontent.update({
+    prisma.activityContent.update({
       where: { id: currentContent.id },
       data: { order: targetOrder },
     }),
-    prisma.activitycontent.update({
+    prisma.activityContent.update({
       where: { id: targetContent.id },
       data: { order: currentContent.order },
     }),

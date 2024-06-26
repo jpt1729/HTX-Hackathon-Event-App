@@ -3,6 +3,8 @@ import { cache } from 'react'
 
 const prisma = new PrismaClient();
 
+export const revalidate = 600
+
 export async function getAllSlugs() {
   try {
     const slugs = await prisma.event.findMany({

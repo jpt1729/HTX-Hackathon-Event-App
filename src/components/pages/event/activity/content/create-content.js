@@ -9,7 +9,7 @@ import {
 import { createActivityContent } from "./action";
 import { useRouter } from "next/navigation";
 
-export function CreateContentBar({ activityId }) {
+export default function CreateContentBar({ activityId }) {
   const router = useRouter();
   return (
     <>
