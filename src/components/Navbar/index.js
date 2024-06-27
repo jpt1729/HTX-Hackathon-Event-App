@@ -21,7 +21,7 @@ export default async function Navbar({}) {
           <span className="font-bold">Events Organized by Me</span>
         </Link>
       </div>
-      <div>{session ? <Profile /> : <SignInNavbar />}</div>
+      <div>{session ? <Profile session={session}/> : <SignInNavbar />}</div>
     </nav>
   );
 }
