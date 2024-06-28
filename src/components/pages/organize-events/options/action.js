@@ -57,7 +57,7 @@ export async function optionsFormAction(prevState, formData) {
     state.status = "error";
     state.errors["google-maps-link"] = "Invalid URL";
   }
-  if (description.length > 500) {
+  if (description.length < 500) {
     state.status = "error";
     state.errors["description"] = "Description too long";
   }
