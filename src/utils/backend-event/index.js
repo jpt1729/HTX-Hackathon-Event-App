@@ -203,8 +203,10 @@ export async function getEventParticipants(eventId, eventSlug) {
     });
     const eventParticipantsUsers = eventParticipants.eventParticipants.map(
       (relation) => {
+        console.log(relation)
         return {
           role: relation.role,
+          joined: relation.createdAt,
           ...relation.user,
         };
       }

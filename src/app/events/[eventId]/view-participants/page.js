@@ -4,6 +4,7 @@ import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
 import ParticipantCard from "@/components/pages/event/participant-card/";
 import { PageMenu } from "@/components/pages/event/menu";
+import ParticipantTable from "@/components/pages/event/participant-card/participant-table";
 
 import { auth } from "@/auth";
 import { getEventParticipants, getUserEventRole } from "@/utils/event-backend";
@@ -22,7 +23,7 @@ export default async function ViewParticipantsPage({ params }) {
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
       <div className="pt-5 flex flex-col gap-2 h-[calc(100vh-40px-32px-68px)]">
-        {eventParticipants &&
+        {/*eventParticipants &&
           eventParticipants.map((user, _i) => {
             return (
               <ParticipantCard
@@ -35,7 +36,8 @@ export default async function ViewParticipantsPage({ params }) {
                 }
               />
             );
-          })}
+          })*/}
+          {eventParticipants && <ParticipantTable eventParticipants={eventParticipants}/>}
       </div>
       <PageMenu />
     </main>
