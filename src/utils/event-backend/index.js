@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { cache } from 'react'
+import { withAccelerate } from '@prisma/extension-accelerate'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient().$extends(withAccelerate())
 
 export const revalidate = 3600;
 
@@ -11,6 +11,7 @@ export async function getAllEventSlugs() {
       select: {
         slug: true,
       },
+      
     });
     return slugs;
   } catch (error) {
@@ -19,11 +20,14 @@ export async function getAllEventSlugs() {
     await prisma.$disconnect();
   }
 }
-export const getEventData = cache(async (slug) => {
+export const getEventData = async (slug) => {
   try {
     const eventData = await prisma.event.findUnique({
       where: {
         slug: slug,
+      },
+      cacheStrategy: {
+        swr: 60,
       },
     });
     let processedEventData = {
@@ -36,8 +40,8 @@ export const getEventData = cache(async (slug) => {
   } finally {
     await prisma.$disconnect();
   }
-})
-export const getEventsForUser = cache(async (userId) => {
+}
+export const getEventsForUser = async (userId) => {
   try {
     const userEvents = await prisma.userEventRole.findMany({
       where: {
@@ -55,6 +59,9 @@ export const getEventsForUser = cache(async (userId) => {
       },
       include: {
         event: true,
+      },
+      cacheStrategy: {
+        swr: 60,
       },
     });
 
@@ -75,8 +82,8 @@ export const getEventsForUser = cache(async (userId) => {
   } finally {
     await prisma.$disconnect();
   }
-})
-export const getEventParticipants = cache(async (eventId, eventSlug) => {
+}
+export const getEventParticipants = async (eventId, eventSlug) => {
   try {
     let query = { id: eventId };
     if (eventSlug) {
@@ -96,6 +103,9 @@ export const getEventParticipants = cache(async (eventId, eventSlug) => {
           },
         },
       },
+      cacheStrategy: {
+        swr: 60,
+      },
     });
     const eventParticipantsUsers = eventParticipants.eventParticipants.map(
       (relation) => {
@@ -111,8 +121,8 @@ export const getEventParticipants = cache(async (eventId, eventSlug) => {
   } finally {
     await prisma.$disconnect();
   }
-})
-export const getUserEventRole = cache(async (
+}
+export const getUserEventRole = async (
   userId,
   eventId,
   eventSlug = null,
@@ -135,10 +145,13 @@ export const getUserEventRole = cache(async (
     include: {
       event: includeEventData,
     },
+    cacheStrategy: {
+        swr: 60,
+      },
   });
   return res;
-})
-export const getOrganizerEventsForUser = cache(async (userId) => {
+}
+export const getOrganizerEventsForUser = async (userId) => {
   try {
     const organizerEventsForUser = await prisma.user.findUnique({
       where: { id: userId },
@@ -151,6 +164,9 @@ export const getOrganizerEventsForUser = cache(async (userId) => {
             event: true,
           },
         },
+      },
+      cacheStrategy: {
+        swr: 60,
       },
     });
     let processedEventData = organizerEventsForUser.events.map((relation) => {
@@ -170,7 +186,7 @@ export const getOrganizerEventsForUser = cache(async (userId) => {
   } finally {
     await prisma.$disconnect();
   }
-})
+}
 export async function addEventToUser(userId, eventSlug) {
   try {
     // Check if the user and event exist

@@ -4,8 +4,11 @@ import { useState } from "react";
 import Image from "next/image";
 import ThemedText from "@/components/ThemedText";
 
+import { formatTime } from "@/utils";
+
 export default function ParticipantView({ participant, handleSelect }) {
   const [checked, setChecked] = useState(false);
+  console.log(participant)
   return (
     <tr>
       <td>
@@ -39,6 +42,9 @@ export default function ParticipantView({ participant, handleSelect }) {
       </td>
       <td>
         <ThemedText>{participant.role}</ThemedText>
+      </td>
+      <td>
+        <ThemedText>{formatTime(participant.createdAt)}</ThemedText>
       </td>
     </tr>
   );

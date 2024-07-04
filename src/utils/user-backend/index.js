@@ -1,4 +1,4 @@
-const { PrismaClient } = require('@prisma/client');
+const { PrismaClient } = require("@prisma/client");
 
 const prisma = new PrismaClient();
 
@@ -11,28 +11,31 @@ export async function updateUser(id, name, description) {
         description: description,
       },
     });
-    console.log('User updated:', updatedUser);
+    console.log("User updated:", updatedUser);
     return updatedUser;
   } catch (error) {
-    console.error('Error updating user:', error);
+    console.error("Error updating user:", error);
     throw error;
   }
 }
 
 export async function getUserInfo(userId) {
-    try {
-      const userInfo = await prisma.user.findUnique({
-        where: { id: userId },
-        select: {
-          name: true,
-          description: true,
-          image: true,
-        },
-      });
-      console.log('User info:', userInfo);
-      return userInfo;
-    } catch (error) {
-      console.error('Error retrieving user info:', error);
-      throw error;
-    }
+  try {
+    const userInfo = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        name: true,
+        description: true,
+        image: true,
+      },
+      cacheStrategy: {
+        swr: 60,
+      },
+    });
+    console.log("User info:", userInfo);
+    return userInfo;
+  } catch (error) {
+    console.error("Error retrieving user info:", error);
+    throw error;
   }
+}

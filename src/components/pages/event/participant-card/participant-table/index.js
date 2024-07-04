@@ -29,14 +29,17 @@ export default function ParticipantTable({ eventParticipants }) {
             <th className="w-[15%]">
               <ThemedText className="font-bold">id</ThemedText>
             </th>
-            <th className="w-[25%]">
+            <th className="w-[15%]">
               <ThemedText className="font-bold">name</ThemedText>
             </th>
-            <th className="w-[28%]">
+            <th className="w-[23%]">
               <ThemedText className="font-bold">email</ThemedText>
             </th>
             <th className="w-[5%]">
               <ThemedText className="font-bold">role</ThemedText>
+            </th>
+            <th className="w-[15%]">
+              <ThemedText className="font-bold">joined</ThemedText>
             </th>
           </tr>
         </thead>
@@ -50,7 +53,9 @@ export default function ParticipantTable({ eventParticipants }) {
                   handleSelect={handleSelect}
                 />
               );
-            })}
+            })
+            //create an empty response screen...
+            }
         </tbody>
       </table>
     </>

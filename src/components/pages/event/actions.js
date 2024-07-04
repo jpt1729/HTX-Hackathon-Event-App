@@ -2,7 +2,7 @@
 import { auth } from "@/auth";
 
 import { addEventToUser } from "@/utils/backend-event";
-import { updateUserRole, getUserRole } from "@/utils/backend-organizer-events";
+import { updateUserRole, getUserRole } from "@/utils/event-backend";
 //TODO: add errors to front end + build backend protection.
 export async function addEventAction(prevState, formData) {
   const session = await auth();

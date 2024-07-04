@@ -3,7 +3,7 @@ import {
   getUserRole,
   updateEventInfo,
   updateUserRole,
-} from "@/utils/backend-organizer-events";
+} from "@/utils/event-backend";
 
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";

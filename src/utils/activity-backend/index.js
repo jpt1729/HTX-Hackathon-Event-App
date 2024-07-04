@@ -1,14 +1,18 @@
 import { PrismaClient } from "@prisma/client";
-import { cache } from 'react'
+import { cache } from "react";
+import { withAccelerate } from '@prisma/extension-accelerate'
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient().$extends(withAccelerate())
 
-export const revalidate = 600
+export const revalidate = 600;
 
-export const getActivities = cache(async (eventId) => {
+export const getActivities = async (eventId) => {
   try {
     const activityData = await prisma.activity.findMany({
       where: { published: true, eventId: eventId },
+      cacheStrategy: {
+        swr: 60,
+      },
     });
 
     let processedActivityData = activityData.map((activity) => {
@@ -28,18 +32,21 @@ export const getActivities = cache(async (eventId) => {
   } finally {
     await prisma.$disconnect();
   }
-})
+};
 
-export const getActivityData = cache(async (activitySlug) => {
+export const getActivityData = async (activitySlug) => {
   try {
     const activityData = await prisma.activity.findUnique({
       where: { published: true, slug: activitySlug },
       include: {
         activitycontent: {
           orderBy: {
-            order: 'desc',
+            order: "desc",
           },
         },
+      },
+      cacheStrategy: {
+        swr: 60,
       },
     });
     let processedActivityData = {
@@ -57,9 +64,9 @@ export const getActivityData = cache(async (activitySlug) => {
   } finally {
     await prisma.$disconnect();
   }
-})
+};
 
-export const getActivityParticipants = cache(async (activityId, activitySlug) => {
+export const getActivityParticipants = async (activityId, activitySlug) => {
   try {
     let query = { id: activityId };
     if (activitySlug) {
@@ -79,6 +86,9 @@ export const getActivityParticipants = cache(async (activityId, activitySlug) =>
           },
         },
       },
+      cacheStrategy: {
+        swr: 60,
+      },
     });
     console.log(activityParticipants);
     const activityParticipantsUsers =
@@ -94,14 +104,17 @@ export const getActivityParticipants = cache(async (activityId, activitySlug) =>
   } finally {
     await prisma.$disconnect();
   }
-})
+};
 
-export const getUserActivityRole = cache(async (userId, activityId) => {
+export const getUserActivityRole = async (userId, activityId) => {
   try {
     const userActivityRole = await prisma.userActivityRole.findFirst({
       where: {
         activityId: activityId,
         userId: userId,
+      },
+      cacheStrategy: {
+        swr: 60,
       },
     });
 
@@ -111,12 +124,15 @@ export const getUserActivityRole = cache(async (userId, activityId) => {
   } finally {
     await prisma.$disconnect();
   }
-})
+};
 
-export const getActivityContentById = cache(async (activityContentId) => {
+export const getActivityContentById = async (activityContentId) => {
   try {
     const activityContent = await prisma.activityContent.findUnique({
       where: { id: activityContentId },
+      cacheStrategy: {
+        swr: 60,
+      },
     });
 
     if (!activityContent) {
@@ -131,9 +147,9 @@ export const getActivityContentById = cache(async (activityContentId) => {
   } finally {
     await prisma.$disconnect();
   }
-})
+};
 
-export const getActivityResponses = cache(async (activitySlug, search) => {
+export const getActivityResponses = async (activitySlug, search) => {
   try {
     const activity = await prisma.activity.findUnique({
       where: {
@@ -165,6 +181,9 @@ export const getActivityResponses = cache(async (activitySlug, search) => {
         user: true,
         activitycontent: true,
       },
+      cacheStrategy: {
+        swr: 60,
+      },
     });
 
     return responses;
@@ -174,51 +193,51 @@ export const getActivityResponses = cache(async (activitySlug, search) => {
   } finally {
     await prisma.$disconnect();
   }
-})
+};
 
 export async function updateActivityContent(
-    activityContentId,
-    userId,
-    updatedData
-  ) {
-    try {
-      const activityContent = await prisma.activityContent.findUnique({
-        where: { id: activityContentId },
-        include: {
-          activity: {
-            include: {
-              activityParticipants: {
-                where: { userId: userId },
-                select: { role: true },
-              },
+  activityContentId,
+  userId,
+  updatedData
+) {
+  try {
+    const activityContent = await prisma.activityContent.findUnique({
+      where: { id: activityContentId },
+      include: {
+        activity: {
+          include: {
+            activityParticipants: {
+              where: { userId: userId },
+              select: { role: true },
             },
           },
         },
-      });
-      if (!activityContent) {
-        throw new Error("ActivityContent not found");
-      }
-  
-      const userRole = activityContent.activity.activityParticipants[0]?.role;
-  
-      if (!(userRole === "organizer" || userRole === "owner")) {
-        throw new Error(
-          "User does not have permission to update this activity content"
-        );
-      }
-  
-      const updatedActivityContent = await prisma.activityContent.update({
-        where: { id: activityContentId },
-        data: updatedData,
-      });
-      console.log(updatedActivityContent);
-      return updatedActivityContent;
-    } catch (error) {
-      console.error("Error updating ActivityContent:", error);
-      throw error;
-    } finally {
-      await prisma.$disconnect();
+      },
+    });
+    if (!activityContent) {
+      throw new Error("ActivityContent not found");
     }
+
+    const userRole = activityContent.activity.activityParticipants[0]?.role;
+
+    if (!(userRole === "organizer" || userRole === "owner")) {
+      throw new Error(
+        "User does not have permission to update this activity content"
+      );
+    }
+
+    const updatedActivityContent = await prisma.activityContent.update({
+      where: { id: activityContentId },
+      data: updatedData,
+    });
+    console.log(updatedActivityContent);
+    return updatedActivityContent;
+  } catch (error) {
+    console.error("Error updating ActivityContent:", error);
+    throw error;
+  } finally {
+    await prisma.$disconnect();
+  }
 }
 export async function deleteActivityResponses(responseIds) {
   try {
@@ -448,5 +467,7 @@ export async function updateActivityContentOrder(id, change) {
     }),
   ]);
 
-  console.log(`Order of ActivityContent with id ${id} updated to ${targetOrder}`);
+  console.log(
+    `Order of ActivityContent with id ${id} updated to ${targetOrder}`
+  );
 }

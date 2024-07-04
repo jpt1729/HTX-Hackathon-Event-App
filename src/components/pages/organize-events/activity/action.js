@@ -1,5 +1,5 @@
 "use server";
-import { createActivity } from "@/utils/backend-organizer-events";
+import { createActivity } from "@/utils/event-backend";
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";
 

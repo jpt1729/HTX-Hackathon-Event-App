@@ -3,7 +3,7 @@ import { auth } from "@/auth";
 import {
   getOrganizerEventsForUser,
   updateUserRole,
-} from "@/utils/backend-organizer-events";
+} from "@/utils/event-backend";
 
 export async function promoteUserAction(prevState, formData) {
   const session = await auth();

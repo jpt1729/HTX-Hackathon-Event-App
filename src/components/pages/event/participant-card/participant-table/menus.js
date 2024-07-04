@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import ThemedInput from "@/components/ThemedText/input";
 
 import {
   XMarkIcon,
   ChevronUpIcon,
-  CheckIcon,
+  MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
 const MenuIconVariants = {
@@ -22,13 +23,40 @@ export function NonSelectedMenu({}) {
     joinedAt: false,
     userRole: false,
   });
-
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-
+  const [search, setSearch] = useState(searchParams.get('query') || '');
   return (
     <>
+      <div className="flex gap-2 items-center">
+        <ThemedInput
+          type="text"
+          className="!py-0"
+          placeholder="Search for a user"
+          value={search}
+          onChange={(e) => {
+            setSearch(e.currentTarget.value);
+            console.log(e.currentTarget.value==="")
+            const params = new URLSearchParams(searchParams);
+            if (e.currentTarget.value === '') {
+              params.delete("query");
+            }
+            else {
+              params.set("query", e.currentTarget.value);
+            }
+            router.replace(`${pathname}?${params.toString()}`);
+          }}
+        />
+        <button
+          onClick={() => {
+            // Search stuff...
+
+          }}
+        >
+          <MagnifyingGlassIcon className="size-5 hover:stroke-red-accent transition-colors" />
+        </button>
+      </div>
       {searchParams.get("userRole") && (
         <span className="pl-3 pr-5 bg-blue-500 rounded-full text-white flex items-center">
           <button
@@ -81,7 +109,7 @@ export function NonSelectedMenu({}) {
             </motion.span>
           </motion.button>
           {dropDownStatus.userRole && (
-            <motion.div className="absolute top-8 right-0 flex flex-col bg-white p-3 rounded-lg shadow items-start">
+            <motion.div className="absolute top-8 right-0 flex flex-col gap-2 bg-white p-3 rounded-lg shadow items-start">
               <button
                 onClick={(e) => {
                   const params = new URLSearchParams(searchParams);
@@ -136,7 +164,7 @@ export function NonSelectedMenu({}) {
             </motion.span>
           </motion.button>
           {dropDownStatus.joinedAt && (
-            <motion.div className="absolute top-8 right-0 flex flex-col bg-white p-3 rounded-lg shadow items-start">
+            <motion.div className="absolute top-8 right-0 flex flex-col gap-2 bg-white p-3 rounded-lg shadow items-start">
               <button
                 onClick={(e) => {
                   const params = new URLSearchParams(searchParams);

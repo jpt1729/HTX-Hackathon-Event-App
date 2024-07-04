@@ -5,7 +5,7 @@ import URLComponent from "@/components/pages/layout/urlComponent";
 import ParticipantCard from "@/components/pages/event/participant-card/";
 import { PageMenu } from "@/components/pages/event/menu";
 
-import { getUserRole } from "@/utils/backend-organizer-events";
+import { getUserRole } from "@/utils/event-backend";
 import { auth } from "@/auth";
 import { getActivityParticipants } from "@/utils/backend-event";
 
