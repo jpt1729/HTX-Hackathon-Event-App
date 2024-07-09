@@ -10,7 +10,7 @@ export default function ParticipantTable({ eventParticipants }) {
     setSelectedResponses((prevSelected) =>
       prevSelected.includes(id)
         ? prevSelected.filter((itemId) => itemId !== id)
-        : [...prevSelected, id]
+        : [...prevSelected, id],
     );
   };
   return (

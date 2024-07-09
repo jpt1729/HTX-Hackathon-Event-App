@@ -5,14 +5,14 @@ import URLComponent from "@/components/pages/layout/urlComponent";
 import ParticipantCard from "@/components/pages/event/participant-card/";
 import { PageMenu } from "@/components/pages/event/menu";
 
-import { getUserRole } from "@/utils/event-backend";
+import { getUserInfo } from "@/utils/user-backend";
 import { auth } from "@/auth";
-import { getActivityParticipants } from "@/utils/backend-event";
+import { getActivityParticipants } from "@/utils/activity-backend";
 
 export default async function ViewParticipantsPage({ params }) {
   const { eventId, activityId } = params;
   const session = await auth();
-  const currentUser = await getUserRole(session?.user?.id)
+  const currentUser = await getUserInfo(session?.user?.id)
   const eventParticipants = await getActivityParticipants(undefined, activityId)
   //TODO: allow owner to add people as an owner, invite users, and remove users!
   return (

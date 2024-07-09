@@ -1,5 +1,5 @@
 "use server";
-import { updateActivityContent } from "@/utils/backend-event";
+import { updateActivityContent } from "@/utils/event-backend";
 import { auth } from "@/auth";
 
 export async function editMCAction(prevState, formData){

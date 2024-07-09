@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
-import { withAccelerate } from '@prisma/extension-accelerate'
+import { withAccelerate } from "@prisma/extension-accelerate";
 
-const prisma = new PrismaClient().$extends(withAccelerate())
+const prisma = new PrismaClient().$extends(withAccelerate());
 
 export const revalidate = 3600;
 
@@ -11,7 +11,6 @@ export async function getAllEventSlugs() {
       select: {
         slug: true,
       },
-      
     });
     return slugs;
   } catch (error) {
@@ -40,7 +39,7 @@ export const getEventData = async (slug) => {
   } finally {
     await prisma.$disconnect();
   }
-}
+};
 export const getEventsForUser = async (userId) => {
   try {
     const userEvents = await prisma.userEventRole.findMany({
@@ -82,25 +81,59 @@ export const getEventsForUser = async (userId) => {
   } finally {
     await prisma.$disconnect();
   }
-}
-export const getEventParticipants = async (eventId, eventSlug) => {
+};
+export const getEventParticipants = async (eventId, eventSlug, search = {}) => {
   try {
-    let query = { id: eventId };
+    let query = { where: { id: eventId } };
     if (eventSlug) {
-      query = { slug: eventSlug };
+      query = { where: { slug: eventSlug } };
+    }
+    let filters = {
+      where: {
+        NOT: {
+          OR: [{ role: "banned" }, { role: "left" }],
+        },
+      },
+    };
+    if (search.sort) {
+      filters = {
+        ...filters,
+        orderBy: {
+          createdAt: search.sort === "ascending" ? "asc" : "desc",
+        },
+      };
+    }
+    if (search.role) {
+      filters = {
+        ...filters,
+        where: {
+          role: search.role,
+        },
+      };
+    }
+    if (search.search) {
+      filters = {
+        ...filters,
+        where: {
+          ...filters.where,
+          user: {
+            OR: [
+              { email: {startsWith: search.search } },
+              { name: { startsWith: search.search } },
+            ],
+          },
+        },
+      };
     }
     const eventParticipants = await prisma.event.findUnique({
-      where: query,
+      ...query,
       include: {
         eventParticipants: {
           include: {
             user: true,
           },
-          where: {
-            NOT: {
-              OR: [{ role: "banned" }, { role: "left" }],
-            },
-          },
+
+          ...filters,
         },
       },
       cacheStrategy: {
@@ -121,7 +154,7 @@ export const getEventParticipants = async (eventId, eventSlug) => {
   } finally {
     await prisma.$disconnect();
   }
-}
+};
 export const getUserEventRole = async (
   userId,
   eventId,
@@ -146,11 +179,11 @@ export const getUserEventRole = async (
       event: includeEventData,
     },
     cacheStrategy: {
-        swr: 60,
-      },
+      swr: 60,
+    },
   });
   return res;
-}
+};
 export const getOrganizerEventsForUser = async (userId) => {
   try {
     const organizerEventsForUser = await prisma.user.findUnique({
@@ -186,7 +219,7 @@ export const getOrganizerEventsForUser = async (userId) => {
   } finally {
     await prisma.$disconnect();
   }
-}
+};
 export async function addEventToUser(userId, eventSlug) {
   try {
     // Check if the user and event exist

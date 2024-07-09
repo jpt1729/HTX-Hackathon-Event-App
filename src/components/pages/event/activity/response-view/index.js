@@ -60,10 +60,10 @@ export default function ResponseViewTable({ activityResponses, searchParams }) {
               <ThemedText className="font-bold">content id</ThemedText>
             </th>
             <th className="w-[28%]">
-              <ThemedText className="font-bold">Response</ThemedText>
+              <ThemedText className="font-bold">response</ThemedText>
             </th>
             <th className="w-[15%]">
-              <ThemedText className="font-bold">CreatedAt</ThemedText>
+              <ThemedText className="font-bold">createdAt</ThemedText>
             </th>
             <th className="w-[15%]">
               <ThemedText className="font-bold">user</ThemedText>

@@ -2,7 +2,7 @@ import { auth } from "@/auth";
 
 import { notFound } from "next/navigation";
 
-import { getActivityData, getUserActivityRole } from "@/utils/backend-event";
+import { getActivityData, getUserActivityRole } from "@/utils/activity-backend";
 
 const checkPermission = async (userId, activityId) => {
   const res = await getUserActivityRole(userId, activityId);

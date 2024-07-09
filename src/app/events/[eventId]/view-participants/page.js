@@ -9,11 +9,19 @@ import ParticipantTable from "@/components/pages/event/participant-card/particip
 import { auth } from "@/auth";
 import { getEventParticipants, getUserEventRole } from "@/utils/event-backend";
 
-export default async function ViewParticipantsPage({ params }) {
+export default async function ViewParticipantsPage({ params, searchParams }) {
   const { eventId } = params;
+  const { userRole, joined, query } = searchParams;
+
+  let search = {
+    role: userRole,
+    sort: joined,
+    search: query
+  }
+
   const session = await auth();
   const userEventRole = await getUserEventRole(session?.user?.id);
-  const eventParticipants = await getEventParticipants(undefined, eventId);
+  const eventParticipants = await getEventParticipants(undefined, eventId, search=search);
   //TODO: allow owner to add people as an owner, invite users, and remove users!
   return (
     <main className="w-full">

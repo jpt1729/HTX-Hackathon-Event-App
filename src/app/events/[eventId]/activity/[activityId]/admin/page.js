@@ -1,9 +1,7 @@
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
 
-import { getActivityResponses } from "@/utils/backend-event";
-
-import Image from "next/image";
+import { getActivityResponses } from "@/utils/activity-backend";
 
 import ResponseViewTable from "@/components/pages/event/activity/response-view";
 import { PageMenu } from "@/components/pages/event/menu";
