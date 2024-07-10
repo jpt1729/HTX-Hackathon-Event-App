@@ -1,4 +1,4 @@
-import TipTapEditor from '@/components/pages/organize-events/tip-tap-editor/'
+import TipTapEditor from '@/components/tip-tap-editor'
 
 export default function Test({}){
     return (
