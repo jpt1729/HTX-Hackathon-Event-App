@@ -37,24 +37,27 @@ body{
   color: white; /* Text color for the highlighted text */
 }
 
-h1{
+.content h1{
   @apply text-4xl font-bold;
 }
-h2{
+.content h2{
   @apply text-2xl font-bold;
 }
-p {
+.content p {
   @apply text-base leading-7 w-fit;
 }
-li {
+.content li {
 
 }
-ul {
+.content ul {
   @apply list-disc list-inside leading-7;
 }
-ol {
+.content ol {
   @apply list-decimal list-inside leading-7;
 }
-li > p {
+.content li > p {
   @apply inline-block;
+}
+.content a {
+  @apply underline text-red-accent;
 }

@@ -1,3 +1,6 @@
+import React, { useCallback, useState } from "react";
+import { useModal } from "@/utils/context/ModalContext";
+
 import { BubbleMenu } from "@tiptap/react";
 import {
   LeftAlignIcon,
@@ -7,9 +10,58 @@ import {
   OrderedListIcon,
   UndoIcon,
   RedoIcon,
+  LinkIcon,
 } from "./icons";
 
+import ThemedLabels from "../ThemedText/labels";
+import ThemedInput from "../ThemedText/input";
+
 export default function Menu({ editor }) {
+  const { showModal, hideModal } = useModal();
+  const [url, setUrl] = useState(null);
+  const setLink = useCallback(() => {
+    const previousUrl = editor.getAttributes("link").href;
+
+    showModal(
+      <form
+        onSubmit={() => {
+          // cancelled
+          if (url === null) {
+            hideModal();
+          }
+
+          // empty
+          if (url === "") {
+            editor.chain().focus().extendMarkRange("link").unsetLink().run();
+
+            hideModal();
+          }
+
+          // update link
+          editor
+            .chain()
+            .focus()
+            .extendMarkRange("link")
+            .setLink({ href: url })
+            .run();
+          hideModal()
+        }}
+      >
+        <ThemedLabels className="font-bold">Set URL</ThemedLabels>
+        <br />
+        <ThemedInput
+          type="text"
+          placeholder="https://hackclub.com"
+          value={url}
+          onChange={(e) => {
+            setUrl(e.target.value);
+          }}
+        ></ThemedInput>
+        <br/>
+        <ThemedInput type="submit" value="save" />
+      </form>
+    );
+  }, [editor, url, setUrl, hideModal, showModal]);
   return (
     <>
       {editor && (
@@ -96,8 +148,8 @@ export default function Menu({ editor }) {
             <button
               onClick={() => editor.chain().focus().toggleBulletList().run()}
               className={`${
-                editor.isActive("heading", { level: 3 })
-                  ? "!bg-red-accent text-white"
+                editor.isActive("bulletList")
+                  ? "!bg-red-accent text-white fill-white"
                   : ""
               } flex gap-1 hover:bg-gray rounded px-1 transition-colors semibold`}
             >
@@ -105,27 +157,59 @@ export default function Menu({ editor }) {
             </button>
             <button
               onClick={() => editor.chain().focus().toggleOrderedList().run()}
+              className={`${
+                editor.isActive("orderedList")
+                  ? "!bg-red-accent text-white fill-white"
+                  : ""
+              } flex gap-1 hover:bg-gray rounded px-1 transition-colors semibold`}
             >
               <OrderedListIcon className="size-6 " />
-            </button>
-            <button
-              onClick={() => editor.chain().focus().setTextAlign("left").run()}
-            >
-              <LeftAlignIcon className="size-6 " />
             </button>
           </div>
           <div className="flex gap-1 px-1 border-x border-gray">
             <button
+              onClick={() => editor.chain().focus().setTextAlign("left").run()}
+              className={`${
+                editor.isActive({ textAlign: "left" })
+                  ? "!bg-red-accent text-white fill-white"
+                  : ""
+              } flex gap-1 hover:bg-gray rounded px-1 transition-colors semibold`}
+            >
+              <LeftAlignIcon className="size-6 " />
+            </button>
+            <button
               onClick={() =>
                 editor.chain().focus().setTextAlign("center").run()
               }
+              className={`${
+                editor.isActive({ textAlign: "center" })
+                  ? "!bg-red-accent text-white fill-white"
+                  : ""
+              } flex gap-1 hover:bg-gray rounded px-1 transition-colors semibold`}
             >
               <CenterAlignIcon className="size-6 " />
             </button>
             <button
               onClick={() => editor.chain().focus().setTextAlign("right").run()}
+              className={`${
+                editor.isActive({ textAlign: "right" })
+                  ? "!bg-red-accent text-white fill-white"
+                  : ""
+              } flex gap-1 hover:bg-gray rounded px-1 transition-colors semibold`}
             >
               <RightAlignIcon className="size-6 " />
+            </button>
+          </div>
+          <div className="flex gap-1 px-1 border-x border-gray">
+            <button
+              onClick={setLink}
+              className={`${
+                editor.isActive({ textAlign: "right" })
+                  ? "!bg-red-accent text-white fill-white"
+                  : ""
+              } flex gap-1 hover:bg-gray rounded px-1 transition-colors semibold`}
+            >
+              <LinkIcon className="size-6 " />
             </button>
           </div>
           <button
