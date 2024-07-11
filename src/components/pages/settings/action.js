@@ -1,6 +1,7 @@
 "use server";
 import { auth } from "@/auth";
 import { updateUser } from "@/utils/user-backend";
+import sanitize from "sanitize-html";
 
 export async function updateSettingsAction(prevState, formData) {
     let state = {
@@ -11,8 +12,8 @@ export async function updateSettingsAction(prevState, formData) {
 
   const name = formData.get("name");
   const description = formData.get("description");
-
-  if (description.length < 500) {
+  console.log(description)
+  if (description.length <= 500) {
     state.status = "error";
     state.errors["description"] = "Description too long";
   }
@@ -27,7 +28,9 @@ export async function updateSettingsAction(prevState, formData) {
     state.message = "You must be logged in"
   }
   try {
-    await updateUser(session?.userId, name, description)
+    if (state.status !== "error") {
+      await updateUser(session?.userId, name, sanitize(description))
+    }
   } catch (error) {
     state.status = "error"
     state.message = "an unknown error has happened"

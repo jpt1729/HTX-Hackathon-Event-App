@@ -61,7 +61,7 @@ export default function Profile({ session }) {
             }}
             className="absolute bottom-10 bg-white p-5 rounded shadow flex flex-col gap-2"
           >
-            <Link title='View profile' href='/profile' className="flex gap-2 items-center hover:text-red-accent hover:stroke-red-accent transition-all">
+            <Link title='View profile' href={`/profile/${session?.user?.id}`} className="flex gap-2 items-center hover:text-red-accent hover:stroke-red-accent transition-all">
               <UserCircleIcon className="size-6"/>
               <ThemedText>View Profile</ThemedText>
             </Link>

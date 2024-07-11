@@ -1,5 +1,7 @@
 "use server";
-import { updateActivityContent } from "@/utils/event-backend";
+import { updateActivityContent } from "@/utils/activity-backend";
+import sanitizeHtml from 'sanitize-html';
+
 import { auth } from "@/auth";
 
 export async function editMCAction(prevState, formData){
@@ -79,23 +81,9 @@ export async function editQAAction(prevState, formData){
 
 export async function editMDAction(prevState, formData){
     const title = formData.get("title")
-    const markdown = formData.get("markdown")
+    const dirtyContent = formData.get("content")
     const activityContentId = formData.get("id")
-    if (title === "") {
-        return {
-            status: "error",
-            message: "",
-            errors: {
-                title: "Must have title"
-            }
-        }
-    }
-    const updatedMD = {
-        title: title,
-        content: {
-            markdown: markdown
-        }
-    }
+    
     const session = await auth();
     if (!session) {
         return {
@@ -103,7 +91,15 @@ export async function editMDAction(prevState, formData){
             message: "You must be logged in",
         }
     }
+    const cleanContent = sanitizeHtml(dirtyContent)
+    const updatedMD = {
+        title: title ? title : "",
+        content: {
+            markdown: cleanContent
+        }
+    }
     const res = await updateActivityContent(activityContentId, session?.user?.id, updatedMD)
+    console.log(res)
     return {
         status: "success",
         message: "Successfully updated markdown",

@@ -8,13 +8,10 @@ import ThemedLabels from "@/components/ThemedText/labels";
 import ThemedInput from "@/components/ThemedText/input";
 import { editMDAction } from "./action";
 
-const CustomMarkdownEditor = dynamic(
-  () => import("@/components/pages/customMarkdownEditor"),
-  { ssr: false }
-);
+import TipTapEditor from "@/components/tip-tap-editor";
 
 export default function EditMD({ activityContent }) {
-  const [markdown, setFormMarkdown] = useState(
+  const [newContent, setNewContent] = useState(
     activityContent?.content?.markdown
   );
   const [state, formAction] = useFormState(editMDAction, {
@@ -41,15 +38,15 @@ export default function EditMD({ activityContent }) {
         <br />
         <br />
         <Suspense fallback={<></>}>
-          <CustomMarkdownEditor
-            markdown={markdown}
-            setMarkdown={setFormMarkdown}
+          <TipTapEditor
+            content={newContent}
+            changeContent={setNewContent}
           />
         </Suspense>
         <textarea
           className="hidden"
-          name="markdown"
-          value={markdown}
+          name="content"
+          value={newContent}
           readOnly
         />
         <input

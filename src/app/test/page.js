@@ -1,17 +1,16 @@
 "use client"
-import { useState } from 'react'
-import TipTapEditor from '@/components/tip-tap-editor'
-import Render from '@/components/tip-tap-editor/render'
-import { action } from './action'
+import { useModal } from "@/utils/context/ModalContext"
 export default function Test({}){
-    const [content, setContent] = useState("")
-    const testAction = action.bind(null, content)
+    const {showModal} = useModal()
     return (
         <main>
-            <form action={testAction}>
-                <TipTapEditor content={content} changeContent={setContent}/>
-            </form>
-            <Render html={content}/>
+            <button onClick = {() => {
+                showModal(<>
+                    <p>Test test test</p>
+                </>)
+            }}>
+                Show Modal
+            </button>
         </main>
     )
 }

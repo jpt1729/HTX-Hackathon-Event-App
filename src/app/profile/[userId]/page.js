@@ -4,7 +4,7 @@ import ThemedText from "@/components/ThemedText";
 import Image from "next/image";
 
 import { getUserInfo } from "@/utils/user-backend";
-import { auth } from "@/auth";
+import Render from "@/components/tip-tap-editor/render";
 
 export default async function Profile({ params }) {
   const { userId } = params;
@@ -25,7 +25,7 @@ export default async function Profile({ params }) {
         <div>
             <ThemedText type="heading">{user?.name}</ThemedText>
             <ThemedText type="subtext">{userId}</ThemedText>
-            <ThemedText type="paragraph">{user?.description}</ThemedText>
+            <Render html={user.description}/>
         </div>
       </div>
     </main>

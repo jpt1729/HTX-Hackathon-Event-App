@@ -7,7 +7,7 @@ import ThemedInput from "@/components/ThemedText/input";
 
 import URLComponent from "@/components/pages/layout/urlComponent";
 
-import { getActivityContentById } from "@/utils/event-backend";
+import { getActivityContentById } from "@/utils/activity-backend";
 import { PageMenu } from "@/components/pages/event/menu";
 
 import EditMC from "@/components/pages/event/activity/edit/edit-mc";

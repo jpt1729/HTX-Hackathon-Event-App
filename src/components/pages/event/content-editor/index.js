@@ -9,7 +9,8 @@ import TipTapEditor from "@/components/tip-tap-editor"
 export default function EventContentEditor({ content, eventId }){
     const [newContent, setNewContent] = useState(content)
     const [state, formAction] = useFormState(editEventContent, {
-        message: "",
+        status: '',
+        message: ''
       });
     return (
         <form action={formAction}>

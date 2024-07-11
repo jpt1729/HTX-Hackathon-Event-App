@@ -11,6 +11,7 @@ import { PencilIcon } from "@heroicons/react/24/outline";
 
 import ThemedInput from "@/components/ThemedText/input";
 import ThemedLabels from "@/components/ThemedText/labels";
+import TipTapEditor from "@/components/tip-tap-editor";
 
 export function SettingsForm({ session }) {
   const [state, action] = useFormState(updateSettingsAction, {
@@ -70,19 +71,20 @@ export function SettingsForm({ session }) {
       </div>
       <div className="flex flex-col gap-1">
         <ThemedLabels className="font-bold">Description</ThemedLabels>
-        <textarea
+        <TipTapEditor content = {description} changeContent={(e) => {
+          if (e.length <= 500) {
+              setDescription(e);
+            }
+        }}/>
+        <input
           name="description"
           placeholder=""
-          className="resize-none p-3 rounded-lg border border-gray active:border-red-accent focus:border-red-accent outline-none transition-colors"
+          className="hidden"
           rows="6"
           cols="15"
           value={description}
-          onChange={(e) => {
-            if (e.target.value.length <= 500) {
-              setDescription(e.target.value);
-            }
-          }}
-        ></textarea>
+          readOnly
+        />
         <ThemedLabels
           type="subtext"
           className={`${
