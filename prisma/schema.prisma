@@ -1,6 +1,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["rhel-openssl-1.0.x"]
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -11,6 +12,7 @@ datasource db {
 model User {
   id                       String                     @id @default(cuid())
   name                     String?
+  description              String?                    
   email                    String                     @unique
   emailVerified            DateTime?
   image                    String?
@@ -131,6 +133,7 @@ model ActivityContent {
   id         String                     @id @default(cuid())
   title      String?
   type       String
+  order      Int  @default(-1)
   activityId String
   content    Json
   activity   Activity                   @relation("ActivityToActivityContent", fields: [activityId], references: [id])

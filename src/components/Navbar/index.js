@@ -16,12 +16,8 @@ export default async function Navbar({}) {
           <CalendarDaysIcon className="size-6"/>
           <span className="font-bold">My Events</span>
         </Link>
-        <Link href="/organize-events" className="flex items-center gap-2 hover:underline hover:!text-red-accent">
-          <Cog8ToothIcon className="size-6"/>
-          <span className="font-bold">Events Organized by Me</span>
-        </Link>
       </div>
-      <div>{session ? <Profile /> : <SignInNavbar />}</div>
+      <div>{session ? <Profile session={session}/> : <SignInNavbar />}</div>
     </nav>
   );
 }

@@ -1,11 +1,9 @@
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
 
-import { getActivityResponses } from "@/utils/backend-event";
+import { getActivityResponses } from "@/utils/activity-backend";
 
-import Image from "next/image";
-
-import ResponseViewTable from "@/components/pages/activity/response-view";
+import ResponseViewTable from "@/components/pages/event/activity/response-view";
 import { PageMenu } from "@/components/pages/event/menu";
 
 export default async function AdminPage({ params, searchParams }) {

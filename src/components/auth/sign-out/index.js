@@ -1,15 +1,16 @@
-import { signOut } from "@/auth"
- 
-export function SignOut() {
+import { signOutAction } from "./action";
+
+export function SignOut({ children, ...props }) {
   return (
     <form
       action={async () => {
-        "use server"
-        await signOut()
+        await signOutAction();
       }}
       className="flex items-center"
     >
-      <button name='Sign Out' type="submit">Sign Out</button>
+      <button name="Sign Out" type="submit" {...props}>
+        {children ? children : "Sign Out"}
+      </button>
     </form>
-  )
-} 
+  );
+}

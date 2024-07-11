@@ -7,12 +7,12 @@ import ThemedInput from "@/components/ThemedText/input";
 
 import URLComponent from "@/components/pages/layout/urlComponent";
 
-import { getActivityContentById } from "@/utils/backend-event";
+import { getActivityContentById } from "@/utils/activity-backend";
 import { PageMenu } from "@/components/pages/event/menu";
 
-import EditMC from "@/components/pages/activity/edit/edit-mc";
-import EditQA from "@/components/pages/activity/edit/edit-qa";
-import EditMD from "@/components/pages/activity/edit/edit-md";
+import EditMC from "@/components/pages/event/activity/edit/edit-mc";
+import EditQA from "@/components/pages/event/activity/edit/edit-qa";
+import EditMD from "@/components/pages/event/activity/edit/edit-md";
 const RenderEditor = ({ activityContent }) => {
   switch (activityContent.type) {
     case "MC":

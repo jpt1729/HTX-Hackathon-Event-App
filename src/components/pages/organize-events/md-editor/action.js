@@ -1,7 +1,7 @@
 "use server";
 import { auth } from "@/auth";
 
-import { changeEventContent } from "@/utils/backend-organizer-events";
+import { changeEventContent } from "@/utils/event-backend";
 //TODO: add errors to front end + build backend protection.
 export async function editEventContent(prevState, formData) {
   const session = await auth();

@@ -1,5 +1,5 @@
 "use server";
-import { createNewEvent } from "@/utils/backend-organizer-events";
+import { createNewEvent } from "@/utils/event-backend";
 
 import { redirect } from "next/navigation";
 import { auth } from "@/auth";

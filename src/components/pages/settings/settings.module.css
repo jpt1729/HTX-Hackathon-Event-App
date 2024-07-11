@@ -1,0 +1,3 @@
+label.profileIcon:hover > svg {
+    @apply !opacity-100;
+}

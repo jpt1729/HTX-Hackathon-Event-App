@@ -6,7 +6,7 @@ import AddEvent from "@/components/pages/event/add-event";
 
 import ThisComponentThrowsAnError from '@/components/ErrorBound/throw-error'
 
-import { getEventsForUser } from "@/utils/backend-event";
+import { getEventsForUser } from "@/utils/event-backend";
 import { auth } from "@/auth";
 
 export default async function Events() {
