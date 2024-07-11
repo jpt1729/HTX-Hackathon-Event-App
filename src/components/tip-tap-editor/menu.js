@@ -69,13 +69,13 @@ export default function Menu({ editor }) {
           <div className="flex gap-1 pr-1 border-r border-gray">
             <button
               onClick={() => editor.chain().focus().undo().run()}
-              className="font-semibold"
+              className="font-semibold hover:bg-gray rounded px-1 transition-colors"
             >
               <UndoIcon className="size-6 " />
             </button>
             <button
               onClick={() => editor.chain().focus().redo().run()}
-              className="font-semibold"
+              className="font-semibold hover:bg-gray rounded px-1 transition-colors"
             >
               <RedoIcon className="size-6 " />
             </button>
@@ -212,14 +212,15 @@ export default function Menu({ editor }) {
               <LinkIcon className="size-6 " />
             </button>
           </div>
-          <button
+          <ThemedInput
+          type ='submit'
+          name='save'
+          value='save'
             onClick={() => {
               console.log(editor.getHTML());
             }}
             className="pl-1 border-l border-gray"
-          >
-            save
-          </button>
+          />
         </menu>
       )}
     </>

@@ -8,11 +8,7 @@ import { getEventData } from "@/utils/event-backend";
 
 import { PageMenu } from "@/components/pages/event/menu";
 
-const EditorComp = dynamic(
-  () => import("@/components/pages/event/md-editor"),
-  { ssr: false }
-);
-
+import EventContentEditor from "@/components/pages/event/content-editor";
 export default async function EditContentPage({ params }) {
   const { eventId } = params;
 
@@ -26,9 +22,7 @@ export default async function EditContentPage({ params }) {
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
       <div className="pt-5 h-[calc(100vh-40px-32px-68px)] w-full">
-        <Suspense fallback={null}>
-          <EditorComp markdown={eventData.content} eventId={eventData.id} />
-        </Suspense>
+        <EventContentEditor content={eventData.content} eventId={eventData.id} />
       </div>
       <PageMenu/>
     </main>

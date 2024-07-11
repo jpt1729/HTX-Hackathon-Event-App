@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 
 import ThemedText from "@/components/ThemedText";
 import URLComponent from "@/components/pages/layout/urlComponent";
-import CustomMarkdown from "@/components/pages/markdown";
+import Render from "@/components/tip-tap-editor/render";
 import QA from "@/components/pages/event/activity/content/qa";
 import Options from "@/components/pages/event/activity/content/options";
 import ActivityMenu from "@/components/pages/event/activity/menu";
@@ -15,7 +15,7 @@ import { getActivityData, getUserActivityRole } from "@/utils/activity-backend";
 
 import { CreateContentBar } from "@/components/pages/event/activity/content/create-content";
 
-import { Render } from "@/components/pages/event/activity/content/render";
+import { RenderActivityContent } from "@/components/pages/event/activity/content/render";
 
 export default async function ActivityPage({ params }) {
   const { activityId } = params;
@@ -47,7 +47,7 @@ export default async function ActivityPage({ params }) {
         <div className="bg-red-accent h-1 w-2/5 rounded-full"> </div>
       </div>
       <div className="flex flex-col gap-4 w-full h-[calc(100vh-172px)] overflow-y-scroll pr-3 pt-4">
-        <Render activityData={activityData} admin={admin} />
+        <RenderActivityContent activityData={activityData} admin={admin} />
       </div>
       <ActivityMenu admin={admin} />
     </main>

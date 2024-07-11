@@ -16,7 +16,7 @@ import OrderedList from "@tiptap/extension-ordered-list";
 import BulletList from "@tiptap/extension-bullet-list";
 import Link from "@tiptap/extension-link";
 
-function TipTapEditor() {
+function TipTapEditor({ content, changeContent}) {
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -41,7 +41,10 @@ function TipTapEditor() {
         defaultProtocol: "https",
       }),
     ],
-    content: "<p>Hello World! 🌎️</p>",
+    content: content,
+    onUpdate: ({ editor }) => {
+      changeContent(editor.getHTML())
+    }
   });
 
   return (

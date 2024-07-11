@@ -8,10 +8,9 @@ import Options from "./options";
 
 import CreateContentBar from "./create-content";
 
-const CustomMarkdown = dynamic(() => import("@/components/pages/markdown"), {
-  ssr: false,
-});
-export const Render = ({ activityData, admin }) => {
+import Render from "@/components/tip-tap-editor/render";
+
+export const RenderActivityContent = ({ activityData, admin }) => {
   const [content, addOptimisticChange] = useOptimistic(
     activityData.activitycontent,
     (state, update) => {
@@ -88,10 +87,10 @@ export const Render = ({ activityData, admin }) => {
                     />
                   )}
                   <div>
-                    <CustomMarkdown
+                    <Render
                       key={contentPiece.id}
                       id={contentPiece.id}
-                      source={contentPiece.content.markdown}
+                      html={contentPiece.content.markdown}
                     />
                   </div>
                 </div>

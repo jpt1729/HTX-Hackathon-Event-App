@@ -8,7 +8,7 @@ import Menu from "@/components/pages/event/menu";
 
 import ActivityCard from "@/components/Card/Activity";
 
-import CustomMarkdown from "@/components/pages/markdown";
+import Render from "@/components/tip-tap-editor/render";
 
 import styles from "./event.module.css";
 
@@ -46,7 +46,7 @@ export default async function EventsPage({ params }) {
       </div>
       <div className={`grid ${styles.EventGrid} gap-4 h-[calc(100vh-172px)]`}>
         <div className={`${styles.md} pt-1`}>
-          <CustomMarkdown source={eventData.content} />
+          <Render html={eventData.content} />
         </div>
         <div className={`${styles.act} overflow-y-scroll pr-1`}>
           <ThemedText type="subheading">Upcoming Activities</ThemedText>
