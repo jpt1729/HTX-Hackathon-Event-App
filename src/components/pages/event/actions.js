@@ -3,6 +3,8 @@ import { auth } from "@/auth";
 
 import { addEventToUser } from "@/utils/event-backend";
 import { updateUserRole, getUserRole } from "@/utils/event-backend";
+import { redirect } from "next/navigation";
+
 //TODO: add errors to front end + build backend protection.
 export async function addEventAction(prevState, formData) {
   const session = await auth();
@@ -15,6 +17,19 @@ export async function addEventAction(prevState, formData) {
       status: 'success',
       message: ''
     }
+  }
+  return {
+    status: '',
+    message: ''
+  }
+}
+export async function joinEventAction(eventSlug) {
+  const session = await auth();
+  const userId = session?.user?.id;
+  const res = await addEventToUser(userId, eventSlug);
+  
+  if (res) {
+    redirect(`/events/${eventSlug}`)
   }
   return {
     status: '',

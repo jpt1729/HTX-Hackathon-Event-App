@@ -29,8 +29,8 @@ export default async function EventsPage({ params }) {
   const activitiesData = await getActivities(eventData.id);
   
   const session = await auth();
-  const userEventRole = await getUserEventRole(session?.user?.id, eventData.id)
-  
+  const userEventRole = await getUserEventRole(session?.user?.id, undefined, eventId)
+  const admin = (userEventRole.role === 'organizer' || userEventRole.role === 'owner')
   return (
     <main className="h-[calc(100vh-40px)] overflow-y-scroll w-full">
       <div>
@@ -80,7 +80,7 @@ export default async function EventsPage({ params }) {
           </div>
         </div>
       </div>
-      <Menu admin={userEventRole.role === 'organizer' || userEventRole.role === 'owner'}/>
+      <Menu admin={admin}/>
     </main>
   );
 }

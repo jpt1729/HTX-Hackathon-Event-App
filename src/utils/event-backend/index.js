@@ -164,6 +164,9 @@ export const getUserEventRole = async (
   let trueEventId = eventId;
   if (eventSlug) {
     const event = await prisma.event.findUnique({ where: { slug: eventSlug } });
+    if (!event) {
+      return {}
+    }
     trueEventId = event.id;
   } else {
     if (includeEventData) {

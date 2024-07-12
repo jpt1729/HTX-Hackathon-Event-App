@@ -100,7 +100,7 @@ model Activity {
   description          String?
   startTime            DateTime
   endTime              DateTime
-  event                Event              @relation("eventActivities", fields: [eventId], references: [id])
+  event                Event              @relation("eventActivities", fields: [eventId], references: [id], onDelete: Cascade)
   activitycontent      ActivityContent[]  @relation("ActivityToActivityContent")
   activityParticipants UserActivityRole[] @relation("ActivityToUserActivityRole")
 }
@@ -111,8 +111,8 @@ model UserEventRole {
   eventId   String
   role      String
   createdAt DateTime @default(now())
-  event     Event    @relation("EventToUserEventRole", fields: [eventId], references: [id])
-  user      User     @relation("UserToUserEventRole", fields: [userId], references: [id])
+  event     Event    @relation("EventToUserEventRole", fields: [eventId], references: [id], onDelete: Cascade)
+  user      User     @relation("UserToUserEventRole", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, eventId])
 }
@@ -123,8 +123,8 @@ model UserActivityRole {
   activityId String
   role       String   @default("participant")
   createdAt  DateTime @default(now())
-  activity   Activity @relation("ActivityToUserActivityRole", fields: [activityId], references: [id])
-  user       User     @relation("UserToUserActivityRole", fields: [userId], references: [id])
+  activity   Activity @relation("ActivityToUserActivityRole", fields: [activityId], references: [id], onDelete: Cascade)
+  user       User     @relation("UserToUserActivityRole", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, activityId])
 }
@@ -136,7 +136,7 @@ model ActivityContent {
   order      Int  @default(-1)
   activityId String
   content    Json
-  activity   Activity                   @relation("ActivityToActivityContent", fields: [activityId], references: [id])
+  activity   Activity                   @relation("ActivityToActivityContent", fields: [activityId], references: [id], onDelete: Cascade)
   responses  ActivityContentResponses[] @relation("ActivityContentResponsesToActivityContent")
 }
 
@@ -146,6 +146,6 @@ model ActivityContentResponses {
   createdAt         DateTime         @default(now())
   userId            String
   response          String
-  activitycontent   ActivityContent? @relation("ActivityContentResponsesToActivityContent", fields: [activitycontentId], references: [id])
+  activitycontent   ActivityContent? @relation("ActivityContentResponsesToActivityContent", fields: [activitycontentId], references: [id], onDelete: Cascade)
   user              User             @relation("UserToActivityContentResponses", fields: [userId], references: [id])
 }
