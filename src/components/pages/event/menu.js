@@ -8,7 +8,7 @@ import {
 } from "@heroicons/react/24/outline";
 import ThemedText from "@/components/ThemedText";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
 
 export default function Menu({ admin }) {
   const pathname = usePathname();
@@ -58,12 +58,14 @@ function removeLastSegment(pathname) {
 }
 
 export function PageMenu({}){
-  const pathname = usePathname()
+  const router = useRouter()
   return (
     <div className="h-6 w-full mt-2 flex gap-3 items-center">
-      <Link href={removeLastSegment(pathname)} className="flex gap-1">
+      <button title='back' onClick={() => {
+        router.back()
+      }} className="flex gap-1">
         <ArrowLeftIcon className="size-6"/>{" "}Back
-      </Link>
+      </button>
     </div>
   )
 }

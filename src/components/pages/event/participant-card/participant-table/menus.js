@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useRouter, usePathname, useSearchParams, useParams } from "next/navigation";
 import ThemedInput from "@/components/ThemedText/input";
 
 import {
@@ -8,6 +8,8 @@ import {
   ChevronUpIcon,
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
+
+import { promoteUsersAction } from "../action";
 
 const MenuIconVariants = {
   opened: {
@@ -192,37 +194,44 @@ export function NonSelectedMenu({}) {
     </>
   );
 }
-export function SelectedMenu({ selectedResponses, setSelectedResponses }) {
+export function SelectedMenu({ selectedUsers, setSelectedUsers, eventSlug }) {
   const router = useRouter();
+  const params = useParams();
+
   return (
     <>
       <button
         onClick={async () => {
-          setSelectedResponses([]);
+          setSelectedUsers([]);
+          router.refresh();
         }}
-        name={`Delete ${selectedResponses.length} responses`}
+        name={`Delete ${selectedUsers.length} responses`}
         className="text-red-accent border px-2 border-red-accent rounded border-dashed"
       >
         Clear selection
       </button>
       <button
         onClick={async () => {
-          setSelectedResponses([]);
+          await promoteUsersAction(selectedUsers, params.eventId)
+          setSelectedUsers([]);
+          router.refresh();
         }}
-        name={`Delete ${selectedResponses.length} responses`}
+        name={`Delete ${selectedUsers.length} responses`}
         className="text-red-accent border px-2 border-red-accent rounded border-dashed"
       >
-        Promote {selectedResponses.length} user
-        {selectedResponses.length > 1 && "s"}
+        Promote {selectedUsers.length} user
+        {selectedUsers.length > 1 && "s"}
       </button>
       <button
         onClick={async () => {
-          setSelectedResponses([]);
+          await promoteUsersAction(selectedUsers, params.eventId)
+          setSelectedUsers([]);
+          router.refresh();
         }}
-        name={`Delete ${selectedResponses.length} responses`}
+        name={`Delete ${selectedUsers.length} responses`}
         className="text-warning border px-2 border-warning rounded border-dashed"
       >
-        Ban {selectedResponses.length} user{selectedResponses.length > 1 && "s"}
+        Ban {selectedUsers.length} user{selectedUsers.length > 1 && "s"}
       </button>
     </>
   );

@@ -2,10 +2,11 @@
 import { auth } from "@/auth";
 import {
   getOrganizerEventsForUser,
+  getUserEventRole,
   updateUserRole,
 } from "@/utils/event-backend";
-
-export async function promoteUserAction(prevState, formData) {
+export const promoteUserAction = () => {}
+export async function promoteUsersAction(users, eventSlug) {
   const session = await auth();
   if (!session) {
     // checks to see if the user is logged in
@@ -14,21 +15,21 @@ export async function promoteUserAction(prevState, formData) {
       message: "invalid permissions",
     };
   }
-
-  const organizerEvents = await getOrganizerEventsForUser(session?.user?.id);
-
-  const userId = formData.get("userId");
-  const eventSlug = formData.get("eventSlug");
-
-  if (!organizerEvents.some((event) => event.slug === eventSlug))
+  const userRole = await getUserEventRole(session?.user?.id, undefined, eventSlug)
+  console.log(userRole.role !== 'organizer' || userRole.role !== 'owner')
+  if (userRole.role !== 'organizer' || userRole.role !== 'owner') {
     return { status: "error", message: "invalid permissions" }; //checks to see if the user is even an owner
-
+  }
+  console.log('passed security check')
   try {
-    await updateUserRole(userId, eventSlug, "organizer");
-
+    users.map(async (user) => {
+      await updateUserRole(user, eventSlug, "organizer");
+      console.log(`${user} promoted to organizer`)
+    })
+  
     return {
       status: "success",
-      message: "Successfully promoted user to organizer",
+      message: "Successfully promoted users to organizer",
     };
   } catch (error) {
     return {

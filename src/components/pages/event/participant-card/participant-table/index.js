@@ -5,9 +5,9 @@ import ParticipantView from "./ParticipantView";
 import { NonSelectedMenu, SelectedMenu } from "./menus";
 
 export default function ParticipantTable({ eventParticipants }) {
-  const [selectedResponses, setSelectedResponses] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState([]);
   const handleSelect = (id) => {
-    setSelectedResponses((prevSelected) =>
+    setSelectedUsers((prevSelected) =>
       prevSelected.includes(id)
         ? prevSelected.filter((itemId) => itemId !== id)
         : [...prevSelected, id],
@@ -16,8 +16,8 @@ export default function ParticipantTable({ eventParticipants }) {
   return (
     <>
       <div className="w-full relative flex justify-end gap-3">
-        {selectedResponses.length > 0 ? (
-          <SelectedMenu selectedResponses={selectedResponses} setSelectedResponses={setSelectedResponses} />
+        {selectedUsers.length > 0 ? (
+          <SelectedMenu selectedUsers={selectedUsers} setSelectedUsers={setSelectedUsers} />
         ) : (
           <NonSelectedMenu />
         )}
