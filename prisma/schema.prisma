@@ -144,8 +144,8 @@ model ActivityContentResponses {
   id                String           @id @default(cuid())
   activitycontentId String?
   createdAt         DateTime         @default(now())
-  userId            String
+  userId            String?
   response          String
   activitycontent   ActivityContent? @relation("ActivityContentResponsesToActivityContent", fields: [activitycontentId], references: [id], onDelete: Cascade)
-  user              User             @relation("UserToActivityContentResponses", fields: [userId], references: [id])
+  user              User?             @relation("UserToActivityContentResponses", fields: [userId], references: [id], onDelete: SetNull)
 }

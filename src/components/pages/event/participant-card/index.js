@@ -1,6 +1,7 @@
 "use client";
 import ThemedText from "@/components/ThemedText";
 import Image from "next/image";
+import Link from "next/link";
 
 import PromoteUser from "./promote-user";
 import DemoteUser from "./demote-user";
@@ -8,7 +9,7 @@ import RemoveUser from "./remove-user";
 
 export default function ParticipantCard({ user, currentUser, admin }) {
   return (
-    <div className="flex justify-between items-center">
+    <Link title={`View ${user.name}'s profile`} href={`/profile/${user.id}`} className="flex justify-between items-center">
       <div className="flex gap-2 items-center">
         {user?.image && (
           <Image
@@ -41,6 +42,6 @@ export default function ParticipantCard({ user, currentUser, admin }) {
             user.role === "participant") && <RemoveUser user={user} />}
         </div>
       )}
-    </div>
+    </Link>
   );
 }
