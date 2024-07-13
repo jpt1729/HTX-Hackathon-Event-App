@@ -3,9 +3,10 @@ import { auth } from "@/auth";
 import {
   getOrganizerEventsForUser,
   getUserEventRole,
-  updateUserRole,
+  updateUserEventRole,
 } from "@/utils/event-backend";
 export const promoteUserAction = () => {}
+
 export async function promoteUsersAction(users, eventSlug) {
   const session = await auth();
   if (!session) {
@@ -16,14 +17,14 @@ export async function promoteUsersAction(users, eventSlug) {
     };
   }
   const userRole = await getUserEventRole(session?.user?.id, undefined, eventSlug)
-  console.log(userRole.role !== 'organizer' || userRole.role !== 'owner')
-  if (userRole.role !== 'organizer' || userRole.role !== 'owner') {
+
+  if (!(userRole.role === 'organizer' || userRole.role === 'owner')) {
     return { status: "error", message: "invalid permissions" }; //checks to see if the user is even an owner
   }
-  console.log('passed security check')
+
   try {
     users.map(async (user) => {
-      await updateUserRole(user, eventSlug, "organizer");
+      await updateUserEventRole(user, eventSlug, "organizer");
       console.log(`${user} promoted to organizer`)
     })
   
@@ -38,7 +39,70 @@ export async function promoteUsersAction(users, eventSlug) {
     };
   }
 }
+export async function demoteUsersAction(users, eventSlug) {
+  const session = await auth();
+  if (!session) {
+    // checks to see if the user is logged in
+    return {
+      status: "error",
+      message: "invalid permissions",
+    };
+  }
+  const userRole = await getUserEventRole(session?.user?.id, undefined, eventSlug)
 
+  if (!(userRole.role === 'organizer' || userRole.role === 'owner')) {
+    return { status: "error", message: "invalid permissions" }; //checks to see if the user is even an owner
+  }
+
+  try {
+    users.map(async (user) => {
+      await updateUserEventRole(user, eventSlug, "participant");
+      console.log(`${user} updated to participant`)
+    })
+  
+    return {
+      status: "success",
+      message: "Successfully updated users to participants",
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: error,
+    };
+  }
+}
+export async function banUsersAction(users, eventSlug) {
+  const session = await auth();
+  if (!session) {
+    // checks to see if the user is logged in
+    return {
+      status: "error",
+      message: "invalid permissions",
+    };
+  }
+  const userRole = await getUserEventRole(session?.user?.id, undefined, eventSlug)
+
+  if (!(userRole.role === 'organizer' || userRole.role === 'owner')) {
+    return { status: "error", message: "invalid permissions" }; //checks to see if the user is even an owner
+  }
+
+  try {
+    users.map(async (user) => {
+      await updateUserEventRole(user, eventSlug, "banned");
+      console.log(`${user} updated to banned`)
+    })
+  
+    return {
+      status: "success",
+      message: "Successfully updated users to banned",
+    };
+  } catch (error) {
+    return {
+      status: "error",
+      message: error,
+    };
+  }
+}
 export async function removeUserAction(prevState, formData) {
   const session = await auth();
 
@@ -62,7 +126,7 @@ export async function removeUserAction(prevState, formData) {
     };
   }
   try {
-    await updateUserRole(userId, eventSlug, "banned");
+    await updateUserEventRole(userId, eventSlug, "banned");
 
     return { status: "success", message: "Successfully banned user" };
   } catch (error) {

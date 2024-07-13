@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { useRouter, usePathname, useSearchParams, useParams } from "next/navigation";
+import {
+  useRouter,
+  usePathname,
+  useSearchParams,
+  useParams,
+} from "next/navigation";
 import ThemedInput from "@/components/ThemedText/input";
 
 import {
@@ -9,7 +14,11 @@ import {
   MagnifyingGlassIcon,
 } from "@heroicons/react/24/outline";
 
-import { promoteUsersAction } from "../action";
+import {
+  promoteUsersAction,
+  demoteUsersAction,
+  banUsersAction,
+} from "../action";
 
 const MenuIconVariants = {
   opened: {
@@ -20,6 +29,67 @@ const MenuIconVariants = {
   },
 };
 
+const UserRoleDropdown = ({ query, updateQuery }) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const updateRoleQuery = (role) => {
+    let newQuery = [...query.userRole]
+    const index = newQuery.indexOf(role);
+
+    if (index > -1) {
+      // Element is in the list, so remove it
+      newQuery.splice(index, 1);
+    } else {
+      // Element is not in the list, so add it
+      newQuery.push(role);
+    }
+    return newQuery;
+  };
+  return (
+    <motion.div className="absolute top-8 right-0 flex flex-col gap-2 bg-white p-3 rounded-lg shadow items-start w-fit">
+      <button
+        onClick={(e) => {
+          updateQuery({ userRole: updateRoleQuery("owner") });
+        }}
+        className="border-b border-gray w-full text-left"
+      >
+        <input
+          type="checkbox"
+          checked={query.userRole.includes("owner")}
+          className="m-auto"
+        />
+        Owner{" "}
+      </button>
+      <button
+        onClick={(e) => {
+          updateQuery({ userRole: updateRoleQuery("organizer") });
+        }}
+        className="border-b border-gray w-full text-left"
+      >
+        <input
+          type="checkbox"
+          checked={query.userRole.includes("organizer")}
+          className="m-auto"
+        />
+        Organizer{" "}
+      </button>
+      <button
+        onClick={(e) => {
+          updateQuery({ userRole: updateRoleQuery("participant") });
+        }}
+        className="border-b border-gray text-left w-max"
+      >
+        <input
+          type="checkbox"
+          checked={query.userRole.includes("participant")}
+          className="m-auto"
+        />
+        Participant{" "}
+      </button>
+    </motion.div>
+  );
+};
 export function NonSelectedMenu({}) {
   const [dropDownStatus, setDropDownStatus] = useState({
     joinedAt: false,
@@ -28,7 +98,33 @@ export function NonSelectedMenu({}) {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [search, setSearch] = useState(searchParams.get("query") || "");
+  const [query, setQuery] = useState({
+    userRole: ["owner", "organizer", "participant"],
+    joined: null,
+    search: searchParams.get("query"),
+  });
+  const updateQuery = (update) => {
+    let newQuery = {
+      ...query,
+      ...update,
+    };
+    console.log(newQuery);
+    const params = new URLSearchParams(searchParams);
+    for (const key in newQuery) {
+      if (newQuery.hasOwnProperty(key)) {
+        const value = newQuery[key];
+        if (value === null || value?.length === 0) {
+          params.delete(key);
+        } else {
+          params.set(key, newQuery[key]);
+        }
+        console.log(`Key: ${key}, Value: ${value}`);
+      }
+    }
+
+    router.replace(`${pathname}?${params.toString()}`);
+    setQuery(newQuery);
+  };
   return (
     <>
       {searchParams.get("userRole") && (
@@ -66,7 +162,7 @@ export function NonSelectedMenu({}) {
           type="text"
           className="!py-0"
           placeholder="Search for a user"
-          value={search}
+          value={query.search}
           onChange={(e) => {
             setSearch(e.currentTarget.value);
             console.log(e.currentTarget.value === "");
@@ -88,9 +184,7 @@ export function NonSelectedMenu({}) {
         </button>
       </div>
       <div className="flex gap-5">
-        <div
-          className="relative"
-        >
+        <div className="relative">
           <motion.button
             animate={dropDownStatus.userRole ? "opened" : "closed"}
             onClick={() => {
@@ -111,38 +205,7 @@ export function NonSelectedMenu({}) {
             </motion.span>
           </motion.button>
           {dropDownStatus.userRole && (
-            <motion.div className="absolute top-8 right-0 flex flex-col gap-2 bg-white p-3 rounded-lg shadow items-start">
-              <button
-                onClick={(e) => {
-                  const params = new URLSearchParams(searchParams);
-                  params.set("userRole", "owner");
-                  router.replace(`${pathname}?${params.toString()}`);
-                }}
-                className="border-b border-gray w-full text-left"
-              >
-                Owner{" "}
-              </button>
-              <button
-                onClick={(e) => {
-                  const params = new URLSearchParams(searchParams);
-                  params.set("userRole", "organizer");
-                  router.replace(`${pathname}?${params.toString()}`);
-                }}
-                className="border-b border-gray w-full text-left"
-              >
-                Organizer{" "}
-              </button>
-              <button
-                onClick={(e) => {
-                  const params = new URLSearchParams(searchParams);
-                  params.set("userRole", "participant");
-                  router.replace(`${pathname}?${params.toString()}`);
-                }}
-                className="border-b border-gray w-full text-left"
-              >
-                Participant{" "}
-              </button>
-            </motion.div>
+            <UserRoleDropdown query={query} updateQuery={updateQuery} />
           )}
         </div>
         <div className="relative">
@@ -169,9 +232,7 @@ export function NonSelectedMenu({}) {
             <motion.div className="absolute top-8 right-0 flex flex-col gap-2 bg-white p-3 rounded-lg shadow items-start">
               <button
                 onClick={(e) => {
-                  const params = new URLSearchParams(searchParams);
-                  params.set("joined", "ascending");
-                  router.replace(`${pathname}?${params.toString()}`);
+                  updateQuery({ joined: "ascending" });
                 }}
                 className="border-b border-gray w-full text-left"
               >
@@ -179,9 +240,7 @@ export function NonSelectedMenu({}) {
               </button>
               <button
                 onClick={(e) => {
-                  const params = new URLSearchParams(searchParams);
-                  params.set("joined", "descending");
-                  router.replace(`${pathname}?${params.toString()}`);
+                  updateQuery({ joined: "descending" });
                 }}
                 className="border-b border-gray w-full text-left"
               >
@@ -206,13 +265,13 @@ export function SelectedMenu({ selectedUsers, setSelectedUsers, eventSlug }) {
           router.refresh();
         }}
         name={`Delete ${selectedUsers.length} responses`}
-        className="text-red-accent border px-2 border-red-accent rounded border-dashed"
+        className="text-gray border px-2 border-gray rounded border-dashed"
       >
         Clear selection
       </button>
       <button
         onClick={async () => {
-          await promoteUsersAction(selectedUsers, params.eventId)
+          await promoteUsersAction(selectedUsers, params.eventId);
           setSelectedUsers([]);
           router.refresh();
         }}
@@ -224,12 +283,23 @@ export function SelectedMenu({ selectedUsers, setSelectedUsers, eventSlug }) {
       </button>
       <button
         onClick={async () => {
-          await promoteUsersAction(selectedUsers, params.eventId)
+          await demoteUsersAction(selectedUsers, params.eventId);
           setSelectedUsers([]);
           router.refresh();
         }}
         name={`Delete ${selectedUsers.length} responses`}
         className="text-warning border px-2 border-warning rounded border-dashed"
+      >
+        Demote {selectedUsers.length} user{selectedUsers.length > 1 && "s"}
+      </button>
+      <button
+        onClick={async () => {
+          await banUsersAction(selectedUsers, params.eventId);
+          setSelectedUsers([]);
+          router.refresh();
+        }}
+        name={`Delete ${selectedUsers.length} responses`}
+        className="text-warning border px-2 border-warning rounded"
       >
         Ban {selectedUsers.length} user{selectedUsers.length > 1 && "s"}
       </button>

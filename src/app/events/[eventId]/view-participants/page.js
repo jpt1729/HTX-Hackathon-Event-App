@@ -11,8 +11,8 @@ import { getEventParticipants, getUserEventRole } from "@/utils/event-backend";
 
 export default async function ViewParticipantsPage({ params, searchParams }) {
   const { eventId } = params;
-  const { userRole, joined, query } = searchParams;
-
+  const { userRole, joined, query, show } = searchParams;
+  //(userRole ? userRole : ['organizer', 'owner', 'participant'])
   let search = {
     role: userRole,
     sort: joined,

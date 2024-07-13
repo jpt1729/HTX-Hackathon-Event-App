@@ -6,7 +6,7 @@ import ThemedText from "@/components/ThemedText";
 
 import { formatTime } from "@/utils";
 
-export default function ParticipantView({ participant, handleSelect }) {
+export default function ParticipantView({ participant, selected, handleSelect }) {
   const [checked, setChecked] = useState(false);
   console.log(participant)
   return (
@@ -16,9 +16,8 @@ export default function ParticipantView({ participant, handleSelect }) {
           <input
             type="checkbox"
             className="m-auto"
-            checked={checked}
+            checked={selected.includes(participant.id)}
             onChange={() => {
-              setChecked(!checked);
               handleSelect(participant.id);
             }}
           />

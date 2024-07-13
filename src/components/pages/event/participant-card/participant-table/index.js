@@ -50,6 +50,7 @@ export default function ParticipantTable({ eventParticipants }) {
                 <ParticipantView
                   key={_i}
                   participant={participant}
+                  selected={selectedUsers}
                   handleSelect={handleSelect}
                 />
               );
