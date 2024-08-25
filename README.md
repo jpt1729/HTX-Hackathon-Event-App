@@ -4,10 +4,16 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 This is an event app I am building for Voyage de la Lune. The problem this app solves is events information generally being quite unorganized especially when things change. This app is a way for participants and organizers to better connect and spread information.
 
-Isaw an app like this originally at BMES 2023 conference where they built a kinda bad app but it conveyed information well. I hope this app can do that but better!
-
+I saw an app like this originally at BMES 2023 conference where they built a kinda bad app but it conveyed information. I hope this app can do that but better!
+### Event page
+![Event page](https://cloud-gtbf7484u-hack-club-bot.vercel.app/0image.png)
+### Activity Page
+![Activity page](https://cloud-mf1bvziif-hack-club-bot.vercel.app/0image.png)
+## Technologies
+- Next.js
+- Prisma.js
+- Cockroachdb (although this should be easy to switch)c
 ## Features
-
 Events:
 Events are the parent of activities. Organizers can put a intro markdown and from that they can build out further what they want to do. They can write a general summary and add helpful info and create activities
 
